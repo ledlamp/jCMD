@@ -7,6 +7,6 @@ It is written in Node.js and is based on the Discord.js library: https://discord
 
   Do `npm install`.
   
-  Rename the `config_template.json` to `config.json`, then modify the file's contents to the info you have.
+  Rename the `config_template.json` to `config.json`, then modify the file's contents to the info you have. Add a folder named `data` and then make folders named `guilds` and `notes` inside `data`.
   
   To run the bot, simply do `node index`.
