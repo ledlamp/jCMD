@@ -1,0 +1,51 @@
+{
+  "name": "jcmd",
+  "version": "1.0.0",
+  "description": "A Discord bot specialising in string processing and manipulation made by reVerb.",
+  "main": "index.js",
+  "dependencies": {
+    "arr-diff": "^2.0.0",
+    "arr-flatten": "^1.1.0",
+    "arr-union": "^3.1.0",
+    "array-unique": "^0.2.1",
+    "assign-symbols": "^1.0.0",
+    "async-each": "^1.0.1",
+    "async": "^0.2.10",
+    "atob": "^2.1.2",
+    "balanced-match": "^1.0.0",
+    "binary-extensions": "^1.12.0",
+    "brace-expansion": "^1.1.11",
+    "bufferutil": "^4.0.1",
+    "colors": "^0.6.2",
+    "component-emitter": "^1.2.1",
+    "concat-map": "^0.0.1",
+    "copy-descriptor": "^0.1.1",
+    "dblapi.js": "^2.3.0",
+    "deep-equal": "^1.0.1",
+    "define-property": "^2.0.2",
+    "discord.js": "^11.4.2",
+    "enmap": "^4.6.0",
+    "decode-uri-component": "^0.2.0",
+    "eventemitter2": "^0.4.14",
+    "eyes": "^0.1.8",
+    "fs.realpath": "^1.0.0",
+    "filename-regex": "^2.0.1",
+    "for-in": "^1.0.2",
+    "for-own": "^0.1.5",
+    "js-interpreter": "^1.4.6",
+    "request": "^2.88.0",
+    "cycle": "^1.0.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node index"
+  },
+  "keywords": [
+    "discord",
+    "discord.js",
+    "node.js",
+    "javascript"
+  ],
+  "author": "recapitalverb",
+  "license": "ISC"
+}
