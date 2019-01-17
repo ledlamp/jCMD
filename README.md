@@ -4,6 +4,9 @@ It is written in Node.js and is based on the Discord.js library: https://discord
 
 # How to set up this bot
 *I will assume that you are familiar with Node, the Linux command line, and how to edit a JSON file.*
+
   Do `npm install`.
+  
   Rename the `config_template.json` to `config.json`, then modify the file's contents to the info you have.
+  
   To run the bot, simply do `node index`.
