@@ -3,8 +3,8 @@ let regAr = ["🇦","🇧","🇨","🇩","🇪","🇫","🇬","🇭","🇮","�
 
 exports.run = async function(client, msg, p) {
 	let both = p.join(" "), text = both.split(" | "), meth = text.pop();
+	if (text.length == 0 || !meth) return client.q.cmdthr(msg, "Invalid arguments. You need to provide some methods.");
 	text = text.join(" | ");
-	if (!meth) return client.q.cmdthr(msg, "Invalid arguments. You need to provide some methods.");
 	meth = meth.split(" "); if (meth.length > 10) return client.q.cmdthr(msg, "Too many methods were given! (> 10)");
 	while(meth[0]) {
 		let s = meth.shift();
