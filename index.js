@@ -69,7 +69,7 @@ client.q = {
 	},
 	getMember: function (msg, thing) {
 		let member = msg.mentions.members.first();
-		if (!member) member = msg.guild.members.find(member => member.nickname.toLowerCase().indexOf(thing.toLowerCase()) > -1);
+		if (!member && member.nickname) member = msg.guild.members.find(member => member.nickname.toLowerCase().indexOf(thing.toLowerCase()) > -1);
 		if (!member) member = msg.guild.members.find(member => member.user.username.toLowerCase().indexOf(thing.toLowerCase()) > -1);
 		if (!member) member = msg.guild.members.find(member => member.user.tag.toLowerCase().indexOf(thing.toLowerCase()) > -1);
 		if (!member) member = msg.guild.members.find(member => member.user.id == thing);
