@@ -1,5 +1,5 @@
 exports.run = async function(client, msg, p) {
-	let user = client.q.getUser(p[0]);
+	let user = client.q.getUser(msg, p[0]);
 	if (user == null) client.q.cmdthr(msg, "User not found. Check your spelling/mention/included ID and try again.");
 	require('request')({url: 'https://discordbots.org/api/users/' + user.id, json: true}, function (error, response, body) {
 		if (!error && !body.error) client.q.cmdd(msg, client.q.mkEmbed(`DBL profile of ${user.tag}`, `https://discordbots.org/user/${user.id}`, []));
