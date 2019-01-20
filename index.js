@@ -60,12 +60,20 @@ client.q = {
 	cmdd: async function (msg, reply, opt) { msg.react('✅'); return msg.channel.send(reply, opt) },
 	mkEmbed: function (title, desc, fields, image) { return { embed: { color: client.config.embedColor, title: title, description: desc, fields: fields, image: image ? { url: image } : undefined } } },
 	permName: function (perm) { if (typeof perm == "object") { let str = ""; for (let res of perm) str += client.perms.PERMNAMES[client.perms.PERMS.indexOf(res)] + ", "; return str.slice(0, str.length - 2); } else return client.perms.PERMNAMES[client.perms.PERMS.indexOf(perm)] },
-	getUser: function (msg, thing) {
+	getUser: function (thing) {
 		let user = msg.mentions.users.first();
 		if (!user) user = client.users.find(user => user.username.toLowerCase().indexOf(thing.toLowerCase()) > -1);
 		if (!user) user = client.users.find(user => user.tag.toLowerCase().indexOf(thing.toLowerCase()) > -1);
 		if (!user) user = client.users.find(user => user.id == thing);
 		return user;
+	},
+	getMember: function (msg, thing) {
+		let member = msg.mentions.members.first();
+		if (!member) member = msg.guild.members.find(member => member.nickname.toLowerCase().indexOf(thing.toLowerCase()) > -1);
+		if (!member) member = msg.guild.members.find(member => member.user.username.toLowerCase().indexOf(thing.toLowerCase()) > -1);
+		if (!member) member = msg.guild.members.find(member => member.user.tag.toLowerCase().indexOf(thing.toLowerCase()) > -1);
+		if (!member) member = msg.guild.members.find(member => member.user.id == thing);
+		return member;
 	},
 	argSq: function (argStr) { let str = ""; for (let aPos of argStr) { str += `[${aPos}] `; } return str; },
 	clean: function (text) { if (typeof (text) === "string") return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203)); else return text; }
