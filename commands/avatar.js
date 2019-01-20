@@ -1,7 +1,8 @@
 exports.run = async function(client, msg, p) {
-	let user = client.q.getMember(msg, p[0]).user;
-	if (user == null) client.q.cmdthr(msg, "User not found. Check your spelling/mention/included ID and try again.");
+	let member = client.q.getMember(msg, p[0]);
+	if (member == null) client.q.cmdthr(msg, "User not found. Check your spelling/mention/included ID and try again.");
 	else {
+    let user = member.user;
 		client.q.cmdd(msg, client.q.mkEmbed(`Profile picture of **${user.tag}**`, undefined, undefined, user.avatarURL));
 	}
 }
