@@ -138,7 +138,7 @@ client.rnd = {
 			inPick = Math.round(Math.random() * (this.insults.text.length - 1));
 			if (!this.insultHtr.includes(inPick)) inFlag = false;
 		}
-		while (this.insultHtr.length > 20) insultHtr.shift();
+		while (this.insultHtr.length > 20) this.insultHtr.shift();
 		this.insultHtr.push(inPick);
 		return this.insults.text[inPick];
 	}
