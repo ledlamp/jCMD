@@ -76,7 +76,33 @@ client.q = {
 		return member;
 	},
 	argSq: function (argStr) { let str = ""; for (let aPos of argStr) { str += `[${aPos}] `; } return str; },
-	clean: function (text) { if (typeof (text) === "string") return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203)); else return text; }
+	clean: function (text) { if (typeof (text) === "string") return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203)); else return text; },
+	buildHelp: function () {
+		client.helpFields = []; {
+			class HCatObj {
+				constructor(name, commands) {
+					this.name = name;
+					this.commands = commands || [];
+				}
+			}
+			let helpObj = {
+				info: new HCatObj("Help & Information"),
+				util: new HCatObj("Utility"),
+				mod: new HCatObj("Moderation"),
+				fun: new HCatObj("Fun"),
+				strp: new HCatObj("String processing & manipulation"),
+				config: new HCatObj("Configuration"),
+				maint: new HCatObj("Maintenance")
+			}
+			client.commands.map((a, b) => { if (a.cat) helpObj[a.cat].commands.push(b) });
+			let x = 0;
+			for (let i of Object.keys(helpObj)) {
+				client.helpFields[x] = { name: helpObj[i].name, value: "" };
+				for (let ii = 0; ii < helpObj[i].commands.length; ii++) { client.helpFields[x].value += "`" + helpObj[i].commands[ii] + "`"; if (ii !== helpObj[i].commands.length - 1) client.helpFields[x].value += ", " }
+				if (client.helpFields[x].value !== "") x++;
+			}
+		}
+	}
 }
 
 client.commands = new Enmap();
@@ -88,30 +114,7 @@ fs.readdir("./commands/", (err, files) => {
 		let commandName = file.split(".")[0];
 		client.commands.set(commandName, props);
 	});
-	client.helpFields = []; {
-		class HCatObj {
-			constructor(name, commands) {
-				this.name = name;
-				this.commands = commands || [];
-			}
-		}
-		let helpObj = {
-			info: new HCatObj("Help & Information"),
-			util: new HCatObj("Utility"),
-			mod: new HCatObj("Moderation"),
-			fun: new HCatObj("Fun"),
-			strp: new HCatObj("String processing & manipulation"),
-			config: new HCatObj("Configuration"),
-			maint: new HCatObj("Maintenance")
-		}
-		client.commands.map((a, b) => { if (a.cat) helpObj[a.cat].commands.push(b) });
-		let x = 0;
-		for (let i of Object.keys(helpObj)) {
-			client.helpFields[x] = { name: helpObj[i].name, value: "" };
-			for (let ii = 0; ii < helpObj[i].commands.length; ii++) { client.helpFields[x].value += "`" + helpObj[i].commands[ii] + "`"; if (ii !== helpObj[i].commands.length - 1) client.helpFields[x].value += ", " }
-			if (client.helpFields[x].value !== "") x++;
-		}
-	}
+	client.q.buildHelp();
 });
 
 client.cd = {

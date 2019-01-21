@@ -1,9 +1,10 @@
-exports.run = (client, message, args) => {
+exports.run = (client, msg, args) => {
 	const commandName = args[0];
-	if (!client.commands.has(commandName)) client.q.cmdthr(msg, 'Command not found.');
+	if (!client.commands.has(commandName)) client.q.cmdthr(msg, `Command \`${commandName}\` not found.`);
 	delete require.cache[require.resolve(`./${commandName}.js`)];
 	client.commands.delete(commandName);
-	message.channel.send(`\`${commandName}\` successfully unloaded!`);
+	client.q.cmdd(msg, `\`${commandName}\` successfully unloaded!`);
+	client.q.buildHelp();
 };
 exports.cat = "maint";
 exports.own = true;

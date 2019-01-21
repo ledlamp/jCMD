@@ -25,7 +25,8 @@ function deepHelp(client, msg, obj, p, his) {
 	}
 }
 exports.run = async function(client, msg, cmd) {
-	if (!cmd[0] || !client.commands.get(cmd[0])) client.q.cmdd(msg, client.q.mkEmbed(`❯ Prefix: ${client.q.getPre(msg)} - Help`, "❯ Available commands, by category:", client.helpFields));
+	let pr = client.q.getPre(msg);
+	if (!cmd[0] || !client.commands.get(cmd[0])) client.q.cmdd(msg, client.q.mkEmbed(`❯ Prefix: ${pr ? pr : '(none in DMs)'} - Help`, "❯ Available commands, by category:", client.helpFields));
 	else {let c = cmd.shift(); deepHelp(client, msg, client.commands.get(c), cmd, c)}
 }
 exports.cat = "info";
