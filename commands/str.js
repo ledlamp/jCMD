@@ -25,6 +25,7 @@ exports.run = async function(client, msg, p) {
 			case "drag": text = [...text]; let drag = ""; for (let i of text) drag += i.repeat(pn); text = drag; break;
 			case "circle": text = text.replace(/[a-z]/g, function(char) {return String.fromCharCode(char.charCodeAt() + 9327) + " ";}); text = text.replace(/[A-Z]/g, function(char) {return String.fromCharCode(char.charCodeAt() + 9300) + " ";}); break;
 			case "regind": let regind = ""; text = [...text]; for (let x = 0; x < text.length; x++) regind += (regAr[alph.indexOf(text[x].toLowerCase())] ? (regAr[alph.indexOf(text[x-1] ? text[x-1].toLowerCase() : undefined)] ? "" : " ") + regAr[alph.indexOf(text[x].toLowerCase())] + " " : text[x]); text = regind.trim(); break;
+			case "mock": let mock = ""; text = [...text]; for (let x = 0; x < text.length; x++) mock += (text[x] == 'i' ? 'i' : Math.round(Math.random) ? text[x].toUpperCase() : text[x].toLowerCase()); text = mock; break;
 		}
 		if (text.length > 800) text = text.slice(0, 800);
 	}
@@ -34,4 +35,4 @@ exports.run = async function(client, msg, p) {
 exports.cat = "strp";
 exports.cd = 6000;
 exports.args = ["text | methods(number"];
-exports.desc = "Iterative string processing command. Separate text and methods using the pipe character | between spaces. Methods:\n*aest(number* : like the `aest const` command.\n*clap* : Adds a clap between each word.\n*rev* : Reverse string.\n*upper*,*lower* : Cases.\n*ita* : Italic.\n*bold* : Bold.\n*code* : Wraps the string around a pair of backticks.\n*drag(number* : Repeats each character for a number of times.\n*regind* : Turns any character belonging to the modern English alphabet into a regional indicator emoji containing the same letter.\n*circle* : Same as `regind` but converts letters to circled letters.\n\nAn example: Doing `str bottom text | aest(2 upper code ita bold`\n❯ ***​`B  O  T  T  O  M     T  E  X  T`***​";
+exports.desc = "Iterative string processing command. Separate text and methods using the pipe character | between spaces. Methods:\n*aest(number* : like the `aest const` command.\n*clap* : Adds a clap between each word.\n*rev* : Reverse string.\n*upper*,*lower* : Cases.\n*ita* : Italic.\n*bold* : Bold.\n*code* : Wraps the string around a pair of backticks.\n*drag(number* : Repeats each character for a number of times.\n*regind* : Turns any character belonging to the modern English alphabet into a regional indicator emoji containing the same letter.\n*circle* : Same as `regind` but converts letters to circled letters.\n*mock* : Random capitalisation engine.\n\nAn example: Doing `str bottom text | aest(2 upper code ita bold`\n❯ ***​`B  O  T  T  O  M     T  E  X  T`***​";
