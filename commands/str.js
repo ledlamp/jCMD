@@ -25,7 +25,7 @@ exports.run = async function(client, msg, p) {
 			case "drag": text = [...text]; let drag = ""; for (let i of text) drag += i.repeat(pn); text = drag; break;
 			case "circle": text = text.replace(/[a-z]/g, function(char) {return String.fromCharCode(char.charCodeAt() + 9327) + " ";}); text = text.replace(/[A-Z]/g, function(char) {return String.fromCharCode(char.charCodeAt() + 9300) + " ";}); break;
 			case "regind": let regind = ""; text = [...text]; for (let x = 0; x < text.length; x++) regind += (regAr[alph.indexOf(text[x].toLowerCase())] ? (regAr[alph.indexOf(text[x-1] ? text[x-1].toLowerCase() : undefined)] ? "" : " ") + regAr[alph.indexOf(text[x].toLowerCase())] + " " : text[x]); text = regind.trim(); break;
-			case "mock": let mock = ""; text = [...text]; for (let x = 0; x < text.length; x++) mock += (text[x] == 'i' ? 'i' : Math.round(Math.random) ? text[x].toUpperCase() : text[x].toLowerCase()); text = mock; break;
+			case "mock": let mock = ""; text = [...text]; for (let x = 0; x < text.length; x++) mock += (text[x] == 'i' ? 'i' : Math.round(Math.random()) == 1 ? text[x].toUpperCase() : text[x].toLowerCase()); text = mock; break;
 		}
 		if (text.length > 800) text = text.slice(0, 800);
 	}
