@@ -55,11 +55,8 @@ exports.run = async function(client, msg, p) {
 			break
 
 			case "circle":
-			text = text.replace(/[a-z]/g, function(char) {
+			text = text.toLowerCase().replace(/[a-z]/g, function(char) {
 				return String.fromCharCode(char.charCodeAt() + 9327) + " "
-			})
-			text = text.replace(/[A-Z]/g, function(char) {
-				return String.fromCharCode(char.charCodeAt() + 9300) + " "
 			})
 			break
 
