@@ -4,6 +4,8 @@ const Enmap = require("enmap")
 const fs = require("fs")
 const client = new Discord.Client()
 client.config = require("./config.json")
+client.options.disableEveryone = true
+client.options.fetchAllMembers = true
 
 var stdin = process.openStdin()
 stdin.on("data", function (input) {
