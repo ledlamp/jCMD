@@ -3,7 +3,7 @@ exports.run = async function(client, msg, p) {
 	if (member == null) client.q.cmdthr(msg, "User not found. Check your spelling/mention/included ID and try again.")
 	else {
     let user = member.user
-		client.q.cmdd(msg, client.q.mkEmbed(`Profile picture of **${user.tag}**`, undefined, undefined, user.avatarURL))
+		client.q.cmdd(msg, client.q.mkEmbed(`Profile picture of **${user.tag}**`, undefined, undefined, user.displayAvatarURL))
 	}
 }
 exports.cat = "util"
