@@ -15,7 +15,7 @@ exports.subCmd = {
 				let note = JSON.parse(data)
 				if (p[0]) {
 					if (!note.content[p[0]]) return client.q.cmdthr(msg, "Section does not exist.")
-					msg.channel.send(`Memopad section \`${p[0]}\` for **` + msg.author.tag + "**: ```\n" + note.content[p[0]] + "\n```").catch(()=>{})
+					msg.channel.send(`Memopad section \`${p[0]}\` for **` + msg.author.tag + "**: ```\n" + client.q.clean(note.content[p[0]]) + "\n```").catch(()=>{})
 				} else if (Object.keys(note.content).length !== 0) {
 					noteAll = ""
 					for (key = 0; key < Object.keys(note.content).length; key++) {
@@ -41,7 +41,7 @@ exports.subCmd = {
 				msg.channel.send("Note file doesn't exist creating one...").catch(()=>{})
 			}
 			if (Object.keys(note.content).length >= client.config.noteMaxSec) return client.q.cmdthr(msg, `You have reached the section limit (${client.config.noteMaxSec}). Delete at least one of them.`)
-			note.content[p[0]] = client.q.clean(text)
+			note.content[p[0]] = text
 			fs.writeFile(`./data/notes/${msg.author.id}.json`, JSON.stringify(note), (err) => {
 				if (err) throw err
 				client.q.cmdd(msg, 'Notes successfully saved!')
