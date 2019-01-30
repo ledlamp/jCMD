@@ -57,9 +57,10 @@ const cultureTags = [
 exports.run = async function (client, msg, p) {
 	let code = p[0]
 	if (!/\b\d+\b/.test(code)) return client.q.cmdthr(msg, 'You need to provide a number.')
+	msg.channel.startTyping()
 	request({ url: 'https://nhentai.net/g/' + code }, (error, resp, body) => {
+		msg.channel.stopTyping()
 		if (body.indexOf('<title>404 - Not Found') !== -1) return client.q.cmdthr(msg, 'Doujinshi not found. Check whether you have given the correct name.')
-
 		let title = extractTitle(body), tags = extractTags(body), langs = extractLangs(body)
 		let response = '', initResponse = `\n*\`\`\`${code}\`\`\`*`
 		let saidTags = false
