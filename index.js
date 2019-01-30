@@ -29,7 +29,7 @@ fs.readdir("./events/", (err, files) => {
 client.perms = { PERMS: require('./language/perms.json').perms, PERMNAMES: require('./language/perms.json').names }
 
 client.gConfig = {
-	configs: {},
+	configs: new Enmap(),
 	class: class guildConfig {
 		constructor(name, prefix) {
 			this.name = name
@@ -39,21 +39,20 @@ client.gConfig = {
 	load: function () {
 		let cf = fs.readdirSync('./data/guilds', { withFileTypes: false })
 		if (cf.length !== 0)
-			for (let sPos = 0; sPos < cf.length; sPos++) this.configs[cf[sPos].split(".json")[0]] = require(`./data/guilds/${cf[sPos]}`)
+			for (let sPos = 0; sPos < cf.length; sPos++) this.configs.set(cf[sPos].split(".json")[0], require(`./data/guilds/${cf[sPos]}`))
 	},
 	write: async function (msg, name, cusFunc) {
-		let check = true, gConfig = this.configs[msg.guild.id]
-		if (!gConfig) gConfig = new this.class(msg.guild.name)
+		let check = true, gConfig = this.configs.has(msg.guild.id) ? this.configs.get(msg.guild.id) : new this.class(msg.guild.id)
 		cusFunc(msg, gConfig)
 		for (let oof of Object.keys(gConfig)) { if (gConfig[oof] == undefined || gConfig[oof] == "" || Object.keys(gConfig[oof]) == []) delete gConfig[oof] }
 		if (Object.keys(gConfig).length < 2) {
-			delete this.configs[msg.guild.id]
+			this.configs.delete(msg.guild.id)
 			return fs.unlink(`./data/guilds/${msg.guild.id}.json`, (err) => {
 				if (err) client.q.cmdthr(msg, "This server doesn't even have a config file!")
 				else client.q.cmdd(msg, "The server has no custom config so its config file is gone! Congrats!")
 			})
 		} else {
-			this.configs[msg.guild.id] = gConfig
+			this.configs.set(msg.guild.id, gConfig)
 			fs.writeFile(`./data/guilds/${msg.guild.id}.json`, JSON.stringify(gConfig), (err) => { if (err) { check = false; throw err } })
 		}
 		if (check) return client.q.cmdd(msg, `${name} successfully saved!`)
@@ -63,8 +62,7 @@ client.gConfig = {
 client.q = {
 	getPre: function (msg) {
 		if (msg.channel.type == "dm") return ""
-		if (client.gConfig.configs[msg.guild.id] && client.gConfig.configs[msg.guild.id].prefix) return client.gConfig.configs[msg.guild.id].prefix
-		return client.config.prefix
+		return client.gConfig.configs.has(msg.guild.id) ? client.gConfig.configs.get(msg.guild.id).prefix : client.config.prefix
 	},
 	cmdthr: async function (msg, reply, opt) {
 		msg.react('❌')
