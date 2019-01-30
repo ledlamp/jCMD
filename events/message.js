@@ -16,18 +16,17 @@ module.exports = (client, msg) => {
 	if (!cmdst) return
 	if (client.cd.userOnCD.indexOf(msg.author.id) !== -1) return msg.channel.send(`Slow down, take it easy.`)
 	function deepCmd(obj, p, his) {
+		if (obj.reqGuild && isDM) return client.q.cmdthr(msg, "You can only do that command in a server text channel.")
+		if (obj.own && (msg.author.id !== client.config.ownerID)) return client.q.cmdthr(msg, client.rnd.insultGet())
+		if (obj.nsfw && !msg.channel.nsfw) return client.q.cmdthr(msg, 'You can only do that command in a NSFW channel.')
+		if (obj.perm && !msg.channel.permissionsFor(msg.member).has(obj.perm)) return client.q.cmdthr(msg, "Insufficient permissions. You are missing `" + client.q.permName(obj.perm) + "`.")
+		if (obj.botPerm && !msg.channel.permissionsFor(msg.guild.member(client.user)).has(obj.perm)) return client.q.cmdthr(msg, "Insufficient permissions for the bot. The bot is missing `" + client.q.permName(obj.botPerm) + "`.")
 		if (obj.run) {
-			if (obj.reqGuild && isDM) return client.q.cmdthr(msg, "You can only do that command in a server text channel.")
-			if (obj.own && (msg.author.id !== client.config.ownerID)) return client.q.cmdthr(msg, client.rnd.insultGet())
 			if (obj.args && (p.length < obj.args.length)) {
 				if (!obj.noParse) return client.q.cmdthr(msg, "Not enough arguments. Arguments needed: " + client.q.argSq(obj.args))
-				else {
-					return obj.noParse(client, msg)
-				}
+				else return obj.noParse(client, msg)
 			}
-			if (obj.perm && !msg.channel.permissionsFor(msg.member).has(obj.perm)) return client.q.cmdthr(msg, "Insufficient permissions. You are missing `" + client.q.permName(obj.perm) + "`.")
-			if (obj.botPerm && !msg.channel.permissionsFor(msg.guild.member(client.user)).has(obj.perm)) return client.q.cmdthr(msg, "Insufficient permissions for the bot. The bot is missing `" + client.q.permName(obj.botPerm) + "`.")
-			try {obj.run(client, msg, args)} catch (err) {console.log(msg.content, " | Error: ", err)}
+			try {obj.run(client, msg, args)} catch (err) {console.error('COMMAND >>>', msg.content); throw err}
 			if(msg.author.id !== client.config.ownerID) client.cd.addCooldown(msg.author.id, obj.cd)
 		}
 		else {
