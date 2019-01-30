@@ -22,7 +22,6 @@ module.exports = (client, msg) => {
 			if (obj.args && (p.length < obj.args.length)) {
 				if (!obj.noParse) return client.q.cmdthr(msg, "Not enough arguments. Arguments needed: " + client.q.argSq(obj.args))
 				else {
-					noParse = true
 					return obj.noParse(client, msg)
 				}
 			}

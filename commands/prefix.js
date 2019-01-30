@@ -14,9 +14,10 @@ exports.run = async function(client, msg, p) {
 exports.noParse = async function(client, msg) {
 	msg.channel.send(`The prefix for this server is \`${client.q.getPre(msg)}\`.`).catch(()=>{})
 }
+exports.noParseDesc = "Shows the current prefix for this server."
 exports.cat = "config"
 exports.reqGuild = true
 exports.perm = "MANAGE_GUILD"
 exports.args = ["prefix"]
 exports.cd = 5000
-exports.desc = "Change the command prefix for this server. Parse nothing to show prefix or parse `reset` to clear it."
+exports.desc = "Change the command prefix for this server. Parse `reset` to clear."

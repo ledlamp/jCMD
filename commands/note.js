@@ -7,25 +7,33 @@ class noteFile {
 }
 exports.subCmd = {
 	read: {
-		desc: "Shows the user's notepad or mentioned section.",
+		desc: "Shows the user's notepad's mentioned section.",
 		cd: 3000,
+		args: ['section'],
 		run: async function(client, msg, p) {
+			console.log('wtf')
 			fs.readFile(`./data/notes/${msg.author.id}.json`, (err, data) => {
 				if (err) return client.q.cmdthr(msg, "The file storing your notes doesn't exist. Create one by writing one!")
 				let note = JSON.parse(data)
-				if (p[0]) {
-					if (!note.content[p[0]]) return client.q.cmdthr(msg, "Section does not exist.")
-					msg.channel.send(`Memopad section \`${p[0]}\` for **` + msg.author.tag + "**: ```\n" + client.q.clean(note.content[p[0]]) + "\n```").catch(()=>{})
-				} else if (Object.keys(note.content).length !== 0) {
-					noteAll = ""
-					for (key = 0; key < Object.keys(note.content).length; key++) {
-						noteAll += Object.keys(note.content)[key] + ": " + note.content[Object.keys(note.content)[key]]
-						if (key != Object.keys(note.content).length - 1) noteAll += "\n"
-					}
-					msg.channel.send("Memopad for **" + msg.author.tag + "**: ```\n" + noteAll + "\n```").catch(()=>{})
-				} else client.q.cmdthr(msg, "Your notepad is empty. Write something!")
+				if (Object.keys(note.content).length == 0) return client.q.cmdthr(msg, "Your notepad is empty. Write something!")
+				if (!note.content[p[0]]) return client.q.cmdthr(msg, "Section does not exist.")
+				msg.channel.send(`Memopad section \`${p[0]}\` for **` + msg.author.tag + "**: ```\n" + client.q.clean(note.content[p[0]]) + "\n```").catch(()=>{})
 			})
-		}
+		},
+		noParse: async function(client, msg) {
+			fs.readFile(`./data/notes/${msg.author.id}.json`, (err, data) => {
+				if (err) return client.q.cmdthr(msg, "The file storing your notes doesn't exist. Create one by writing one!")
+				let note = JSON.parse(data)
+				if (Object.keys(note.content).length == 0) return client.q.cmdthr(msg, "Your notepad is empty. Write something!")
+				noteAll = ""
+				for (key = 0; key < Object.keys(note.content).length; key++) {
+					noteAll += Object.keys(note.content)[key] + ": " + note.content[Object.keys(note.content)[key]]
+					if (key != Object.keys(note.content).length - 1) noteAll += "\n"
+				}
+				msg.channel.send("Memopad for **" + msg.author.tag + "**: ```\n" + noteAll + "\n```").catch(()=>{})
+			})
+		},
+		noParseDesc: "Shows all sections."
 	},
 	write: {
 		desc: "Write to the notepad of the user executing the command.",

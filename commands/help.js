@@ -5,6 +5,10 @@ function deepHelp(client, msg, obj, p, his) {
 			fields[x] = {name: "Usage", value: `${client.q.getPre(msg)}${his} ${client.q.argSq(obj.args)}`}
 			x++
 		}
+		if (obj.noParse) {
+			fields[x] = {name: "If no arguments are given...", value: obj.noParseDesc}
+			x++
+		}
 		if (obj.own) suf = " ***Can only be executed by the bot owner.***"
 		if (obj.cd) {toSecs = parseFloat((obj.cd / 1000).toFixed(1))
 		fields[x] = {
