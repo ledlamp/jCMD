@@ -80,7 +80,7 @@ exports.run = async function (client, msg, p) {
 		let isLoli = false
 		if (tags.indexOf('lolicon') !== -1) isLoli = true
 
-		if (similarity('177013', code) > 0.8 && isLoli) response += '\nDid you perchance mean **177013** for some good, clean, non-loli fun?\nBut I\'ve got to do my job, so...\n'
+		if (code !== '177013' && similarity('177013', code) > 0.8 && isLoli) response += '\nDid you perchance mean **177013** for some good, clean, non-loli fun?\nBut I\'ve got to do my job, so...\n'
 		response += initResponse
 		if (tags.indexOf('lolicon') !== -1) {
 			response += `\n**Tags: *lolicon***\n	${abandon || isCultured ? 'FBI OPE--' : 'FBI OPEN UP!'}`
@@ -90,7 +90,7 @@ exports.run = async function (client, msg, p) {
 			response += `\n**${saidTags ? 'Also tags' : 'Tags'}: *${culture.join(', ')}***\n	I see you are a man of culture as well.`
 			saidTags = true
 		}
-		if (abandon) response += `\n**Title: *${title}***\n	Abandon hope all ye who enter here`
+		if (abandon) response += `\nWait...\n**Title: *${title}***\n	Abandon hope all ye who enter here`
 		if (langs.indexOf('english') == -1 && isLoli) response += `\n**Languages: *Not English***\n	Does it look like that I can read moon runes? No matter where the hell you live, here in 'murica we protect the lolis. Take them away boys!`
 
 		if (response == initResponse) response += `\nOh. Oh wow. Something actually normal this time. I am proud that you have such a fine taste in this wild realm of art.`
