@@ -1,6 +1,10 @@
 exports.run = async function(client, msg, msgP) {
 	let min = parseInt(msgP[0]), max = parseInt(msgP[1])
-	if (min >= max) client.q.cmdthr(msg, `Invalid numbers! Make sure min < max and try again.`)
+	if (min > max) {
+		let x = max
+		max = min
+		min = x
+	}
 	else {
 		rnd = Math.round(Math.random() * (max - min)) + min
 		if(!isNaN(rnd)) client.q.cmdd(msg, `Your random number is ${rnd}.`)
