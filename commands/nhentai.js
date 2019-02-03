@@ -1,4 +1,4 @@
-const request = require('request')
+const fetch = require('node-fetch')
 
 function extractTags(body) { return body.replace(/(\n+( |\t)*)/g, '').match(/<div class="tag-container field-name ">Tags:(.*?)<\/div>/)[1].replace(/\((\d|,)*?\)/g, '').replace(/<.*?>/g, ';').split(/ *;+/).slice(1, -1) }
 function extractLangs(body) { return body.replace(/(\n+( |\t)*)/g, '').match(/<div class="tag-container field-name ">Languages:(.*?)<\/div>/)[1].replace(/\((\d|,)*?\)/g, '').replace(/<.*?>/g, ';').split(/ *;+/).slice(1, -1) }
@@ -54,11 +54,19 @@ const cultureTags = [
 	'nakadashi'
 ]
 
+function checkStatus(res) {
+	if (res.ok) {
+		return res;
+	} else {
+		throw MyCustomError(res.statusText);
+	}
+}
+
 exports.run = async function (client, msg, p) {
 	let code = p[0]
 	if (!/\b\d+\b/.test(code)) return client.q.cmdthr(msg, 'You need to provide a number.')
 	msg.channel.startTyping()
-	request({ url: 'https://nhentai.net/g/' + code }, (error, resp, body) => {
+	fetch('https://github.com/').then(res => res.text()).then(body => {
 		msg.channel.stopTyping()
 		if (body.indexOf('<title>404 - Not Found') !== -1) return client.q.cmdthr(msg, 'Doujinshi not found. Check whether you have given the correct name.')
 		let title = extractTitle(body), tags = extractTags(body), langs = extractLangs(body)
@@ -99,5 +107,6 @@ exports.run = async function (client, msg, p) {
 }
 
 exports.args = ['doujinshi id']
+exports.cat = 'fun'
 exports.desc = 'Infinite doujinshi analysis fun! Batteries and FBI not included.\nThis command is somewhat the product of reverse engineering u/Loli-Tag-Bot.'
 exports.nsfw = true
