@@ -62,7 +62,8 @@ client.gConfig = {
 client.q = {
 	getPre: function (msg) {
 		if (msg.channel.type == "dm") return ""
-		return client.gConfig.configs.has(msg.guild.id) ? client.gConfig.configs.get(msg.guild.id).prefix : client.config.prefix
+		let cfg = client.gConfig.configs.get(msg.guild.id)
+		return (cfg && cfg.prefix) ? cfg.prefix : client.config.prefix
 	},
 	cmdthr: async function (msg, reply, opt) {
 		msg.react('❌')
