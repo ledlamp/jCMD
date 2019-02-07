@@ -54,14 +54,6 @@ const cultureTags = [
 	'nakadashi'
 ]
 
-function checkStatus(res) {
-	if (res.ok) {
-		return res;
-	} else {
-		throw MyCustomError(res.statusText);
-	}
-}
-
 exports.run = async function (client, msg, p) {
 	let code = p[0]
 	if (!/\b\d+\b/.test(code)) return client.q.cmdthr(msg, 'You need to provide a number.')
@@ -99,9 +91,9 @@ exports.run = async function (client, msg, p) {
 			saidTags = true
 		}
 		if (abandon) response += `\nWait...\n**Title: *${title}***\n	Abandon hope all ye who enter here`
-		if (langs.indexOf('english') == -1 && isLoli) response += `\n**Languages: *Not English***\n	Does it look like that I can read moon runes? No matter where the hell you live, here in 'murica we protect the lolis. Take them away boys!`
+		if (langs.indexOf('english') == -1 && isLoli) response += '\n**Languages: *Not English***\n	Does it look like that I can read moon runes? No matter where the hell you live, here in \'murica we protect the lolis. Take them away boys!'
 
-		if (response == initResponse) response += `\nOh. Oh wow. Something actually normal this time. I am proud that you have such a fine taste in this wild realm of art.`
+		if (response == initResponse) response += '\nOh. Oh wow. Something actually normal this time. I am proud that you have such a fine taste in this wild realm of art.'
 		client.q.cmdd(msg, response)
 	})
 }

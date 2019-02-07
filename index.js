@@ -1,14 +1,14 @@
-"use strict"
-const Discord = require("discord.js")
-const Enmap = require("enmap")
-const fs = require("fs")
+'use strict'
+const Discord = require('discord.js')
+const Enmap = require('enmap')
+const fs = require('fs')
 const client = new Discord.Client()
-client.config = require("./config.json")
+client.config = require('./config.json')
 client.options.disableEveryone = true
 client.options.fetchAllMembers = true
 
 var stdin = process.openStdin()
-stdin.on("data", function (input) {
+stdin.on('data', function (input) {
 	let msg = input.toString()
 	try {
 		console.log(require('util').inspect(eval(msg)))
@@ -17,11 +17,11 @@ stdin.on("data", function (input) {
 	}
 })
 
-fs.readdir("./events/", (err, files) => {
+fs.readdir('./events/', (err, files) => {
 	if (err) return console.error(err)
 	files.forEach(file => {
 		const event = require(`./events/${file}`)
-		let eventName = file.split(".")[0]
+		let eventName = file.split('.')[0]
 		client.on(eventName, event.bind(null, client))
 	})
 })
@@ -39,17 +39,17 @@ client.gConfig = {
 	load: function () {
 		let cf = fs.readdirSync('./data/guilds', { withFileTypes: false })
 		if (cf.length !== 0)
-			for (let sPos = 0; sPos < cf.length; sPos++) this.configs.set(cf[sPos].split(".json")[0], require(`./data/guilds/${cf[sPos]}`))
+			for (let sPos = 0; sPos < cf.length; sPos++) this.configs.set(cf[sPos].split('.json')[0], require(`./data/guilds/${cf[sPos]}`))
 	},
 	write: async function (msg, name, cusFunc) {
 		let check = true, gConfig = this.configs.has(msg.guild.id) ? this.configs.get(msg.guild.id) : new this.class(msg.guild.id)
 		cusFunc(msg, gConfig)
-		for (let oof of Object.keys(gConfig)) { if (gConfig[oof] == undefined || gConfig[oof] == "" || Object.keys(gConfig[oof]) == []) delete gConfig[oof] }
+		for (let oof of Object.keys(gConfig)) { if (gConfig[oof] == undefined || gConfig[oof] == '' || Object.keys(gConfig[oof]) == []) delete gConfig[oof] }
 		if (Object.keys(gConfig).length < 2) {
 			this.configs.delete(msg.guild.id)
 			return fs.unlink(`./data/guilds/${msg.guild.id}.json`, (err) => {
-				if (err) client.q.cmdthr(msg, "This server doesn't even have a config file!")
-				else client.q.cmdd(msg, "The server has no custom config so its config file is gone! Congrats!")
+				if (err) client.q.cmdthr(msg, 'This server doesn\'t even have a config file!')
+				else client.q.cmdd(msg, 'The server has no custom config so its config file is gone! Congrats!')
 			})
 		} else {
 			this.configs.set(msg.guild.id, gConfig)
@@ -61,7 +61,7 @@ client.gConfig = {
 
 client.q = {
 	getPre: function (msg) {
-		if (msg.channel.type == "dm") return ""
+		if (msg.channel.type == 'dm') return ''
 		let cfg = client.gConfig.configs.get(msg.guild.id)
 		return (cfg && cfg.prefix) ? cfg.prefix : client.config.prefix
 	},
@@ -81,9 +81,9 @@ client.q = {
 		return { embed: { color: client.config.embedColor, title: title, description: desc, fields: fields, image: image ? { url: image } : undefined } }
 	},
 	permName: function (perm) {
-		if (typeof perm == "object") {
-			let str = ""
-			for (let res of perm) str += client.perms.PERMNAMES[client.perms.PERMS.indexOf(res)] + ", "
+		if (typeof perm == 'object') {
+			let str = ''
+			for (let res of perm) str += client.perms.PERMNAMES[client.perms.PERMS.indexOf(res)] + ', '
 			return str.slice(0, str.length - 2)
 		} else return client.perms.PERMNAMES[client.perms.PERMS.indexOf(perm)]
 	},
@@ -103,14 +103,14 @@ client.q = {
 		return member
 	},
 	argSq: function (argStr) {
-		let str = ""
+		let str = ''
 		for (let aPos of argStr) {
 			str += `[${aPos}] `
 		}
 		return str
 	},
 	clean: function (text) {
-		if (typeof (text) === "string") return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203))
+		if (typeof (text) === 'string') return text.replace(/`/g, '`' + String.fromCharCode(8203)).replace(/@/g, '@' + String.fromCharCode(8203))
 		else return text
 	},
 	buildHelp: function () {
@@ -123,35 +123,35 @@ client.q = {
 				}
 			}
 			let helpObj = {
-				info: new HCatObj("Help & Information"),
-				util: new HCatObj("Utility"),
-				mod: new HCatObj("Moderation"),
-				fun: new HCatObj("Fun"),
-				strp: new HCatObj("String processing & manipulation"),
-				config: new HCatObj("Configuration"),
-				maint: new HCatObj("Maintenance")
+				info: new HCatObj('Help & Information'),
+				util: new HCatObj('Utility'),
+				mod: new HCatObj('Moderation'),
+				fun: new HCatObj('Fun'),
+				strp: new HCatObj('String processing & manipulation'),
+				config: new HCatObj('Configuration'),
+				maint: new HCatObj('Maintenance')
 			}
 			client.commands.map((a, b) => { if (a.cat) helpObj[a.cat].commands.push(b) })
 			let x = 0
 			for (let i of Object.keys(helpObj)) {
-				client.helpFields[x] = { name: helpObj[i].name, value: "" }
+				client.helpFields[x] = { name: helpObj[i].name, value: '' }
 				for (let ii = 0; ii < helpObj[i].commands.length; ii++) {
-					client.helpFields[x].value += "`" + helpObj[i].commands[ii] + "`"
-					if (ii !== helpObj[i].commands.length - 1) client.helpFields[x].value += ", "
+					client.helpFields[x].value += '`' + helpObj[i].commands[ii] + '`'
+					if (ii !== helpObj[i].commands.length - 1) client.helpFields[x].value += ', '
 				}
-				if (client.helpFields[x].value !== "") x++
+				if (client.helpFields[x].value !== '') x++
 			}
 		}
 	}
 }
 
 client.commands = new Enmap()
-fs.readdir("./commands/", (err, files) => {
+fs.readdir('./commands/', (err, files) => {
 	if (err) return console.error(err)
 	files.forEach(file => {
-		if (!file.endsWith(".js")) return
+		if (!file.endsWith('.js')) return
 		let props = require(`./commands/${file}`)
-		let commandName = file.split(".")[0]
+		let commandName = file.split('.')[0]
 		client.commands.set(commandName, props)
 	})
 	client.q.buildHelp()
@@ -196,6 +196,6 @@ client.rnd = {
 client.on('error', err => console.log(err.message))
 client.gConfig.load()
 client.login(client.config.token)
-const DBL = require("dblapi.js")
+const DBL = require('dblapi.js')
 const dbl = new DBL(client.config.DBLtoken, client)
 dbl.on('posted', () => { console.log('Server count posted to DBL.') })

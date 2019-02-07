@@ -6,7 +6,7 @@ exports.run = (client, msg, args) => {
 	client.q.cmdd(msg, `\`${commandName}\` successfully unloaded!`)
 	client.q.buildHelp()
 }
-exports.cat = "maint"
+exports.cat = 'maint'
 exports.own = true
-exports.args = ["commmand name"]
-exports.desc = "Reloads the specified command."
+exports.args = ['commmand name']
+exports.desc = 'Reloads the specified command.'
