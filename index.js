@@ -87,19 +87,10 @@ client.q = {
 			return str.slice(0, str.length - 2)
 		} else return client.perms.PERMNAMES[client.perms.PERMS.indexOf(perm)]
 	},
-	getUser: function (msg, thing) {
-		let user = msg.mentions.users.first()
-		if (!user) user = client.users.find(user => user.username.toLowerCase().indexOf(thing.toLowerCase()) > -1)
-		if (!user) user = client.users.find(user => user.tag.toLowerCase().indexOf(thing.toLowerCase()) > -1)
-		if (!user) user = client.users.find(user => user.id == thing)
-		return user
-	},
-	getMember: function (msg, thing) {
-		let member = msg.mentions.members.first()
-		if (!member) member = msg.guild.members.find(member => member.nickname ? member.nickname.toLowerCase().indexOf(thing.toLowerCase()) > -1 : false)
-		if (!member) member = msg.guild.members.find(member => member.user.username.toLowerCase().indexOf(thing.toLowerCase()) > -1)
-		if (!member) member = msg.guild.members.find(member => member.user.tag.toLowerCase().indexOf(thing.toLowerCase()) > -1)
-		if (!member) member = msg.guild.members.find(member => member.user.id == thing)
+	getMember: function (guild, thing) {
+		let regexr = /<@(\d{18})>/.exec(thing)
+		if (regexr) return guild.members.get(regexr[1])
+		let member = guild.members.find(member => (member.nickname ? member.nickname.toLowerCase().indexOf(thing.toLowerCase()) > -1 : member.user.tag.toLowerCase().indexOf(thing.toLowerCase()) > -1) || member == guild.members.find(member => member.user.username.toLowerCase().indexOf(thing.toLowerCase()) > -1))
 		return member
 	},
 	argSq: function (argStr) {
