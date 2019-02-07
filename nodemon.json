@@ -1,8 +1,0 @@
-{
-  "verbose": true,
-  "ignore": ["data/*", "commands/*", "language/*", "events/*"],
-  "execMap": {
-    "rb": "ruby",
-    "pde": "processing --sketch={{pwd}} --run"
-  }
-}
