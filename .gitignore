@@ -63,3 +63,4 @@ config.json
 data/guilds
 data/notes
 .vscode/
+.eslintrc.json
