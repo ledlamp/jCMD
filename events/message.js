@@ -7,8 +7,6 @@ module.exports = (client, msg) => {
 	}
 	else if (msg.content.startsWith(`<@${client.user.id}> `)) {
 		args = msg.content.slice(`<@${client.user.id}> `.length).trim().split(/ +/g)
-		msg.mentions.users.delete(msg.mentions.users.first().id)
-		msg.mentions.members.delete(msg.mentions.members.first().id)
 	}
 	else if (msg.content.startsWith(client.q.getPre(msg))) args = msg.content.slice(client.q.getPre(msg).length).trim().split(/ +/g)
 	else return
