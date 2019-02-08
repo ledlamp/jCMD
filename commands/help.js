@@ -51,4 +51,5 @@ exports.run = async function (client, msg, cmd) {
 }
 exports.cat = 'info'
 exports.cd = 3000
-exports.desc = 'Shows available commands or information about mentioned command.\nSomehow, this is one of the most complex commands ever written for this bot. Part of it even lies in the bot\'s main code file.'
+exports.desc = `Shows available commands or information about mentioned command.
+Somehow, this is one of the most complex commands ever written for this bot. Part of it even lies in the bot's main code file.`

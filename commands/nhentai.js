@@ -100,5 +100,6 @@ exports.run = async function (client, msg, p) {
 
 exports.args = ['doujinshi id']
 exports.cat = 'fun'
-exports.desc = 'Infinite doujinshi analysis fun! Batteries and FBI not included.\nThis command is somewhat the product of reverse engineering u/Loli-Tag-Bot.'
+exports.desc = `Infinite doujinshi analysis fun! Batteries and FBI not included.
+This command is somewhat the product of reverse engineering u/Loli-Tag-Bot.`
 exports.nsfw = true

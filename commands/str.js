@@ -82,4 +82,18 @@ exports.run = async function(client, msg, p) {
 exports.cat = 'strp'
 exports.cd = 6000
 exports.args = ['text | methods(number']
-exports.desc = 'Iterative string processing command. Separate text and methods using the pipe character | between spaces. Methods:\n*aest(number* : like the `aest const` command.\n*clap* : Adds a clap between each word.\n*rev* : Reverse string.\n*upper*,*lower* : Cases.\n*ita* : Italic.\n*bold* : Bold.\n*code* : Wraps the string around a pair of backticks.\n*drag(number* : Repeats each character for a number of times.\n*regind* : Turns any character belonging to the modern English alphabet into a regional indicator emoji containing the same letter.\n*circle* : Same as `regind` but converts letters to circled letters.\n*mock* : Random capitalisation engine.\n\nAn example: Doing `str bottom text | aest(2 upper code ita bold`\n❯ ***​`B  O  T  T  O  M     T  E  X  T`***​'
+exports.desc = `Iterative string processing command. Separate text and methods using the pipe character | between spaces. Methods:
+*aest(number* : like the \`aest const\` command.
+*clap* : Adds a clap between each word.
+*rev* : Reverse string.
+*upper*,*lower* : Cases.
+*ita* : Italic.
+*bold* : Bold.
+*code* : Wraps the string around a pair of backticks.
+*drag(number* : Repeats each character for a number of times.
+*regind* : Turns any character belonging to the modern English alphabet into a regional indicator emoji containing the same letter.
+*circle* : Same as \`regind\` but converts letters to circled letters.
+*mock* : Random capitalisation engine.
+
+An example: Doing \`str bottom text | aest(2 upper code ita bold\`
+❯ ***\`B  O  T  T  O  M     T  E  X  T\`***`
