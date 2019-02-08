@@ -87,7 +87,19 @@ client.q = {
 			return str.slice(0, str.length - 2)
 		} else return client.perms.PERMNAMES[client.perms.PERMS.indexOf(perm)]
 	},
-	getMember: function (guild, thing) {
+	getMember: function (msg, thing) {
+		let guild = msg.guild
+		if (!guild) {
+			guild = {
+				members: new Discord.Collection()
+			}
+			guild.members.set(client.user.id, {
+				user: client.user
+			})
+			guild.members.set(msg.author.id, {
+				user: msg.author
+			})
+		}
 		let regexr = /<@(\d{18})>/.exec(thing)
 		if (regexr) return guild.members.get(regexr[1])
 		let member = guild.members.find(member => (member.nickname ? member.nickname.toLowerCase().indexOf(thing.toLowerCase()) > -1 : member.user.tag.toLowerCase().indexOf(thing.toLowerCase()) > -1) || member == guild.members.find(member => member.user.username.toLowerCase().indexOf(thing.toLowerCase()) > -1))
