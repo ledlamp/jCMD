@@ -1,5 +1,5 @@
 exports.run = async function(client, msg, p) {
-	let member = client.q.getMember(msg, p[0])
+	let member = client.q.getMember(msg, p.join(' '))
 	if (member == null) client.q.cmdthr(msg, 'User not found. Check your spelling/mention/included ID and try again.')
 	else {
 		let user = member.user
