@@ -64,3 +64,4 @@ data/guilds
 data/notes
 .vscode/
 .eslintrc.json
+package-lock.json
