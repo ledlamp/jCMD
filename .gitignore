@@ -60,8 +60,7 @@ typings/
 # next.js build output
 .next
 config.json
-data/guilds
-data/notes
+data/
 .vscode/
 .eslintrc.json
 package-lock.json
