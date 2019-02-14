@@ -1,6 +1,5 @@
-const Interpreter = require('js-interpreter')
 function limRun(code, finishF) {
-	let myInterpreter = new Interpreter(code)
+	let myInterpreter = new client.lib.js_interpreter(code)
 	let halt = false, memF = false
 	for (let i = 0; i < 501; i++) {
 		if (i > 500) {

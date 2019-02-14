@@ -1,5 +1,3 @@
-const fetch = require('node-fetch')
-
 function extractTags(body) { return body.replace(/(\n+( |\t)*)/g, '').match(/<div class="tag-container field-name ">Tags:(.*?)<\/div>/)[1].replace(/\((\d|,)*?\)/g, '').replace(/<.*?>/g, ';').split(/ *;+/).slice(1, -1) }
 function extractLangs(body) { return body.replace(/(\n+( |\t)*)/g, '').match(/<div class="tag-container field-name ">Languages:(.*?)<\/div>/)[1].replace(/\((\d|,)*?\)/g, '').replace(/<.*?>/g, ';').split(/ *;+/).slice(1, -1) }
 function extractTitle(body) { return body.match(/<meta itemprop="name" content="(.+)" \/>/)[1] }
@@ -58,7 +56,7 @@ exports.run = async function (client, msg, p) {
 	let code = p[0]
 	if (!/\b\d+\b/.test(code)) return client.q.cmdthr(msg, 'You need to provide a number.')
 	msg.channel.startTyping()
-	fetch('https://nhentai.net/g/' + code).then(res => res.text()).then(body => {
+	client.lib.fetch('https://nhentai.net/g/' + code).then(res => res.text()).then(body => {
 		msg.channel.stopTyping()
 		if (body.indexOf('<title>404 - Not Found') !== -1) return client.q.cmdthr(msg, 'Doujinshi not found. Check whether you have given the correct name.')
 		let title = extractTitle(body), tags = extractTags(body), langs = extractLangs(body)
