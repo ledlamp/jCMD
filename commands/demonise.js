@@ -22,7 +22,7 @@ exports.run = async (client, msg) => {
 					this.data[idx + 1] = Math.floor(Math.pow(this.data[idx] / 255, 10) * 25.5) * 10
 					this.data[idx + 2] = Math.floor(this.data[idx + 1] * 0.87)
 				}
-				client.q.cmdd(msg, 'Done:', new client.Discord.Attachment(this.pack(), 'demonisedOutput.png'))
+				client.q.cmdd(msg, 'Done:', new client.lib.Discord.Attachment(this.pack(), 'demonisedOutput.png'))
 			})
 		)
 }
