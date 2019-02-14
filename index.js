@@ -11,7 +11,7 @@ client.lib = {
 	Discord: Discord,
 	js_interpreter: require('js-interpreter'),
 	fetch: require('node-fetch'),
-	PNG: require('pngjs'),
+	PNG: require('pngjs').PNG,
 	Enmap: Enmap,
 	fs: fs
 }
