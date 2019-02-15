@@ -1,3 +1,4 @@
+const fetch = require('node-fetch'), PNG = require('pngjs').PNG, Discord = require('discord.js')
 exports.run = async (client, msg) => {
 	let image = msg.attachments.first()
 	if (!image || !image.width) {
@@ -5,16 +6,15 @@ exports.run = async (client, msg) => {
 		lastMsgs.map(m => {
 			if (found) return
 			let attch = m.attachments.first()
-			if (attch && attch.width) {
+			if (attch && attch.width && attch.url.endsWith('.png')) {
 				found = true
 				image = attch
 			}
 		})
 	}
-	if (!image) return client.q.cmdthr(msg, 'No images found in the last 10 messages here.')
-	if (!image.url.endsWith('.png')) return client.q.cmdthr(msg, 'Image is not in PNG format. Please try again with a PNG file or use a converter.\nIf you do not want to use PNG, don\'t give up just yet. Support for JPG files is coming soon!')
-	client.lib.fetch(image.url)
-		.then(res => res.body.pipe(new client.lib.PNG({ filterType: 4 }))
+	if (!image) return client.q.cmdthr(msg, 'No PNG images found in the last 10 messages here.')
+	fetch(image.url)
+		.then(res => res.body.pipe(new PNG({ filterType: 4 }))
 			.on('parsed', function () {
 				for (let y = 0; y < this.height; y++) for (let x = 0; x < this.width; x++) {
 					let idx = (this.width * y + x) << 2, foof = Math.round(Math.random()) + 0.1
@@ -22,10 +22,11 @@ exports.run = async (client, msg) => {
 					this.data[idx + 1] = Math.floor(Math.pow(this.data[idx] / 255, 10) * 25.5) * 10
 					this.data[idx + 2] = Math.floor(this.data[idx + 1] * 0.87)
 				}
-				client.q.cmdd(msg, 'Done:', new client.lib.Discord.Attachment(this.pack(), 'demonisedOutput.png'))
+				client.q.cmdd(msg, 'Done:', new Discord.Attachment(this.pack(), 'demonisedOutput.png'))
 			})
 		)
 }
 exports.cat = 'fun'
 exports.desc = `A deep-fry like image-manipulation command which makes everything red and creepy. This thing will absolutely bake everything you love to pure blood.
-This command will whether take the attached image in the message containing the command or the last image sent in the 10 latest sent messages.`
+This command only supports PNG files. It will whether take the attached image in the message containing the command or the last image sent in the 10 latest sent messages.
+Note that there are no plans to add support for other image formats, such as JPG or GIF. If you are a developer and know how to convert a JPG buffer to a PNG buffer, tell me using the \`suggest\` command.`

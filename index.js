@@ -7,15 +7,6 @@ client.config = require('./config.json')
 client.options.disableEveryone = true
 client.options.fetchAllMembers = true
 
-client.lib = {
-	Discord: Discord,
-	js_interpreter: require('js-interpreter'),
-	fetch: require('node-fetch'),
-	PNG: require('pngjs').PNG,
-	Enmap: Enmap,
-	fs: fs
-}
-
 var stdin = process.openStdin()
 stdin.on('data', function (input) {
 	let msg = input.toString()
