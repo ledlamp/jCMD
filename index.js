@@ -90,20 +90,14 @@ client.q = {
 	getMember: function (msg, thing) {
 		let guild = msg.guild
 		if (!guild) {
-			guild = {
-				members: new Discord.Collection()
-			}
-			guild.members.set(client.user.id, {
-				user: client.user
-			})
-			guild.members.set(msg.author.id, {
-				user: msg.author
-			})
+			guild = {members: new Discord.Collection()}
+			guild.members.set(client.user.id, {user: client.user})
+			guild.members.set(msg.author.id, {user: msg.author})
 		}
 		let regexr = /<@(\d{18})>/.exec(thing)
 		if (regexr) return guild.members.get(regexr[1])
-		let member = guild.members.find(member => (member.nickname ? member.nickname.toLowerCase().indexOf(thing.toLowerCase()) > -1 : member.user.tag.toLowerCase().indexOf(thing.toLowerCase()) > -1) || member == guild.members.find(member => member.user.username.toLowerCase().indexOf(thing.toLowerCase()) > -1))
-		return member
+		let h = thing.toLowerCase()
+		return guild.members.find(member => member.nickname && member.nickname.toLowerCase().startsWith(h) || member.user.tag.toLowerCase().startsWith(h))
 	},
 	argSq: function (argStr) {
 		let str = ''
