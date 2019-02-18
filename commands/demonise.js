@@ -22,11 +22,11 @@ exports.run = async (client, msg) => {
 					this.data[idx + 1] = Math.floor(Math.pow(this.data[idx] / 255, 10) * 25.5) * 10
 					this.data[idx + 2] = Math.floor(this.data[idx + 1] * 0.87)
 				}
-				client.q.cmdd(msg, 'Done:', new Discord.Attachment(this.pack(), 'demonisedOutput.png'))
+				client.q.cmdd(msg, 'Done. Here is what all of you sick people have been waiting for.', new Discord.Attachment(this.pack(), 'demonisedOutput.png'))
 			})
 		)
 }
 exports.cat = 'fun'
 exports.desc = `A deep-fry like image-manipulation command which makes everything red and creepy. This thing will absolutely bake everything you love to pure blood.
 This command only supports PNG files. It will whether take the attached image in the message containing the command or the last image sent in the 10 latest sent messages.
-Note that there are no plans to add support for other image formats, such as JPG or GIF. If you are a developer and know how to convert a JPG buffer to a PNG buffer, tell me using the \`suggest\` command.`
+Note that there are no plans to add support for other image formats, such as JPG or GIF.`
