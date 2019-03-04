@@ -216,12 +216,13 @@ fs.readdir('./events/', function (err, files) {
 // Persistent Enmaps for storing data of users / guilds / ect.
 client.data = {
 	writeGuild: function (key, data) {
-		for (let prop of Object.keys(data)) if (data[prop] !== 0 && !data[prop]) delete data[prop]
+		for (let prop of Object.keys(data)) if ((data[prop] !== 0 || data[prop] !== false) && !data[prop] || (Array.isArray(data[prop]) && data[prop].length === 0)) delete data[prop]
 		if (Object.keys(data).length === 0) this.guilds.delete(key)
 		else this.guilds.set(key, data)
+		console.log(data)
 	},
 	writeUser: function (key, data) {
-		for (let prop of Object.keys(data)) if (data[prop] !== 0 && !data[prop]) delete data[prop]
+		for (let prop of Object.keys(data)) if ((data[prop] !== 0 || data[prop] !== false) && !data[prop] || (Array.isArray(data[prop]) && data[prop].length === 0)) delete data[prop]
 		if (Object.keys(data).length === 0) this.users.delete(key)
 		else this.users.set(key, data)
 	},

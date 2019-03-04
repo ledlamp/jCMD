@@ -8,20 +8,21 @@ module.exports = {
 					let chn = client.util.getChannel(msg, ch)
 					if (chn) {
 						if (chn.type === 'text') {
-							if (cf.invScan.indexOf(chn.id) > -1) return
-							cf.invScan.push(chn.id)
-							addedChs.push('`#' + chn.name + '`')
+							if (cf.invScan.indexOf(chn.id) === -1) {
+								cf.invScan.push(chn.id)
+								addedChs.push('`#' + chn.name + '`')
+							}
 						}
 						if (chn.type === 'category') chn.children.map(chan => {
 							if (chan.type === 'text') {
-								if (cf.invScan.indexOf(chn.id) > -1) return
-								cf.invScan.push(chan.id)
-								addedChs.push('`#' + chan.name + '`')
+								if (cf.invScan.indexOf(chn.id) === -1) {
+									cf.invScan.push(chan.id)
+									addedChs.push('`#' + chan.name + '`')
+								}
 							}
 						})
 					}
 				}
-				if (cf.invScan.length < 1) delete cf.invScan
 				if (addedChs.length > 0) {
 					client.data.writeGuild(msg.guild.id, cf)
 					return {
@@ -37,27 +38,28 @@ module.exports = {
 		remove: {
 			run: async function (msg, args) {
 				let cf = client.data.guilds.get(msg.guild.id) || {}, addedChs = []
+				if (!cf.invScan) cf.invScan = []
 				for (let ch of args) {
 					let chn = client.util.getChannel(msg, ch)
-					if (!cf.invScan) cf.invScan = []
 					if (chn) {
 						if (chn.type === 'text') {
 							let ind = cf.invScan.indexOf(chn.id)
-							if (ind === -1) return
-							else cf.invScan.splice(ind, 1)
-							addedChs.push('`#' + chn.name + '`')
+							if (ind !== -1) {
+								cf.invScan.splice(ind, 1)
+								addedChs.push('`#' + chn.name + '`')
+							}
 						}
-						if (chn.type === 'category') chn.children.map(chan => {
+						else if (chn.type === 'category') chn.children.map(chan => {
 							if (chan.type === 'text') {
 								let ind = cf.invScan.indexOf(chan.id)
-								if (ind === -1) return
-								else cf.invScan.splice(ind, 1)
-								addedChs.push('`#' + chan.name + '`')
+								if (ind !== -1) {
+									cf.invScan.splice(ind, 1)
+									addedChs.push('`#' + chan.name + '`')
+								}
 							}
 						})
 					}
 				}
-				if (cf.invScan.length < 1) delete cf.invScan
 				if (addedChs.length > 0) {
 					client.data.writeGuild(msg.guild.id, cf)
 					return {
