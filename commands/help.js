@@ -33,7 +33,7 @@ function deepHelp(msg, pre, object, p, his) {
 		}
 		else {
 			let retv
-			if (Object.keys(obj.subCmd).indexOf(p[0]) !== -1) {
+			if (Object.keys(obj.subCmd).indexOf(p[0]) === -1) {
 				let fields = []
 				for (let key = 0; key <= Object.keys(obj.subCmd).length - 1; key++) {
 					let prop = Object.keys(obj.subCmd)[key]
