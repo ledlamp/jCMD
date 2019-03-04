@@ -1,91 +1,91 @@
 'use strict'
-const Discord = require('discord.js')
-const Enmap = require('enmap')
-const fs = require('fs')
-const client = new Discord.Client()
-client.config = require('./config.json')
-client.options.disableEveryone = true
-client.options.fetchAllMembers = true
+console.time('init')
+// Custom error class for throwing and catching errors caused by user input and other expected errors
+const UserInputError = global.UserInputError = class extends Error {}
+// Core Node.js modules
+const fs = global.fs = require('fs')
+const util = global.util = require('util')
+// npm modules
+const Discord = global.Discord = require('discord.js')
+const Enmap = global.Enmap = require('enmap')
+const fetch = global.fetch = require('node-fetch')
+// Initialise client, binding it to the global scope so it's accessible everywhere
+let client = global.client = new Discord.Client({
+	disableEveryone: true,
+	fetchAllMembers: true,
+	disabledEvents: ['TYPING_START']
+})
 
-var stdin = process.openStdin()
-stdin.on('data', function (input) {
-	let msg = input.toString()
+// Configurations
+client.config = require('./config.json')
+
+// Live code evaluation through command line
+process.openStdin().on('data', function (input) {
 	try {
-		console.log(require('util').inspect(eval(msg)))
+		console.log(require('util').inspect(eval(input.toString()), {colors: true}))
 	} catch (err) {
-		if (err) console.log(err)
+		console.error(err)
 	}
 })
+console.timeEnd('init')
 
-fs.readdir('./events/', (err, files) => {
-	if (err) return console.error(err)
-	files.forEach(file => {
-		const event = require(`./events/${file}`)
-		let eventName = file.split('.')[0]
-		client.on(eventName, event.bind(null, client))
-	})
-})
-
-client.perms = { PERMS: require('./language/perms.json').perms, PERMNAMES: require('./language/perms.json').names }
-
-client.gConfig = {
-	configs: new Enmap(),
-	class: class guildConfig {
-		constructor(name, prefix) {
-			this.name = name
-			this.prefix = prefix
+console.time('core')
+// Language & random message picking
+client.lang = {
+	perms: require('./language/perms.json').perms,
+	permnames: require('./language/perms.json').names,
+	presences: require('./language/plays.json').text,
+	pasta: require('./language/pasta.json').text,
+	
+	presenceHtr: [],
+	play: function() {
+		let pick, yet = true
+		while (yet) {
+			pick = Math.floor(Math.random() * this.presences.length)
+			if(!this.presences.includes(pick)) yet = false
 		}
+		while (this.presenceHtr.length > 30) this.presenceHtr.shift()
+		this.presenceHtr.push(pick)
+		client.user.setActivity(this.presences[pick])
 	},
-	load: function () {
-		let cf = fs.readdirSync('./data/guilds', { withFileTypes: false })
-		if (cf.length !== 0)
-			for (let sPos = 0; sPos < cf.length; sPos++) this.configs.set(cf[sPos].split('.json')[0], require(`./data/guilds/${cf[sPos]}`))
-	},
-	write: async function (msg, name, cusFunc) {
-		let check = true, gConfig = this.configs.has(msg.guild.id) ? this.configs.get(msg.guild.id) : new this.class(msg.guild.id)
-		cusFunc(msg, gConfig)
-		for (let oof of Object.keys(gConfig)) { if (gConfig[oof] == undefined || gConfig[oof] == '' || Object.keys(gConfig[oof]) == []) delete gConfig[oof] }
-		if (Object.keys(gConfig).length < 2) {
-			this.configs.delete(msg.guild.id)
-			return fs.unlink(`./data/guilds/${msg.guild.id}.json`, (err) => {
-				if (err) client.q.cmdthr(msg, 'This server doesn\'t even have a config file!')
-				else client.q.cmdd(msg, 'The server has no custom config so its config file is gone! Congrats!')
-			})
-		} else {
-			this.configs.set(msg.guild.id, gConfig)
-			fs.writeFile(`./data/guilds/${msg.guild.id}.json`, JSON.stringify(gConfig), (err) => { if (err) { check = false; throw err } })
+	pastaHtr: [],
+	paste: function() {
+		let pick, yet = true
+		while (yet) {
+			pick = Math.floor(Math.random() * this.pasta.length)
+			if(!this.pastaHtr.includes(pick)) yet = false
 		}
-		if (check) return client.q.cmdd(msg, `${name} successfully saved!`)
+		while (this.pastaHtr.length > 30) this.pastaHtr.shift()
+		this.pastaHtr.push(pick)
+		return this.pasta[pick]
 	}
 }
 
-client.q = {
+// Utilities and shortcuts
+client.util = {
 	getPre: function (msg) {
-		if (msg.channel.type == 'dm') return ''
-		let cfg = client.gConfig.configs.get(msg.guild.id)
-		return (cfg && cfg.prefix) ? cfg.prefix : client.config.prefix
+		if (msg.channel.type === 'dm') return ''
+		let gcf = client.data.guilds.get(msg.guild.id)
+		if (gcf && gcf.prefix) return gcf.prefix
+		return client.config.prefix
 	},
-	cmdthr: async function (msg, reply, opt) {
-		msg.react('❌')
-		return msg.channel.send(reply, opt)
+	throw: function (msg, reply, opt) {
+		msg.react('❌').catch(()=>undefined)
+		return msg.channel.send(reply, opt).catch(()=>undefined)
 	},
-	cmdw: async function (msg, reply, opt) {
-		msg.react('⚠')
-		return msg.channel.send(reply, opt)
-	},
-	cmdd: async function (msg, reply, opt) {
-		msg.react('✅')
-		return msg.channel.send(reply, opt)
+	done: function (msg, reply, opt) {
+		msg.react('✅').catch(()=>undefined)
+		return msg.channel.send(reply, opt).catch(()=>undefined)
 	},
 	mkEmbed: function (title, desc, fields, image) {
-		return { embed: { color: client.config.embedColor, title: title, description: desc, fields: fields, image: image ? { url: image } : undefined } }
+		return { color: client.config.embedColor, title: title, description: desc, fields: fields, image: image ? { url: image } : undefined }
 	},
 	permName: function (perm) {
-		if (typeof perm == 'object') {
-			let str = ''
-			for (let res of perm) str += client.perms.PERMNAMES[client.perms.PERMS.indexOf(res)] + ', '
-			return str.slice(0, str.length - 2)
-		} else return client.perms.PERMNAMES[client.perms.PERMS.indexOf(perm)]
+		if (Array.isArray(perm)) {
+			return perm.map(function (perm) {
+				return client.lang.permnames[client.lang.perms.indexOf(perm)]
+			}).join(', ')
+		} else return client.lang.permnames[client.lang.perms.indexOf(perm)]
 	},
 	getMember: function (msg, thing) {
 		let guild = msg.guild
@@ -94,10 +94,16 @@ client.q = {
 			guild.members.set(client.user.id, {user: client.user})
 			guild.members.set(msg.author.id, {user: msg.author})
 		}
-		let regexr = /<@(\d{18})>/.exec(thing)
+		let regexr = /^<@!?(\d{17,18})>$/.exec(thing) || /^(\d{17,18})$/.exec(thing)
 		if (regexr) return guild.members.get(regexr[1])
 		let h = thing.toLowerCase()
-		return guild.members.find(member => member.nickname && member.nickname.toLowerCase().startsWith(h) || member.user.tag.toLowerCase().startsWith(h))
+		return guild.members.find(function (member) {
+			return member.nickname && member.nickname.toLowerCase().startsWith(h) || member.user.tag.toLowerCase().startsWith(h)
+		})
+	},
+	getChannel: function (msg, thing) {
+		let regexr = /^<#(\d{17,18})>$/.exec(thing) || /^(\d{17,18})$/.exec(thing)
+		return regexr ? msg.guild.channels.get(regexr[1]) : null
 	},
 	argSq: function (argStr) {
 		let str = ''
@@ -110,89 +116,127 @@ client.q = {
 		if (typeof (text) === 'string') return text.replace(/`/g, '`' + String.fromCharCode(8203)).replace(/@/g, '@' + String.fromCharCode(8203))
 		else return text
 	},
-	buildHelp: function () {
-		client.helpFields = []
-		{
-			class HCatObj {
-				constructor(name, commands) {
-					this.name = name
-					this.commands = commands || []
-				}
-			}
-			let helpObj = {
-				info: new HCatObj('Help & Information'),
-				util: new HCatObj('Utility'),
-				mod: new HCatObj('Moderation'),
-				fun: new HCatObj('Fun'),
-				strp: new HCatObj('String processing & manipulation'),
-				config: new HCatObj('Configuration'),
-				maint: new HCatObj('Maintenance')
-			}
-			client.commands.map((a, b) => { if (a.cat) helpObj[a.cat].commands.push(b) })
-			let x = 0
-			for (let i of Object.keys(helpObj)) {
-				client.helpFields[x] = { name: helpObj[i].name, value: '' }
-				for (let ii = 0; ii < helpObj[i].commands.length; ii++) {
-					client.helpFields[x].value += '`' + helpObj[i].commands[ii] + '`'
-					if (ii !== helpObj[i].commands.length - 1) client.helpFields[x].value += ', '
-				}
-				if (client.helpFields[x].value !== '') x++
-			}
+	getInv: function (str1) {
+		let reg = /(?:discordapp\.com\/invite|discord.gg(?:\/invite)?)\/([a-zA-Z0-9\-]+)/g, array1, array2 = []
+		while ((array1 = reg.exec(str1)) !== null) array2.push(array1[1])
+		return array2
+	},
+	checkInv: async function (code) {
+		if (code.length > 10) return false
+		let resp
+		try {
+			resp = await fetch('https://discordapp.com/api/invite/' + code)
+			console.log(resp.status)
+			if (resp.status === 200) return true
+			else return false
+		} catch {
+			return false
 		}
 	}
 }
 
+// Helpers for the `help` command
+client.help = {
+	cats: {
+		info: 'Help & Information',
+		util: 'Utility',
+		mod: 'Moderation',
+		fun: 'Fun',
+		strp: 'String processing & manipulation',
+		config: 'Configuration',
+		maint: 'Maintenance'
+	},
+	fields: [],
+	build: function () {
+		this.fields = []
+		let helpObj = {}
+		for (let cat of Object.keys(this.cats)) {
+			helpObj[cat] = {
+				name: this.cats[cat],
+				commands: []
+			}
+		}
+		client.commands.map(function (a, b) { if (a.cat) helpObj[a.cat].commands.push(b) })
+		let x = 0
+		for (let i of Object.keys(helpObj)) {
+			this.fields[x] = { name: helpObj[i].name, value: '' }
+			for (let ii = 0; ii < helpObj[i].commands.length; ii++) {
+				this.fields[x].value += '`' + helpObj[i].commands[ii] + '`'
+				if (ii !== helpObj[i].commands.length - 1) this.fields[x].value += ', '
+			}
+			if (this.fields[x].value !== '') x++
+		}
+		if (this.fields[x] && this.fields[x].value == '') this.fields.pop()
+	}
+}
+
+// Command cooldown engine
+client.cd = {
+	users: new Set(),
+	addCooldown: function (id, interval = 2000) {
+		this.users.add(id)
+		setTimeout(function () {
+			client.cd.users.delete(id)
+		}, interval)
+	},
+	has: function (thing) {
+		return this.users.has(thing)
+	}
+}
+console.timeEnd('core')
+
+console.time('commands')
+// Load commands
 client.commands = new Enmap()
-fs.readdir('./commands/', (err, files) => {
+fs.readdir('./commands/', function (err, files) {
 	if (err) return console.error(err)
-	files.forEach(file => {
+	files.map(function (file) {
 		if (!file.endsWith('.js')) return
 		let props = require(`./commands/${file}`)
 		let commandName = file.split('.')[0]
 		client.commands.set(commandName, props)
 	})
-	client.q.buildHelp()
+	client.help.build()
+	console.timeEnd('commands')
 })
 
-client.cd = {
-	userOnCD: [],
-	addCooldown: function (id, interval = 2000) {
-		this.userOnCD.unshift(id)
-		setTimeout(function () {
-			let index = client.cd.userOnCD.indexOf(id)
-			if (index > -1) client.cd.userOnCD.splice(index, 1)
-		}, interval)
-	}
-}
+// Load events
+console.time('events')
+fs.readdir('./events/', function (err, files) {
+	if (err) return console.error(err)
+	files.map(function (file) {
+		if (!file.endsWith('.js') || file === 'message.js') return
+		const event = require(`./events/${file}`)
+		let eventName = file.split('.')[0]
+		client.on(eventName, event)
+	})
+	console.timeEnd('events')
+})
 
-client.rnd = {
-	plays: require('./language/playArray.json'), playHtr: [],
-	play: async function () {
-		let playPick, playFlag = true
-		while (playFlag) {
-			playPick = Math.round(Math.random() * (this.plays.text.length - 1))
-			if (!this.playHtr.includes(playPick)) playFlag = false
-		}
-		while (this.playHtr.length > 20) this.playHtr.shift()
-		this.playHtr.push(playPick)
-		client.user.setActivity(this.plays.text[playPick])
+// Persistent Enmaps for storing data of users / guilds / ect.
+client.data = {
+	writeGuild: function (key, data) {
+		for (let prop of Object.keys(data)) if (data[prop] !== 0 && !data[prop]) delete data[prop]
+		if (Object.keys(data).length === 0) this.guilds.delete(key)
+		else this.guilds.set(key, data)
 	},
-	insults: require('./language/insultArray.json'), insultHtr: [],
-	insultGet: function () {
-		let inPick, inFlag = true
-		while (inFlag) {
-			inPick = Math.round(Math.random() * (this.insults.text.length - 1))
-			if (!this.insultHtr.includes(inPick)) inFlag = false
-		}
-		while (this.insultHtr.length > 20) this.insultHtr.shift()
-		this.insultHtr.push(inPick)
-		return this.insults.text[inPick]
-	}
+	writeUser: function (key, data) {
+		for (let prop of Object.keys(data)) if (data[prop] !== 0 && !data[prop]) delete data[prop]
+		if (Object.keys(data).length === 0) this.users.delete(key)
+		else this.users.set(key, data)
+	},
+	guilds: new Enmap({
+		name: 'guilddata',
+		dataDir: './data/guilds'
+	}),
+	users: new Enmap({
+		name: 'userdata',
+		dataDir: './data/users'
+	})
 }
 
-client.on('error', err => console.log(err.message))
-client.gConfig.load()
+// Handle Websocket errors properly
+client.on('error', function (err) {console.log(err.message)})
+console.time('login')
+// Login
 client.login(client.config.token)
-const DBL = require('dblapi.js')
-const dbl = new DBL(client.config.DBLtoken, client)
-dbl.on('posted', () => { console.log('Server count posted to DBL.') })

@@ -1,38 +1,77 @@
-module.exports = (client, msg) => {
+let men = `<@${client.user.id}> `, menNick = `<@!${client.user.id}> `
+module.exports = async function (msg) {
 	if (msg.author.bot) return
-	let command, args, isDM = false
+	let command, args, isDM = false, ment = (msg.channel.type !== 'dm' && msg.guild.me.nickname) ? menNick : men
+	let cfg = client.data.guilds.get(msg.guild.id) || {}, prefix = cfg.prefix || client.config.prefix
 	if (msg.channel.type == 'dm') {
 		isDM = true
-		args = msg.content.split(' ')
+		args = msg.content.split(/ +/g)
 	}
-	else if (msg.content.startsWith(`<@${client.user.id}> `)) {
-		args = msg.content.slice(`<@${client.user.id}> `.length).trim().split(/ +/g)
+	else if (msg.content.startsWith(ment)) {
+		args = msg.content.slice(ment.length).trim().split(/ +/g)
 	}
-	else if (msg.content.startsWith(client.q.getPre(msg))) args = msg.content.slice(client.q.getPre(msg).length).trim().split(/ +/g)
-	else return
+	else if (msg.content.startsWith(prefix)) {
+		args = msg.content.slice(prefix.length).trim().split(/ +/g)
+	}
+	else {
+		if (cfg.invScan && cfg.invScan.includes(msg.channel.id)) {
+			let codes = client.util.getInv(msg.content), del = false
+			for (let code of codes) {
+				let bool = await client.util.checkInv(code)
+				if (!bool) {
+					del = true
+					break
+				}
+			}
+			if (del && msg.deletable) msg.delete().catch(()=>undefined)
+		}
+		return
+	}
 	command = args.shift()
 	const cmdst = client.commands.get(command)
 	if (!cmdst) return
-	if (client.cd.userOnCD.indexOf(msg.author.id) !== -1) return msg.channel.send('Slow down, take it easy.')
+	if (client.cd.has(msg.author.id)) return msg.channel.send('Slow down, take it easy.').catch(()=>undefined)
 	function deepCmd(obj, p, his) {
-		if (obj.reqGuild && isDM) return client.q.cmdthr(msg, 'You can only do that command in a server text channel.')
-		if (obj.own && (msg.author.id !== client.config.ownerID)) return client.q.cmdthr(msg, client.rnd.insultGet())
-		if (obj.nsfw && !msg.channel.nsfw) return client.q.cmdthr(msg, 'You can only do that command in a NSFW channel.')
+		if (obj.own && (msg.author.id !== client.config.ownerID)) return client.util.throw(msg, client.rnd.insultGet())
+		if (obj.reqGuild && isDM) return client.util.throw(msg, 'You can only do that command in a server text channel.')
+		if (obj.nsfw && !msg.channel.nsfw) return client.util.throw(msg, 'You can only do that command in a NSFW channel.')
 		if (obj.run) {
 			if (obj.args && (p.length < obj.args.length)) {
-				if (!obj.noParse) return client.q.cmdthr(msg, 'Not enough arguments. Arguments needed: ' + client.q.argSq(obj.args))
-				else return obj.noParse(client, msg)
+				if (!obj.noParse) return client.util.throw(msg, 'Not enough arguments. Arguments needed: ' + client.util.argSq(obj.args))
+				else return obj.noParse(msg)
+				.then (function (resp) {
+					if (resp && (resp.content || resp.options))
+					client.util.done(msg, resp.content, resp.options)
+				})
+				.catch (function (err) {
+					if (err instanceof UserInputError) client.util.throw(msg, err.toString())
+					else {
+						client.users.get(client.config.ownerID).send(`UNEXPECTED ERROR OCCURED\nMESSAGE CONTENT: \`\`\`${msg.content}\`\`\`\nCOMMAND EXECUTED: \`${his}\`\nERROR:\`\`\`${util.inspect(err)}\`\`\``)
+						client.util.throw(msg, 'Ouch! jCMD has encountered an unexpected error, and it has been automatically reported to the bot developer. Thank you for your cooperation!')
+					}
+				})
 			}
-			if (obj.perm && !msg.channel.permissionsFor(msg.member).has(obj.perm)) return client.q.cmdthr(msg, 'Insufficient permissions. You are missing `' + client.q.permName(obj.perm) + '`.')
-			if (obj.botPerm && !msg.channel.permissionsFor(msg.guild.member(client.user)).has(obj.perm)) return client.q.cmdthr(msg, 'Insufficient permissions for the bot. The bot is missing `' + client.q.permName(obj.botPerm) + '`.')
-			try {obj.run(client, msg, args)} catch (err) {console.error('COMMAND >>>', msg.content); throw err}
+			if (obj.perm && !msg.channel.permissionsFor(msg.member).has(obj.perm)) return client.util.throw(msg, 'Insufficient permissions. You are missing at least one of: `' + client.util.permName(obj.perm) + '`.')
+			if (obj.botPerm && !msg.channel.permissionsFor(msg.guild.member(client.user)).has(obj.perm)) return client.util.throw(msg, 'Insufficient permissions for the bot. The bot is missing at least one of: `' + client.util.permName(obj.botPerm) + '`.')
+			obj.run(msg, args)
+			.then (function (resp) {
+				if (resp && (resp.content || resp.options))
+				client.util.done(msg, resp.content, resp.options)
+			})
+			.catch (function (err) {
+				if (err instanceof UserInputError) client.util.throw(msg, err.toString())
+				else {
+					client.users.get(client.config.ownerID).send(`UNEXPECTED ERROR OCCURED\nMESSAGE CONTENT: \`\`\`${msg.content}\`\`\`\nCOMMAND EXECUTED: \`${his}\`\nERROR:\`\`\`${util.inspect(err)}\`\`\``)
+					client.util.throw(msg, 'Ouch! jCMD has encountered an unexpected error, and it has been automatically reported to the bot developer. Thank you for your cooperation!')
+				}
+			})
 			if(msg.author.id !== client.config.ownerID) client.cd.addCooldown(msg.author.id, obj.cd)
 		}
 		else {
-			if (!p[0]) return client.q.cmdthr(msg, `You need to define a subcommand. Do \`${client.q.getPre(msg)}help ${his}\` for more information.`)
+			if (!p[0]) return client.util.throw(msg, `You need to define a subcommand. Do \`${prefix}help ${his}\` for more information.`)
 			let subc = p.shift()
-			let clip = subc.length > 15 ? subc.slice(0, 15) + '...' : subc
-			if (Object.keys(obj.subCmd).indexOf(subc) == -1) return client.q.cmdthr(msg, `Invalid subcommand \`${clip}\`. Do \`${client.q.getPre(msg)}help ${his}\` for more information.`)
+			let clip = subc.length > 15 ? subc.slice(0, 15) + '...' : subc // Prevent user from entering long subcommands and making the bot spam
+			if (Object.keys(obj.subCmd).indexOf(subc) == -1) return client.util.throw(msg, `Invalid subcommand \`${clip}\`. Do \`${prefix}help ${his}\` for more information.`)
 			deepCmd(obj.subCmd[subc], p, his + ' ' + subc)
 		}
 	}

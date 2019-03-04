@@ -1,23 +1,28 @@
-exports.run = async function(client, msg, p) {
-	let reset = (/reset/i).test(p[0])
-	if (!reset) {
-		let pre = client.q.clean(p[0])
-		if (pre == '' || pre !== p[0]) return client.q.cmdthr(msg, 'Your prefix contains some invalid characters, like a space character, a ` or @.')
-		if (pre.length > 3) return client.q.cmdthr(msg, 'Prefix is too long! (> 3 characters)')
-		if (pre == client.config.prefix) reset = true
-	}
-	client.gConfig.write(msg, 'Prefix', function(msg, gConfig) {
-		if(reset) delete gConfig.prefix
-		else gConfig.prefix = p[0].trim()
-	})
+module.exports = {
+	run: async function (msg, args) {
+		if (args[0] === 'reset' || args[0] === client.config.prefix) {
+			let cf = client.data.guilds.get(msg.guild.id) || {}
+			delete cf.prefix
+			client.data.writeGuild(msg.guild.id, cf)
+			return {
+				content: `Prefix reset.`
+			}
+		}
+		if (args[0].length > 3) throw new UserInputError('Cannot set: prefix is longer than 3 characters.')
+		if (client.util.clean(args[0]) !== args[0]) throw new UserInputError('Cannot set: prefix contains invalid characters, like @ or `.')
+		let curpr = client.util.getPre(msg)
+		if (args[0] === curpr) throw new UserInputError('Cannot set: prefix is the same as current prefix.')
+		let cf = client.data.guilds.get(msg.guild.id) || {}
+		cf.prefix = args[0]
+		client.data.writeGuild(msg.guild.id, cf)
+		return {
+			content: `Prefix set to \`${args[0]}\`.`
+		}
+	},
+	noParse: async function(msg) {
+		return {
+			content: `The prefix for this server is \`${client.util.getPre(msg)}\`.`
+		}
+	},
+	perm: 'MANAGE_GUILD', args: ['prefix']
 }
-exports.noParse = async function(client, msg) {
-	msg.channel.send(`The prefix for this server is \`${client.q.getPre(msg)}\`.`).catch(()=>{})
-}
-exports.noParseDesc = 'Shows the current prefix for this server.'
-exports.cat = 'config'
-exports.reqGuild = true
-exports.perm = 'MANAGE_GUILD'
-exports.args = ['prefix']
-exports.cd = 5000
-exports.desc = 'Change the command prefix for this server. Parse `reset` to clear.'

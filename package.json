@@ -4,14 +4,12 @@
   "description": "A Discord bot specialising in string processing and manipulation made by reVerb.",
   "main": "index.js",
   "dependencies": {
+    "better-sqlite-pool": "^0.2.0",
     "bufferutil": "^4.0.1",
-    "dblapi.js": "^2.3.0",
     "discord.js": "^11.4.2",
     "enmap": "^4.7.1",
-    "js-interpreter": "^1.4.6",
-    "node-fetch": "^2.3.0",
-    "pngjs": "^3.3.3",
-    "ws": "^6.1.3"
+    "erlpack": "github:hammerandchisel/erlpack",
+    "node-fetch": "^2.3.0"
   },
   "devDependencies": {},
   "scripts": {

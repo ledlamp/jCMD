@@ -1,16 +1,9 @@
 {
-  "ownerID": "123456789012345678",
-  "token": "token",
-  "DBLtoken": "dbltoken",
-  "suggestChID": "channelID",
-  "prefix": "!",
-  "embedColor": 41193,
-  "invOpt": {
-    "maxAge": 0,
-    "maxUses": 0
-  },
-  "noteMaxSec": 5,
-  "noteMaxChar": 200,
-  "about": "**jCMD** - a Discord bot specialising in string processing and manipulation, written by **reVerb#0001**. Based on the Discord.js library: https://discord.js.org/.",
-  "invite": "https://discordbots.org/bot/524087405800718353"
+	"ownerID": "owner_user_id",
+	"token": "your_token_goes_here",
+	"suggestChID": "suggestion_channel_id",
+	"prefix": "!",
+	"embedColor": 41193,
+	"about": "**jCMD** - a Discord bot specialising in string and image manipulation, written by **reVerb#0001**.",
+	"invite": "https://discordbots.org/bot/524087405800718353"
 }

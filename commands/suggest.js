@@ -1,9 +1,13 @@
-exports.run = async function(client, msg, p) {
-	client.channels.get(client.config.suggestChID).send(client.q.clean(p.join(' ')))
-		.catch(error => client.q.cmdthr(msg, `Could not send suggestion. Yell this at reVerb#0001 to fix this: ${error.message}`))
-	client.q.cmdd(msg, 'Suggestion sent!')
+module.exports = {
+	run: async function (msg, args) {
+		let ch = client.channels.get(client.config.suggestChID)
+		if (ch) ch.send(`\`\`\`${args.join(' ')}\`\`\`\nSuggested by **${msg.author.tag}** in **${msg.guild.name}**.`)
+		return {
+			content: 'Suggestion sent successfully.'
+		}
+	},
+	cat: 'info',
+	cd: 5000,
+	args: ['suggestions'],
+	desc: 'Send suggestions to the bot developer using this command.'
 }
-exports.cat = 'info'
-exports.args = ['suggestion']
-exports.cd = 10000
-exports.desc = 'Sends suggestions to the support server, so reVerb can have a fun time torturing himself trying to add it.'
