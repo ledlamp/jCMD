@@ -12,8 +12,8 @@ const fetch = global.fetch = require('node-fetch')
 // Initialise client, binding it to the global scope so it's accessible everywhere
 let client = global.client = new Discord.Client({
 	disableEveryone: true,
-	fetchAllMembers: true,
-	disabledEvents: ['TYPING_START']
+	disabledEvents: ['TYPING_START'],
+	messageCacheMaxSize: 20
 })
 
 // Configurations
@@ -117,21 +117,13 @@ client.util = {
 		else return text
 	},
 	getInv: function (str1) {
-		let reg = /(?:discordapp\.com\/invite|discord.gg(?:\/invite)?)\/([a-zA-Z0-9\-]+)/g, array1, array2 = []
+		let reg = /(?:discordapp\.com\/invite|discord.gg)\/([a-zA-Z0-9\-]+)/g, array1, array2 = []
 		while ((array1 = reg.exec(str1)) !== null) array2.push(array1[1])
 		return array2
 	},
 	checkInv: async function (code) {
 		if (code.length > 10) return false
-		let resp
-		try {
-			resp = await fetch('https://discordapp.com/api/invite/' + code)
-			console.log(resp.status)
-			if (resp.status === 200) return true
-			else return false
-		} catch {
-			return false
-		}
+		return client.fetchInvite(code).then(()=>true).catch(()=>false)
 	}
 }
 
@@ -219,7 +211,6 @@ client.data = {
 		for (let prop of Object.keys(data)) if ((data[prop] !== 0 || data[prop] !== false) && !data[prop] || (Array.isArray(data[prop]) && data[prop].length === 0)) delete data[prop]
 		if (Object.keys(data).length === 0) this.guilds.delete(key)
 		else this.guilds.set(key, data)
-		console.log(data)
 	},
 	writeUser: function (key, data) {
 		for (let prop of Object.keys(data)) if ((data[prop] !== 0 || data[prop] !== false) && !data[prop] || (Array.isArray(data[prop]) && data[prop].length === 0)) delete data[prop]
