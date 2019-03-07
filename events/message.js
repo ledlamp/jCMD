@@ -15,15 +15,11 @@ module.exports = async function (msg) {
 	}
 	else {
 		if (cfg.invScan && cfg.invScan.includes(msg.channel.id)) {
-			let codes = client.util.getInv(msg.content), del = false
-			for (let code of codes) {
-				let bool = await client.util.checkInv(code)
-				if (!bool) {
-					del = true
-					break
-				}
-			}
-			if (del && msg.deletable) msg.delete().catch(()=>undefined)
+			client.util.getInv(msg.content).map(function (code) {
+				client.util.checkInv(code).then(function (bool) {
+					if (!bool && msg.deletable) msg.delete().catch(()=>undefined)
+				})
+			})
 		}
 		return
 	}
@@ -46,7 +42,7 @@ module.exports = async function (msg) {
 				.catch (function (err) {
 					if (err instanceof UserInputError) client.util.throw(msg, err.toString())
 					else {
-						client.users.get(client.config.ownerID).send(`UNEXPECTED ERROR OCCURED\nMESSAGE CONTENT: \`\`\`${msg.content}\`\`\`\nCOMMAND EXECUTED: \`${his}\`\nERROR:\`\`\`${util.inspect(err)}\`\`\``)
+						client.users.get(client.config.ownerID).send(`UNEXPECTED ERROR OCCURED\nMESSAGE CONTENT:\n\`\`\`${msg.content}\`\`\`\nCOMMAND EXECUTED: \`${his}\`\nERROR:\n\`\`\`${util.inspect(err)}\`\`\``)
 						client.util.throw(msg, 'Ouch! jCMD has encountered an unexpected error, and it has been automatically reported to the bot developer. Thank you for your cooperation!')
 					}
 				})
