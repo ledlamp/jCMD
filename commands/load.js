@@ -7,9 +7,7 @@ module.exports = {
 			const props = require(`./${commandName}.js`)
 			client.commands.set(commandName, props)
 			client.help.build()
-			return {
-				content:`\`${commandName}\` successfully loaded!`
-			}
+			return {content:`\`${commandName}\` successfully loaded!`}
 		} catch (e) {
 			if (e.code == 'MODULE_NOT_FOUND') throw new UserInputError(`Command \`${commandName}\` not found.`)
 			else throw e

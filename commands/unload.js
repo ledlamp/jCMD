@@ -5,9 +5,7 @@ module.exports = {
 		delete require.cache[require.resolve(`./${commandName}.js`)]
 		client.commands.delete(commandName)
 		client.help.build()
-		return {
-			content: `Command \`${commandName}\` successfully unloaded.`
-		}
+		return {content: `Command \`${commandName}\` successfully unloaded.`}
 	},
 	cat: 'maint',
 	own: true,

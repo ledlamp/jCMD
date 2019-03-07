@@ -20,9 +20,7 @@ module.exports = {
 		}
 	},
 	noParse: async function(msg) {
-		return {
-			content: `The prefix for this server is \`${client.util.getPre(msg)}\`.`
-		}
+		return {content: `The prefix for this server is \`${client.util.getPre(msg)}\`.`}
 	},
 	perm: 'MANAGE_GUILD', args: ['prefix']
 }
