@@ -3,6 +3,7 @@ exports.subCmd = {
 		run: async function(msg, p) {
 			let number = parseInt(p.shift())
 			if (isNaN(number)) throw new UserInputError('I expected a number. Okay then.')
+			if (number > 10) throw new UserInputError('Inputted number is greater than 10.')
 			let letters = p.join(' ').toUpperCase().split(''), str = '***`'
 			for (let oof of letters) str += oof + ' '.repeat(number)
 			str += '`***'
@@ -16,6 +17,7 @@ exports.subCmd = {
 		run: async function(msg, p) {
 			let number = parseInt(p.shift())
 			if (isNaN(number)) throw new UserInputError('I expected a number. Okay then.')
+			if (number > 10) throw new UserInputError('Inputted number is greater than 10.')
 			let letters = p.join(' ').toUpperCase().split(''), str = '***`'
 			for (let oof of letters) str += oof + ' '.repeat(Math.round(Math.random() * number))
 			str += '`***'

@@ -60,7 +60,7 @@ module.exports = {
 		let res = await fetch('https://nhentai.net/g/' + code)
 		msg.channel.stopTyping()
 		if (res.status !== 200) throw new UserInputError('Doujinshi not found. Check whether you have given the correct name.')
-		let body = res.text()
+		let body = await res.text()
 
 		let title = extractTitle(body), tags = extractTags(body), langs = extractLangs(body)
 		let response = '', initResponse = `\n*\`\`\`${code}\`\`\`*`
