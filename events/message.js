@@ -28,7 +28,7 @@ module.exports = async function (msg) {
 	if (!cmdst) return
 	if (client.cd.has(msg.author.id)) return msg.channel.send('Slow down, take it easy.').catch(()=>undefined)
 	function deepCmd(obj, p, his) {
-		if (obj.own && (msg.author.id !== client.config.ownerID)) return client.util.throw(msg, client.rnd.insultGet())
+		if (obj.own && (msg.author.id !== client.config.ownerID)) return client.util.throw(msg, client.lang.paste())
 		if (obj.reqGuild && isDM) return client.util.throw(msg, 'You can only do that command in a server text channel.')
 		if (obj.nsfw && !msg.channel.nsfw) return client.util.throw(msg, 'You can only do that command in a NSFW channel.')
 		if (obj.run) {

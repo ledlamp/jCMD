@@ -3,17 +3,16 @@ console.time('init')
 // Custom error class for throwing and catching errors caused by user input and other expected errors
 const UserInputError = global.UserInputError = class extends Error {}
 // Core Node.js modules
-const fs = global.fs = require('fs')
-const util = global.util = require('util')
+const fs = require('fs'); global.fs = fs
+const util = require('util'); global.util = util
 // npm modules
-const Discord = global.Discord = require('discord.js')
-const Enmap = global.Enmap = require('enmap')
-const fetch = global.fetch = require('node-fetch')
+const Discord = require('discord.js'); global.Discord = Discord
+const Enmap = require('enmap'); global.Enmap = Enmap
+const fetch = require('node-fetch'); global.fetch = fetch
 // Initialise client, binding it to the global scope so it's accessible everywhere
 let client = global.client = new Discord.Client({
 	disableEveryone: true,
-	disabledEvents: ['TYPING_START'],
-	messageCacheMaxSize: 20
+	disabledEvents: ['TYPING_START']
 })
 
 // Configurations
@@ -192,18 +191,8 @@ fs.readdir('./commands/', function (err, files) {
 	console.timeEnd('commands')
 })
 
-// Load events
-console.time('events')
-fs.readdir('./events/', function (err, files) {
-	if (err) return console.error(err)
-	files.map(function (file) {
-		if (!file.endsWith('.js') || file === 'message.js') return
-		const event = require(`./events/${file}`)
-		let eventName = file.split('.')[0]
-		client.on(eventName, event)
-	})
-	console.timeEnd('events')
-})
+// Load ready event
+client.on('ready', require('./events/ready.js'))
 
 // Persistent Enmaps for storing data of users / guilds / ect.
 client.data = {
