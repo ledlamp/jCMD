@@ -103,7 +103,8 @@ module.exports = {
 					perm: 'MANAGE_GUILD',
 					desc: 'Stop the bot from notifying when it deletes a message with invalid invites.'
 				}
-			}
+			},
+			desc: 'An optional configuration which lets the bot tell users that their messages have been deleted.'
 		},
 		reset: {
 			run: async function (msg) {
