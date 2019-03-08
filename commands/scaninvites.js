@@ -84,7 +84,7 @@ module.exports = {
 							client.data.writeGuild(msg.guild.id, cf)
 							return {content: 'Set the notifying channel to be the same as the deleted message\'s channel.'}
 						}
-						let ch = client.util.getChannel(p[0])
+						let ch = client.util.getChannel(msg, p[0])
 						if (!ch || ch.type !== 'text') throw new UserInputError('Invalid channel. The notifier channel needs to be an existing text channel.')
 						cf.invNoti = ch.id
 						client.data.writeGuild(msg.guild.id, cf)
