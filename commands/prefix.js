@@ -22,5 +22,7 @@ module.exports = {
 	noParse: async function(msg) {
 		return {content: `The prefix for this server is \`${client.util.getPre(msg)}\`.`}
 	},
+	noParseDesc: 'Shows the current prefix for this server.',
+	reqGuild: true,
 	perm: 'MANAGE_GUILD', args: ['prefix']
 }

@@ -9,6 +9,7 @@ const util = require('util'); global.util = util
 const Discord = require('discord.js'); global.Discord = Discord
 const Enmap = require('enmap'); global.Enmap = Enmap
 const fetch = require('node-fetch'); global.fetch = fetch
+const PNG = require('pngjs').PNG; global.PNG = PNG
 // Initialise client, binding it to the global scope so it's accessible everywhere
 let client = global.client = new Discord.Client({
 	disableEveryone: true,
@@ -133,7 +134,8 @@ client.help = {
 		util: 'Utility',
 		mod: 'Moderation',
 		fun: 'Fun',
-		strp: 'String processing & manipulation',
+		strp: 'String processing',
+		img: 'Image manipulation',
 		config: 'Configuration',
 		maint: 'Maintenance'
 	},

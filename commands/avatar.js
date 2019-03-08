@@ -9,6 +9,13 @@ module.exports = {
 			}
 		}
 	},
+	noParse: async function (msg) {
+		let user = msg.author
+		return {
+			options: {embed: client.util.mkEmbed(`Profile picture of **${user.tag}**`, undefined, undefined, user.displayAvatarURL)}
+		}
+	},
+	noParseDesc: 'Shows your own profile picture.' ,
 	cat: 'util',
 	cd: 3000,
 	args: ['user ID/mention/username/tag'],

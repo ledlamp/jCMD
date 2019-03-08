@@ -9,7 +9,8 @@
     "discord.js": "^11.4.2",
     "enmap": "^4.7.1",
     "erlpack": "github:hammerandchisel/erlpack",
-    "node-fetch": "^2.3.0"
+    "node-fetch": "^2.3.0",
+    "pngjs": "^3.3.3"
   },
   "devDependencies": {},
   "scripts": {

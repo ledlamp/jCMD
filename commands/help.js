@@ -5,7 +5,7 @@ function deepHelp(msg, pre, object, p, his) {
 		if (obj.reqGuild) reqGuild = true
 		if (obj.nsfw) nsfw = true
 		if (obj.run) {
-			let x = 0, pre = '', suf = '', fields = []
+			let x = 0, suf = '', fields = []
 			if (obj.args) {
 				fields[x] = { name: 'Usage', value: `${pre}${his} ${client.util.argSq(obj.args)}` }
 				x++
@@ -29,7 +29,7 @@ function deepHelp(msg, pre, object, p, his) {
 				fields[x] = { name: 'Bot permissions', value: client.util.permName(obj.botPerm) }
 				x++
 			}
-			return client.util.mkEmbed(`❯ ${nsfw ? '[NSFW] ' : ''}Help on ` + pre + his, '❯ ' + pre + ' ' + obj.desc + ' ' + suf, fields)
+			return client.util.mkEmbed(`❯ ${nsfw ? '[NSFW] ' : ''}Help on ` + pre + his, '❯ ' + obj.desc + ' ' + suf, fields)
 		}
 		else {
 			let retv
