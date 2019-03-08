@@ -18,7 +18,7 @@ module.exports = {
 							}
 						})
 					}
-					if (cf.autoDel.length > 15) return {content: "You have exceeded the maximum channel limit of 15. Changes not saved."}
+					if (cf.autoDel.length > 30) return {content: "You have exceeded the maximum channel limit of 30. Changes not saved."}
 					if (addedChs.length > 0) {
 						client.data.writeGuild(msg.guild.id, cf)
 						return {content: `Added channels:\n${addedChs.join(',\n')}`}

@@ -7,19 +7,19 @@ module.exports = {
 				for (let ch of args) {
 					let chn = client.util.getChannel(msg, ch)
 					if (chn) {
-						if (chn.type === 'text' && cf.invScan.indexOf(chn.id) === -1) {
+						if (chn.type === 'text' && !cf.invScan.includes(chn.id)) {
 								cf.invScan.push(chn.id)
 								addedChs.push('`#' + chn.name + '`')
 						}
 						if (chn.type === 'category') chn.children.map(chan => {
-							if (chan.type === 'text' && cf.invScan.indexOf(chn.id) === -1) {
+							if (chan.type === 'text' && !cf.invScan.includes(chan.id)) {
 								cf.invScan.push(chan.id)
 								addedChs.push('`#' + chan.name + '`')
 							}
 						})
 					}
 				}
-				if (cf.invScan.length > 15) return {content: "You have exceeded the maximum channel limit of 15. Changes not saved."}
+				if (cf.invScan.length > 20) return {content: "You have exceeded the maximum channel limit of 20. Changes not saved."}
 				if (addedChs.length > 0) {
 					client.data.writeGuild(msg.guild.id, cf)
 					return {content: `Added channels:\n${addedChs.join(',\n')}`}
@@ -73,11 +73,44 @@ module.exports = {
 			},
 			desc: 'Show all channels in the monitoring list.'
 		},
+		notify: {
+			subCmd: {
+				set: {
+					run: async function (msg, p) {
+						let cf = client.data.guilds.get(msg.guild.id) || {}
+						if (!cf.invScan) throw new UserInputError('You don\'t have any channels being scanned.')
+						if (p[0].toLowerCase() === 'here') {
+							cf.invNoti = 'h'
+							client.data.writeGuild(msg.guild.id, cf)
+							return {content: 'Set the notifying channel to be the same as the deleted message\'s channel.'}
+						}
+						let ch = client.util.getChannel(p[0])
+						if (!ch || ch.type !== 'text') throw new UserInputError('Invalid channel. The notifier channel needs to be an existing text channel.')
+						cf.invNoti = ch.id
+						client.data.writeGuild(msg.guild.id, cf)
+						return {content: `Set the notifying channel to \`#${ch.name}\`.`}
+					},
+					perm: 'MANAGE_GUILD', args: ['channel / channel ID / \'here\''],
+					desc: 'Set the channel for the bot to send a notification for when it deletes a message that contains an expired invite. Use \'here\' instead of a channel to make it dynamically the same as the channel of the deleted message.'
+				},
+				reset: {
+					run: async function (msg, p) {
+						let cf = client.data.guilds.get(msg.guild.id) || {}
+						delete cf.invNoti
+						client.data.writeGuild(msg.guild.id, cf)
+						return {content: 'Stopped notifying users of invalid messages.'}
+					},
+					perm: 'MANAGE_GUILD',
+					desc: 'Stop the bot from notifying when it deletes a message with invalid invites.'
+				}
+			}
+		},
 		reset: {
 			run: async function (msg) {
 				let cf = client.data.guilds.get(msg.guild.id)
 				if (cf && cf.invScan) {
 					delete cf.invScan
+					delete cf.invNoti
 					client.data.writeGuild(msg.guild.id, cf)
 				}
 				return {content: `Invite scanning functionality reset.`}

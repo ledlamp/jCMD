@@ -24,7 +24,13 @@ module.exports = function () {
 					if (channel.type === 'text' && cfg.invScan.includes(channel.id)) channel.fetchMessages({limit: 15}).then(function (msgs) {
 						msgs.map(function (msg) {
 							client.util.getInv(msg.content).map(function (code) {
-								client.util.checkInv(code).then(function (bool) {if (!bool && msg.deletable) msg.delete().catch(()=>undefined)})
+								client.util.checkInv(code).then(function (bool) {if (!bool && msg.deletable) msg.delete().then(function () {
+									if (cfg.invNoti) {
+										if (cfg.invNoti === 'h') return msg.channel.send(`${msg.author}, your message has been deleted for that it contains an invalid invite.`).catch(()=>undefined)
+										let ch = msg.guild.channels.get(cfg.invNoti)
+										if (ch) ch.send(`${msg.author}, your message has been deleted for that it contains an invalid invite.`).catch(()=>undefined)
+									}
+								}).catch(()=>undefined)})
 							})
 						})
 					})
