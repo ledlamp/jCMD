@@ -1,6 +1,6 @@
 let men = `<@${client.user.id}> `, menNick = `<@!${client.user.id}> `
 module.exports = async function (msg) {
-	if (msg.author.bot) return
+	if (msg.author.bot || msg.type !== 'DEFAULT') return
 	let command, args, isDM = false, ment = (msg.channel.type !== 'dm' && msg.guild.me.nickname) ? menNick : men
 	let cfg = msg.channel.type === 'dm' ? {prefix: ''} : client.data.guilds.get(msg.guild.id) || {}, prefix = cfg.prefix || client.config.prefix
 	if (msg.channel.type === 'dm') {
