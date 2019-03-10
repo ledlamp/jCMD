@@ -1,15 +1,17 @@
 'use strict'
-console.time('init')
 // Custom error class for throwing and catching errors caused by user input and other expected errors
 const UserInputError = global.UserInputError = class extends Error {}
+
 // Core Node.js modules
 const fs = require('fs'); global.fs = fs
 const util = require('util'); global.util = util
+
 // npm modules
 const Discord = require('discord.js'); global.Discord = Discord
 const Enmap = require('enmap'); global.Enmap = Enmap
 const fetch = require('node-fetch'); global.fetch = fetch
-const PNG = require('pngjs').PNG; global.PNG = PNG
+const Jimp = require('jimp'); global.Jimp = Jimp
+
 // Initialise client, binding it to the global scope so it's accessible everywhere
 let client = global.client = new Discord.Client({
 	disableEveryone: true,
@@ -27,9 +29,7 @@ process.openStdin().on('data', function (input) {
 		console.error(err)
 	}
 })
-console.timeEnd('init')
 
-console.time('core')
 // Language & random message picking
 client.lang = {
 	perms: require('./language/perms.json').perms,
@@ -176,9 +176,7 @@ client.cd = {
 		return this.users.has(thing)
 	}
 }
-console.timeEnd('core')
 
-console.time('commands')
 // Load commands
 client.commands = new Enmap()
 fs.readdir('./commands/', function (err, files) {
@@ -190,7 +188,6 @@ fs.readdir('./commands/', function (err, files) {
 		client.commands.set(commandName, props)
 	})
 	client.help.build()
-	console.timeEnd('commands')
 })
 
 // Load ready event
@@ -219,6 +216,7 @@ client.data = {
 }
 
 // Handle Websocket errors properly
+process.on('unhandledRejection', console.error)
 client.on('error', function (err) {console.log(err.message)})
 console.time('login')
 // Login

@@ -5,7 +5,6 @@ module.exports = function () {
 	.then(function () {
 		console.log(`Data: loaded ${client.data.users.size} user entries, ${client.data.guilds.size} guild entries.`)
 		// Load events
-		console.time('events')
 		fs.readdir('./events/', function (err, files) {
 			if (err) return console.error(err)
 			files.map(function (file) {
@@ -14,7 +13,6 @@ module.exports = function () {
 				let eventName = file.split('.')[0]
 				client.on(eventName, event)
 			})
-			console.timeEnd('events')
 		})
 	})
 	client.lang.play()
