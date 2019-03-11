@@ -40,6 +40,9 @@ module.exports = {
 			case 'code':
 				text = `\`${text}\``
 				break
+			case 'codeblock':
+				text = `\`\`\`${text}\`\`\``
+				break
 			case 'drag':
 				text = [...text]
 				let drag = ''
@@ -64,7 +67,7 @@ module.exports = {
 				text = mock
 				break
 			}
-			if (text.length > 800) text = text.slice(0, 800)
+			if (text.length > 800) text = text.substring(0, 800)
 		}
 		text = client.util.clean(text)
 		return {content: text}
