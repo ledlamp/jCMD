@@ -18,8 +18,8 @@ module.exports = {
 		})
 		try {
 			await msg.channel.bulkDelete(fetched)
-		} catch {
-			throw new UserInputError(`Couldn't delete messages. Error: ${error.message}`)
+		} catch (error) {
+			throw new UserInputError(`Couldn't delete messages: ${error.message}`)
 		}
 	},
 	cat: 'mod',
