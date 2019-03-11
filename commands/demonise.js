@@ -10,13 +10,24 @@ This command will whether take the attached image in the message containing the 
 			lastMsgs.map(m => {
 				if (found) return
 				let attch = m.attachments.first()
+				if (!attch && m.embeds[0] && m.embeds[0].image) {
+					attch = m.embeds[0].image
+					attch.url = attch.url.split('?size=')[0]
+				}
 				if (attch && attch.width && (attch.url.endsWith('.png') || attch.url.endsWith('.jpg') || attch.url.endsWith('.jpeg'))) {
 					found = true
 					image = attch
 				}
 			})
 		}
-		if (!image) throw new UserInputError('No images found in the last 10 messages here.')
+		if (!image) {
+			msg.channel.stopTyping()
+			throw new UserInputError('No images found in the last 10 messages here.')
+		}
+		if (image.width * image.height > 1500000) {
+			msg.channel.stopTyping()
+			throw new UserInputError('Image too large.')
+		}
 		return Jimp.read(image.url)
 		.then(async function (image) {
 			for (let y = 0; y < image.bitmap.height; y++) for (let x = 0; x < image.bitmap.width; x++) {

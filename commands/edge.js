@@ -8,13 +8,24 @@ module.exports = {
 			lastMsgs.map(m => {
 				if (found) return
 				let attch = m.attachments.first()
+				if (!attch && m.embeds[0] && m.embeds[0].image) {
+					attch = m.embeds[0].image
+					attch.url = attch.url.split('?size=')[0]
+				}
 				if (attch && attch.width && (attch.url.endsWith('.png') || attch.url.endsWith('.jpg') || attch.url.endsWith('.jpeg'))) {
 					found = true
 					image = attch
 				}
 			})
 		}
-		if (!image) throw new UserInputError('No PNG images found in the last 10 messages here.')
+		if (!image) {
+			msg.channel.stopTyping()
+			throw new UserInputError('No images found in the last 10 messages here.')
+		}
+		if (image.width * image.height > 1500000) {
+			msg.channel.stopTyping()
+			throw new UserInputError('Image too large.')
+		}
 		return Jimp.read(image.url)
 		.then(async function (image) {
 			let data2 = Buffer.from(image.bitmap.data)
@@ -27,7 +38,7 @@ module.exports = {
 					})
 					let mx = Math.max(Math.max(arr[0][0], arr[0][1], arr[0][2]), Math.max(arr[1][0], arr[1][1], arr[1][2]), Math.max(arr[2][0], arr[2][1], arr[2][2])) / 255 + 1,
 						hsv = rgb2hsv(data2[idx] / 255, data2[idx + 1] / 255, data2[idx + 2] / 255)
-					hsv[1] *= Math.pow(mx, 3)
+					hsv[1] *= Math.pow(mx, 10)
 					if (hsv[1] > 1) hsv[1] = 1
 					let rgb = hsv2rgb(hsv[0], hsv[1], hsv[2])
 					image.bitmap.data[idx] = rgb[0] * 255
@@ -36,7 +47,7 @@ module.exports = {
 				}
 			msg.channel.stopTyping()
 			return {
-				content: 'Done. Here is what all of you sick people have been waiting for.',
+				content: 'Edge\'d, just for you honey.',
 				options: new Discord.Attachment(await image.getBufferAsync(Jimp.AUTO), 'demonisedOutput.png')
 			}
 		})
