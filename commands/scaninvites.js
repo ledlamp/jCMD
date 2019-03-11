@@ -90,7 +90,7 @@ module.exports = {
 						client.data.writeGuild(msg.guild.id, cf)
 						return {content: `Set the notifying channel to \`#${ch.name}\`.`}
 					},
-					perm: 'MANAGE_GUILD', args: ['channel / channel ID / \'here\''],
+					args: ['channel / channel ID / \'here\''],
 					desc: 'Set the channel for the bot to send a notification for when it deletes a message that contains an expired invite. Use \'here\' instead of a channel to make it dynamically the same as the channel of the deleted message.'
 				},
 				reset: {
@@ -100,10 +100,10 @@ module.exports = {
 						client.data.writeGuild(msg.guild.id, cf)
 						return {content: 'Stopped notifying users of invalid messages.'}
 					},
-					perm: 'MANAGE_GUILD',
 					desc: 'Stop the bot from notifying when it deletes a message with invalid invites.'
 				}
 			},
+			perm: 'MANAGE_GUILD',
 			desc: 'An optional configuration which lets the bot tell users that their messages have been deleted.'
 		},
 		reset: {
