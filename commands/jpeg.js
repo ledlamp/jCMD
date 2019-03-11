@@ -31,7 +31,7 @@ This command will whether take the attached image in the message containing the 
 		return Jimp.read(image.url)
 		.then(async function (image) {
 			image
-			.resize(512, 512)
+			.resize(Jimp.AUTO, 512)
 			.quality(1)
 			msg.channel.stopTyping()
 			return {
