@@ -64,7 +64,7 @@ module.exports = {
 		list: {
 			run: async function (msg, p) {
 				let chs = [], cf = client.data.guilds.get(msg.guild.id)
-				if (!cf || !cf.autoDel) return {content: 'There are no channels in this guild being scanned for invites.'}
+				if (!cf || !cf.autoDel) return {content: 'There are no channels in this guild being monitored.'}
 				cf.autoDel.map(ch => {
 					let cho = client.util.getChannel(msg, ch)
 					if (cho) chs.push('`#' + cho.name + '`')
