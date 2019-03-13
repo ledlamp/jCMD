@@ -36,8 +36,7 @@ module.exports = {
 						let idxf = (image.bitmap.width * fy + fx) << 2
 						for (let f = 0; f < 3; f++) arr[f].push(Math.abs(data2[idxf + f] - data2[idx + f]))
 					})
-					let mx = Math.max(Math.max(arr[0][0], arr[0][1], arr[0][2]), Math.max(arr[1][0], arr[1][1], arr[1][2]), Math.max(arr[2][0], arr[2][1], arr[2][2])) / 255 + 1,
-						hsv = rgb2hsv(data2[idx] / 255, data2[idx + 1] / 255, data2[idx + 2] / 255)
+					let mx = Math.max(Math.max(arr[0][0], arr[0][1], arr[0][2]), Math.max(arr[1][0], arr[1][1], arr[1][2]), Math.max(arr[2][0], arr[2][1], arr[2][2])) / 255 + 1, hsv = rgb2hsv(data2[idx] / 255, data2[idx + 1] / 255, data2[idx + 2] / 255)
 					hsv[1] *= Math.pow(mx, 10)
 					if (hsv[1] > 1) hsv[1] = 1
 					let rgb = hsv2rgb(hsv[0], hsv[1], hsv[2])
@@ -46,7 +45,6 @@ module.exports = {
 					image.bitmap.data[idx + 2] = rgb[2] * 255
 				}
 			msg.channel.stopTyping()
-			console.log(image)
 			return {
 				content: 'Edge\'d, just for you honey.',
 				options: new Discord.Attachment(await image.getBufferAsync(Jimp.AUTO), 'edgedOutput.png')

@@ -31,8 +31,8 @@ This command will whether take the attached image in the message containing the 
 		return Jimp.read(image.url)
 		.then(async function (image) {
 			image
-			.resize(Jimp.AUTO, 512)
-			.quality(1)
+			.resize(Math.floor(image.bitmap.width / 2.5 + 512), Jimp.AUTO)
+			.quality(2)
 			msg.channel.stopTyping()
 			return {
 				content: 'Crunchy.',
