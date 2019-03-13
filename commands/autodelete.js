@@ -69,7 +69,7 @@ module.exports = {
 					let cho = client.util.getChannel(msg, ch)
 					if (cho) chs.push('`#' + cho.name + '`')
 				})
-				return {content: `Channels being scanned:\n${chs.join(',\n')}`}
+				return {content: `Channels being monitored:\n${chs.join(',\n')}`}
 			},
 			desc: 'Show all channels in the monitoring list.',
 		},

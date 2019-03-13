@@ -1,5 +1,6 @@
 module.exports = {
 	run: async function (msg, p) {
+		client
 		let member = client.util.getMember(msg, p.join(' '))
 		if (member == null) throw new UserInputError('User not found. Check your spelling/mention/included ID and try again.')
 		else {

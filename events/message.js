@@ -19,8 +19,7 @@ module.exports = async function (msg) {
 				client.util.checkInv(code).then(function (bool) {
 					if (!bool && msg.deletable) msg.delete().then(function () {
 						if (cfg.invNoti) {
-							if (cfg.invNoti === 'h') return msg.channel.send(`${msg.author}, your message has been deleted for that it contains an invalid invite.`).catch(()=>undefined)
-							let ch = msg.guild.channels.get(cfg.invNoti)
+							let ch = cfg.invNoti === 'h' ? msg.channel : msg.guild.channels.get(cfg.invNoti)
 							if (ch) ch.send(`${msg.author}, your message has been deleted for that it contains an invalid invite.`).catch(()=>undefined)
 						}
 					}).catch(()=>undefined)
@@ -72,7 +71,6 @@ module.exports = async function (msg) {
 			if(msg.author.id !== client.config.ownerID) client.cd.addCooldown(msg.author.id, obj.cd)
 		}
 		else {
-			//if (!p[0]) return client.util.throw(msg, `You need to define a subcommand. Do \`${prefix}help ${his}\` for more information.`)
 			if (!p[0]) return client.commands.get('help').run(msg, his.split(' ')).then(({content, options}) => client.util.done(msg, content, options))
 			let subc = p.shift()
 			let clip = subc.length > 15 ? subc.slice(0, 15) + '...' : subc // Prevent user from entering long subcommands and making the bot spam

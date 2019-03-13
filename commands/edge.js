@@ -22,7 +22,7 @@ module.exports = {
 			msg.channel.stopTyping()
 			throw new UserInputError('No images found in the last 10 messages here.')
 		}
-		if (image.width * image.height > 1500000) {
+		if (image.width * image.height > 3200000) {
 			msg.channel.stopTyping()
 			throw new UserInputError('Image too large.')
 		}
@@ -46,9 +46,10 @@ module.exports = {
 					image.bitmap.data[idx + 2] = rgb[2] * 255
 				}
 			msg.channel.stopTyping()
+			console.log(image)
 			return {
 				content: 'Edge\'d, just for you honey.',
-				options: new Discord.Attachment(await image.getBufferAsync(Jimp.AUTO), 'demonisedOutput.png')
+				options: new Discord.Attachment(await image.getBufferAsync(Jimp.AUTO), 'edgedOutput.png')
 			}
 		})
 	},

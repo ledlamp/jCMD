@@ -24,7 +24,7 @@ This command will whether take the attached image in the message containing the 
 			msg.channel.stopTyping()
 			throw new UserInputError('No images found in the last 10 messages here.')
 		}
-		if (image.width * image.height > 1500000) {
+		if (image.width * image.height > 3200000) {
 			msg.channel.stopTyping()
 			throw new UserInputError('Image too large.')
 		}
