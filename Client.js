@@ -112,8 +112,10 @@ module.exports = class extends Discord.Client {
 				maint: 'Maintenance'
 			},
 			fields: [],
+			aliases: new Enmap(),
 			build: function () {
 				this.fields = []
+				this.aliases = new Enmap()
 				let helpObj = {}
 				for (let cat of Object.keys(this.cats)) {
 					helpObj[cat] = {
@@ -121,7 +123,12 @@ module.exports = class extends Discord.Client {
 						commands: []
 					}
 				}
-				client.commands.map(function (a, b) { if (a.cat) helpObj[a.cat].commands.push(b) })
+				client.commands.map(function (a, b) {
+					if (a.cat) helpObj[a.cat].commands.push(b)
+					if (a.aliases) a.aliases.map(function(val) {
+						client.help.aliases.set(val, b)
+					})
+				})
 				let x = 0
 				for (let i of Object.keys(helpObj)) {
 					this.fields[x] = { name: helpObj[i].name, value: '' }

@@ -29,7 +29,7 @@ module.exports = async function (msg) {
 		return
 	}
 	command = args.shift()
-	const cmdst = client.commands.get(command)
+	const cmdst = client.commands.get(command) || client.commands.get(client.help.aliases.get(command))
 	if (!cmdst) return
 	if (client.cd.has(msg.author.id)) return msg.channel.send('Slow down, take it easy.').catch(()=>undefined)
 	function deepCmd(obj, p, his) {
