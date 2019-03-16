@@ -1,7 +1,6 @@
 function extractTags(body) { return body.replace(/(\n+( |\t)*)/g, '').match(/<div class="tag-container field-name ">Tags:(.*?)<\/div>/)[1].replace(/\((\d|,)*?\)/g, '').replace(/<.*?>/g, ';').split(/ *;+/).slice(1, -1) }
 function extractLangs(body) { return body.replace(/(\n+( |\t)*)/g, '').match(/<div class="tag-container field-name ">Languages:(.*?)<\/div>/)[1].replace(/\((\d|,)*?\)/g, '').replace(/<.*?>/g, ';').split(/ *;+/).slice(1, -1) }
 function extractTitle(body) { return body.match(/<meta itemprop="name" content="(.+)" \/>/)[1] }
-
 function similarity(s1, s2) {
 	var longer = s1
 	var shorter = s2
@@ -15,7 +14,6 @@ function similarity(s1, s2) {
 	}
 	return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength)
 }
-
 function editDistance(s1, s2) {
 	s1 = s1.toLowerCase()
 	s2 = s2.toLowerCase()
@@ -35,7 +33,6 @@ function editDistance(s1, s2) {
 	}
 	return costs[s2.length]
 }
-
 const forbiddenTitles = [
 	'EMERGENCE',
 	'Legend of The Meme Queen',
@@ -55,47 +52,40 @@ const cultureTags = [
 module.exports = {
 	run: async function (msg, p) {
 		let code = p[0]
-		if (!/\b\d+\b/.test(code)) throw new UserInputError('You need to provide a number.')
+		if (isNaN(parseInt(code))) throw new UserInputError('You need to provide a number.')
 		msg.channel.startTyping()
 		let res = await fetch('https://nhentai.net/g/' + code)
 		msg.channel.stopTyping()
 		if (res.status !== 200) throw new UserInputError('Doujinshi not found. Check whether you have given the correct name.')
 		let body = await res.text()
 
-		let title = extractTitle(body), tags = extractTags(body), langs = extractLangs(body)
-		let response = '', initResponse = `\n*\`\`\`${code}\`\`\`*`
-		let saidTags = false
-
+		let title = extractTitle(body), tags = extractTags(body), langs = extractLangs(body), response = '', saidTags = false
 		let abandon = false
 		for (let i of forbiddenTitles) if (title == i || title.startsWith(i)) {
 			abandon = true
 			break
 		}
-
 		let culture = [], isCultured = false
 		for (let i of cultureTags) if (tags.includes(i)) {
 			isCultured = true
 			culture.push(i)
 		}
-
-		let isLoli = false
-		if (tags.includes('lolicon')) isLoli = true
-
+		let isLoli = tags.includes('lolicon')
+		let ara = tags.includes('shotacon') && tags.includes('big breasts')
 		if (code !== '177013' && similarity('177013', code) > 0.8 && isLoli) response += '\nDid you perchance mean **177013** for some good, clean, non-loli fun?\nBut I\'ve got to do my job, so...\n'
-		response += initResponse
 		if (isLoli) {
-			response += `\n**Tags: *lolicon***\n	${abandon || isCultured ? 'FBI OPE--' : 'FBI OPEN UP!'}`
+			response += `\n**Tags: *lolicon***\n	${abandon || isCultured || ara ? 'FBI OPE--' : 'FBI OPEN UP!'}`
 			saidTags = true
 		}
 		if (isCultured) {
 			response += `\n**${saidTags ? 'Also tags' : 'Tags'}: *${culture.join(', ')}***\n	I see you are a man of culture as well.`
 			saidTags = true
 		}
-		if (abandon) response += `\nWait...\n**Title: *${title}***\n	Abandon hope all ye who enter here`
+		if (abandon) response += `\nWait...\n**Title: *${title}***\n	Abandon all hope, ye who enter here`
+		if (ara) response += `\n**${saidTags ? 'Also tags' : 'Tags'}: *big breasts, shotacon***\n	***Ahhhh yes. Vvvveeeerrryyy yyeeeeeeeessss.***`
 		if (!langs.includes('english') && isLoli) response += '\n**Languages: *Not English***\n	Does it look like that I can read moon runes? No matter where the hell you live, here in \'murica we protect the lolis. Take them away boys!'
-
-		if (response == initResponse) response += '\nOh. Oh wow. Something actually normal this time. I am proud that you have such a fine taste in this wild realm of art. Or maybe you are just a normie, I don\'t know. ¯\\_(ツ)_/¯'
-		return {content: response}
+		if (response === '') response += '\nOh. Oh wow. Something actually normal this time. I am proud that you have such a fine taste in this wild realm of art. Or maybe you are just a normie, I don\'t know. ¯\\_(ツ)_/¯'
+		return {content: `\n*\`\`\`${code}\`\`\`*` + response}
 	},
 	args: ['doujinshi id'],
 	cat: 'fun',
