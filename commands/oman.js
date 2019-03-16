@@ -3,5 +3,6 @@ module.exports = {
 		return {content: '🇴 🇲 🇦 🇳 ' + client.emojis.get('525184837967937536').toString()}
 	},
 	cat: 'fun',
-	desc: 'What\'s better for showing your love to Omanism than saying \'oman\'?'
+	desc: 'What\'s better for showing your love to Omanism than saying \'oman\'?',
+	botPerm: 'USE_EXTERNAL_EMOJIS'
 }

@@ -7,5 +7,6 @@ module.exports = {
 	},
 	cat: 'fun',
 	cd: 8000,
-	desc: 'Gnome your chums with this super awesome command!'
+	desc: 'Gnome your chums with this super awesome command!',
+	botPerm: 'USE_EXTERNAL_EMOJIS'
 }
