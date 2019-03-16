@@ -6,14 +6,14 @@ module.exports = {
 		else {
 			let user = member.user
 			return {
-				options: {embed: client.util.mkEmbed(`Profile picture of **${user.tag}**`, undefined, undefined, user.displayAvatarURL)}
+				options: {embed: client.util.mkEmbed(user.tag, `Profile picture of **${user.tag}**`, undefined, user.displayAvatarURL)}
 			}
 		}
 	},
 	noParse: async function (msg) {
 		let user = msg.author
 		return {
-			options: {embed: client.util.mkEmbed(`Profile picture of **${user.tag}**`, undefined, undefined, user.displayAvatarURL)}
+			options: {embed: client.util.mkEmbed(user.tag, `Profile picture of **${user.tag}**`, undefined, user.displayAvatarURL)}
 		}
 	},
 	noParseDesc: 'Shows your own profile picture.' ,
