@@ -14,6 +14,7 @@ module.exports = {
 				if (attch && attch.width && (attch.url.endsWith('.png') || attch.url.endsWith('.jpg') || attch.url.endsWith('.jpeg'))) {
 					found = true
 					image = attch
+					if (m.author.id === client.user.id) m.delete().catch(()=>undefined)
 				}
 			})
 		}
@@ -23,7 +24,7 @@ module.exports = {
 		}
 		if (image.width * image.height > 3200000) {
 			msg.channel.stopTyping()
-			throw new UserInputError('Image too large.')
+			throw new UserInputError(`Image too large. (${image.width} × ${image.height})`)
 		}
 		return Jimp.read(image.url)
 		.then(async function (image) {
@@ -41,6 +42,6 @@ module.exports = {
 		})
 	},
 	cat: 'img',
-	desc: `A deep-fry like image-manipulation command which makes everything red and creepy. This thing will absolutely bake everything you love to pure blood.\nThis command will whether take the attached image in the message containing the command or the last image sent in the 10 latest sent messages.`,
+	desc: 'A deep-fry like image-manipulation command which makes everything red and creepy. This thing will absolutely bake everything you love to pure blood.\nThis command will whether take the attached image in the message containing the command or the last image sent in the 10 latest sent messages.',
 	aliases: ['demonize']
 }

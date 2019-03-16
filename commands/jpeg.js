@@ -1,7 +1,4 @@
 module.exports = {
-	cat: 'img',
-	desc: `An image-manipulation command which JPEG-ifies images.
-This command will whether take the attached image in the message containing the command or the last image sent in the 10 latest sent messages.`,
 	run: async function (msg) {
 		msg.channel.startTyping()
 		let image = msg.attachments.first()
@@ -17,6 +14,7 @@ This command will whether take the attached image in the message containing the 
 				if (attch && attch.width && (attch.url.endsWith('.png') || attch.url.endsWith('.jpg') || attch.url.endsWith('.jpeg'))) {
 					found = true
 					image = attch
+					if (m.author.id === client.user.id) m.delete().catch(()=>undefined)
 				}
 			})
 		}
@@ -26,18 +24,20 @@ This command will whether take the attached image in the message containing the 
 		}
 		if (image.width * image.height > 3200000) {
 			msg.channel.stopTyping()
-			throw new UserInputError('Image too large.')
+			throw new UserInputError(`Image too large. (${image.width} × ${image.height})`)
 		}
 		return Jimp.read(image.url)
 		.then(async function (image) {
 			image
-			.resize(Math.floor(image.bitmap.width / 2.5 + 512), Jimp.AUTO)
-			.quality(2)
+			.resize(Math.floor(image.bitmap.width / 2.5 + 256), Jimp.AUTO)
+			.quality(5)
 			msg.channel.stopTyping()
 			return {
 				content: 'Crunchy.',
-				options: new Discord.Attachment(await image.getBufferAsync(Jimp.MIME_JPEG), 'jpegifiedOutput.png')
+				options: new Discord.Attachment(await image.getBufferAsync(Jimp.MIME_JPEG), 'jpegifiedOutput.jpg')
 			}
 		})
-	}
+	},
+	cat: 'img',
+	desc: 'An image-manipulation command which JPEG-ifies images.\nThis command will whether take the attached image in the message containing the command or the last image sent in the 10 latest sent messages.'
 }
