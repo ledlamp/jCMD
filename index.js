@@ -23,7 +23,7 @@ let stdin = process.openStdin()
 stdin.on('data', function (input) {
 	let msg = input.toString()
 	try {
-		console.log(util.inspect(eval(msg)))
+		console.log(util.inspect(eval(msg), {colors: true}))
 	} catch (err) {
 		if (err) console.log(err)
 	}
