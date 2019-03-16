@@ -8,7 +8,6 @@ module.exports = class extends Discord.Client {
 			permnames: require('./language/perms.json').names,
 			presences: require('./language/plays.json').text,
 			pasta: require('./language/pasta.json').text,
-			
 			presenceHtr: [],
 			play: function() {
 				let pick, yet = true
@@ -145,7 +144,7 @@ module.exports = class extends Discord.Client {
 			users: new Set(),
 			addCooldown: function (id, interval = 2000) {
 				this.users.add(id)
-				setTimeout(function () {
+				client.setTimeout(function () {
 					client.cd.users.delete(id)
 				}, interval)
 			},
