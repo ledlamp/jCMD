@@ -1,7 +1,7 @@
 let men = `<@${client.user.id}> `, menNick = `<@!${client.user.id}> `
 module.exports = async function (msg) {
-	let command, args, isDM = msg.channel.type === 'dm', ment = (isDM && msg.guild.me.nickname) ? menNick : men, myperms = isDM ? undefined : msg.channel.permissionsFor(msg.guild.me), cfg = isDM ? {prefix: ''} : client.data.guilds.get(msg.guild.id) || {}, prefix = cfg.prefix || client.config.prefix
-	if (msg.author.bot || msg.type !== 'DEFAULT' || !myperms.has('SEND_MESSAGES')) return
+	let command, args, isDM = msg.channel.type === 'dm', ment = (!isDM && msg.guild.me.nickname) ? menNick : men, myperms = isDM ? undefined : msg.channel.permissionsFor(msg.guild.me), cfg = isDM ? {prefix: ''} : client.data.guilds.get(msg.guild.id) || {}, prefix = cfg.prefix || client.config.prefix
+	if (msg.author.bot || msg.type !== 'DEFAULT' || (!isDM && !myperms.has('SEND_MESSAGES'))) return
 	if (isDM) {
 		isDM = true
 		args = msg.content.split(/ +/g)
@@ -37,7 +37,7 @@ module.exports = async function (msg) {
 		if (obj.reqGuild && isDM) return client.util.throw(msg, 'You can only do that command in a server text channel.')
 		if (obj.nsfw && !msg.channel.nsfw) return client.util.throw(msg, 'You can only do that command in a NSFW channel.')
 		if (!noParse && obj.perm && !msg.channel.permissionsFor(msg.member).has(obj.perm)) return client.util.throw(msg, 'Insufficient permissions. You are missing at least one of: `' + client.util.permName(obj.perm) + '`.')
-		if (obj.botPerm && !myperms.has(obj.perm)) return client.util.throw(msg, 'Insufficient permissions for the bot. The bot is missing at least one of: `' + client.util.permName(obj.botPerm) + '`.')
+		if (obj.botPerm && !myperms.has(obj.botPerm)) return client.util.throw(msg, 'Insufficient permissions for the bot. The bot is missing at least one of: `' + client.util.permName(obj.botPerm) + '`.')
 		if (obj.run) {
 			if (noParse) {
 				if (!obj.noParse) return client.util.throw(msg, 'Not enough arguments. Arguments needed: ' + client.util.argSq(obj.args))
