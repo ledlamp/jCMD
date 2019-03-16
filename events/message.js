@@ -1,9 +1,8 @@
 let men = `<@${client.user.id}> `, menNick = `<@!${client.user.id}> `
 module.exports = async function (msg) {
-	if (msg.author.bot || msg.type !== 'DEFAULT') return
-	let command, args, isDM = false, ment = (msg.channel.type !== 'dm' && msg.guild.me.nickname) ? menNick : men
-	let cfg = msg.channel.type === 'dm' ? {prefix: ''} : client.data.guilds.get(msg.guild.id) || {}, prefix = cfg.prefix || client.config.prefix
-	if (msg.channel.type === 'dm') {
+	let command, args, isDM = msg.channel.type === 'dm', ment = (isDM && msg.guild.me.nickname) ? menNick : men, myperms = isDM ? undefined : msg.channel.permissionsFor(msg.guild.me), cfg = isDM ? {prefix: ''} : client.data.guilds.get(msg.guild.id) || {}, prefix = cfg.prefix || client.config.prefix
+	if (msg.author.bot || msg.type !== 'DEFAULT' || !myperms.has('SEND_MESSAGES')) return
+	if (isDM) {
 		isDM = true
 		args = msg.content.split(/ +/g)
 	}
@@ -33,13 +32,12 @@ module.exports = async function (msg) {
 	if (!cmdst) return
 	if (client.cd.has(msg.author.id)) return msg.channel.send('Slow down, take it easy.').catch(()=>undefined)
 	function deepCmd(obj, p, his) {
-		let noParse = false
+		let noParse = obj.args && (p.length < obj.args.length)
 		if (obj.own && (msg.author.id !== client.config.ownerID)) return client.util.throw(msg, client.lang.paste())
 		if (obj.reqGuild && isDM) return client.util.throw(msg, 'You can only do that command in a server text channel.')
 		if (obj.nsfw && !msg.channel.nsfw) return client.util.throw(msg, 'You can only do that command in a NSFW channel.')
-		if (obj.args && (p.length < obj.args.length)) noParse = true
 		if (!noParse && obj.perm && !msg.channel.permissionsFor(msg.member).has(obj.perm)) return client.util.throw(msg, 'Insufficient permissions. You are missing at least one of: `' + client.util.permName(obj.perm) + '`.')
-		if (obj.botPerm && !msg.channel.permissionsFor(msg.guild.member(client.user)).has(obj.perm)) return client.util.throw(msg, 'Insufficient permissions for the bot. The bot is missing at least one of: `' + client.util.permName(obj.botPerm) + '`.')
+		if (obj.botPerm && !myperms.has(obj.perm)) return client.util.throw(msg, 'Insufficient permissions for the bot. The bot is missing at least one of: `' + client.util.permName(obj.botPerm) + '`.')
 		if (obj.run) {
 			if (noParse) {
 				if (!obj.noParse) return client.util.throw(msg, 'Not enough arguments. Arguments needed: ' + client.util.argSq(obj.args))
