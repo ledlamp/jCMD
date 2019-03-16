@@ -48,7 +48,7 @@ module.exports = {
 			msg.channel.stopTyping()
 			return {
 				content: 'Edge\'d, just for you honey.',
-				options: new Discord.Attachment(await image.getBufferAsync(Jimp.AUTO), 'edgedOutput.png')
+				options: new Discord.Attachment(await image.getBufferAsync(Jimp.PNG), 'edgedOutput.png')
 			}
 		})
 	},

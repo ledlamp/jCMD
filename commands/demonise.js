@@ -37,7 +37,7 @@ module.exports = {
 			msg.channel.stopTyping()
 			return {
 				content: 'Done. Here is what all of you sick people have been waiting for.',
-				options: new Discord.Attachment(await image.getBufferAsync(Jimp.AUTO), 'demonisedOutput.png')
+				options: new Discord.Attachment(await image.getBufferAsync(Jimp.PNG), 'demonisedOutput.png')
 			}
 		})
 	},
