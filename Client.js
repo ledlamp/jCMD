@@ -95,7 +95,6 @@ module.exports = class extends Discord.Client {
 				return array2
 			},
 			checkInv: async function (code) {
-				if (code.length > 10) return false
 				return client.fetchInvite(code).then(()=>true).catch(()=>false)
 			}
 		}
