@@ -1,6 +1,6 @@
 module.exports = {
 	run: async function (msg, p) {
-		let check = true, csl = '', buf = Buffer.from('')
+		let check = true, csl = '', buf = undefined
 		try {
 			csl = String(eval(p.join(' ')))
 			if (csl.length > 1800) buf = Buffer.from(csl)
