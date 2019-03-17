@@ -1,3 +1,6 @@
+const Discord = require('discord.js')
+const Enmap = require('enmap')
+Object.assign(global, {Discord, Enmap})
 module.exports = class extends Discord.Client {
 	constructor(ClientOptions) {
 		super(ClientOptions)

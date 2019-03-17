@@ -9,16 +9,12 @@ const fs = require('fs')
 const util = require('util')
 
 // npm modules
-const Discord = require('discord.js')
-const Enmap = require('enmap')
 const fetch = require('node-fetch')
 const Jimp = require('jimp')
 Object.assign(global, {
 	UserInputError,
 	fs,
 	util,
-	Discord,
-	Enmap,
 	fetch,
 	Jimp
 })
