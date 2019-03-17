@@ -18,12 +18,12 @@ module.exports = {
 							}
 						})
 					}
-					if (cf.autoDel.length > 30) return {content: "You have exceeded the maximum channel limit of 30. Changes not saved."}
-					if (addedChs.length > 0) {
-						client.data.writeGuild(msg.guild.id, cf)
-						return {content: `Added channels:\n${addedChs.join(',\n')}`}
-					} else return {content: 'No valid channels added.'}
 				}
+				if (cf.autoDel.length > 30) return {content: "You have exceeded the maximum channel limit of 30. Changes not saved."}
+				if (addedChs.length > 0) {
+					client.data.writeGuild(msg.guild.id, cf)
+					return {content: `Added channels:\n${addedChs.join(',\n')}`}
+				} else return {content: 'No valid channels added.'}
 			},
 			desc: 'Add channels to monitoring list. Provide a category channel ID to add all its children channels.',
 			perm: 'MANAGE_GUILD', args: ['channels / channel IDs']
@@ -62,7 +62,7 @@ module.exports = {
 			perm: 'MANAGE_GUILD', args: ['channels / channel IDs']
 		},
 		list: {
-			run: async function (msg, p) {
+			run: async function (msg) {
 				let chs = [], cf = client.data.guilds.get(msg.guild.id)
 				if (!cf || !cf.autoDel) return {content: 'There are no channels in this guild being monitored.'}
 				cf.autoDel.map(ch => {

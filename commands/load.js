@@ -9,7 +9,7 @@ module.exports = {
 			client.help.build()
 			return {content:`\`${commandName}\` successfully loaded!`}
 		} catch (e) {
-			if (e.code == 'MODULE_NOT_FOUND') throw new UserInputError(`Command \`${commandName}\` not found.`)
+			if (e.code === 'MODULE_NOT_FOUND') throw new UserInputError(`Command \`${commandName}\` not found.`)
 			else throw e
 		}
 	},

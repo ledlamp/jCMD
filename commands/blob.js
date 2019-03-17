@@ -1,5 +1,5 @@
 module.exports = {
-	run: async function (msg) {
+	run: async function () {
 		return {content: client.emojis.get('528847371782586368').toString()}
 	},
 	cat: 'fun',

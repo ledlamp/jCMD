@@ -5,7 +5,7 @@ module.exports = {
 	run: async function (msg, p) {
 		let both = p.join(' '), text = both.split(' | '), meth = text.pop()
 		if (!meth) throw new UserInputError('Invalid arguments. You need to provide some methods.')
-		if (text.length == 0) throw new UserInputError('You need to provide text before the pipe | character.')
+		if (text.length === 0) throw new UserInputError('You need to provide text before the pipe | character.')
 		text = text.join(' | ')
 		meth = meth.split(' ')
 		if (meth.length > 10) throw new UserInputError('Too many methods were given! (> 10)')
@@ -51,7 +51,7 @@ module.exports = {
 				break
 			case 'circle':
 				text = text.toLowerCase().replace(/[a-z]/g, function(char) {
-					return String.fromCharCode(char.charCodeAt() + 9327) + ' '
+					return String.fromCharCode(char.charCodeAt(0) + 9327) + ' '
 				})
 				break
 			case 'regind':
@@ -63,7 +63,7 @@ module.exports = {
 			case 'mock':
 				let mock = ''
 				text = [...text]
-				for (let x = 0; x < text.length; x++) mock += (text[x] == 'i' ? 'i' : Math.round(Math.random()) == 1 ? text[x].toUpperCase() : text[x].toLowerCase())
+				for (let x = 0; x < text.length; x++) mock += (text[x] === 'i' ? 'i' : Math.round(Math.random()) === 1 ? text[x].toUpperCase() : text[x].toLowerCase())
 				text = mock
 				break
 			}

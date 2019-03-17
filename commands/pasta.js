@@ -1,5 +1,5 @@
 module.exports = {
-	run: async function (msg) {
+	run: async function () {
 		return {content: client.lang.paste()}
 	},
 	cat: 'fun',

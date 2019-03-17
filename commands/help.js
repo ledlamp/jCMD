@@ -18,10 +18,10 @@ function deepHelp(pre, object, p, his) {
 			if (obj.aliases) fields[x++] = { name: 'Aliases', value: obj.aliases.map(c => `\`${c}\``).join(', ') }
 			if (obj.cd) {
 				let toSecs = parseFloat((obj.cd / 1000).toFixed(1))
-				fields[x++] = { name: 'Cooldown', value: `${toSecs} second${toSecs == 1 ? '' : 's'}` }
+				fields[x++] = { name: 'Cooldown', value: `${toSecs} second${toSecs === 1 ? '' : 's'}` }
 			}
 			if (obj.perm) fields[x++] = { name: 'User permissions', value: client.util.permName(obj.perm) }
-			if (obj.botPerm) fields[x++] = { name: 'Bot permissions', value: client.util.permName(obj.botPerm) }
+			if (obj.botPerm) fields[x] = { name: 'Bot permissions', value: client.util.permName(obj.botPerm) }
 			return client.util.mkEmbed(`❯ ${nsfw ? '[NSFW] ' : ''}Help on ` + pre + his, '❯ ' + obj.desc + ' ' + suf, fields)
 		}
 		else {

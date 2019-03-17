@@ -62,5 +62,6 @@ typings/
 config.json
 data/
 .vscode/
+.idea/
 .eslintrc.json
 package-lock.json

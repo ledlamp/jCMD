@@ -94,7 +94,7 @@ module.exports = {
 					desc: 'Set the channel for the bot to send a notification for when it deletes a message that contains an expired invite. Use \'here\' instead of a channel to make it dynamically the same as the channel of the deleted message.'
 				},
 				reset: {
-					run: async function (msg, p) {
+					run: async function (msg) {
 						let cf = client.data.guilds.get(msg.guild.id) || {}
 						delete cf.invNoti
 						client.data.writeGuild(msg.guild.id, cf)

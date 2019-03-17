@@ -5,22 +5,30 @@ process.on('unhandledRejection', err => console.log(util.inspect(err)))
 const UserInputError = class extends Error {}; global.UserInputError = UserInputError
 
 // Core Node.js modules
-const fs = require('fs'); global.fs = fs
-const util = require('util'); global.util = util
+const fs = require('fs')
+const util = require('util')
 
 // npm modules
-const Discord = require('discord.js'); global.Discord = Discord
-const Enmap = require('enmap'); global.Enmap = Enmap
-const fetch = require('node-fetch'); global.fetch = fetch
-const Jimp = require('jimp'); global.Jimp = Jimp
+const Discord = require('discord.js')
+const Enmap = require('enmap')
+const fetch = require('node-fetch')
+const Jimp = require('jimp')
+Object.assign(global, {
+	UserInputError,
+	fs,
+	util,
+	Discord,
+	Enmap,
+	fetch,
+	Jimp
+})
 
 const Client = require('./Client.js')
-
-let client = new Client({disableEveryone: true}); global.client = client
+let client = new Client({disableEveryone: true})
+Object.assign(global, {client})
 
 // Eval through console
-let stdin = process.openStdin()
-stdin.on('data', function (input) {
+process.openStdin().on('data', function (input) {
 	let msg = input.toString()
 	try {
 		console.log(util.inspect(eval(msg), {colors: true}))

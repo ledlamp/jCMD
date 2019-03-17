@@ -1,7 +1,7 @@
 module.exports = {
 	run: async function (msg, p) {
 		let usr = p.shift(), reason = p.join(' ') || 'No reason provided'
-		const member = client.util.getMember(msg, usr)
+		const member = client.util.getMemberStrict(msg, usr)
 		if (member) {
 			if (msg.member.highestRole.comparePositionTo(member.highestRole) <= 0) throw new UserInputError('You do not have the ability to ban that user!')
 			if (!member.bannable) throw new UserInputError('The bot isn\'t able to ban the user. Check the bot\'s permissions and whether the user has a role higher than the bot role.')
@@ -10,7 +10,7 @@ module.exports = {
 			.catch(error => (new UserInputError(`Couldn't ban ${member}. ${error}`)))
 		}
 		else return msg.guild.ban(usr, reason)
-		.then(user => {return {content: `**${user.user ? user.user.tag : user.tag || user}** successfully banned by **${msg.author.tag}** for: ${reason}`}})
+		.then(one => {return {content: `**${one}** successfully banned by **${msg.author.tag}** for: ${reason}`}})
 		.catch(error => {throw new UserInputError(`Couldn't ban ${member}. ${error}`)})
 	},
 	cat: 'mod',

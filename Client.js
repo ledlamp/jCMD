@@ -17,7 +17,7 @@ module.exports = class extends Discord.Client {
 				}
 				while (this.presenceHtr.length > 30) this.presenceHtr.shift()
 				this.presenceHtr.push(pick)
-				client.user.setActivity(this.presences[pick])
+				client.user.setActivity(this.presences[pick]).catch(()=>undefined)
 			},
 			pastaHtr: [],
 			paste: function() {
@@ -91,7 +91,7 @@ module.exports = class extends Discord.Client {
 			},
 			getInv: function (str1) {
 				let reg = /(?:discordapp\.com\/invite|discord.gg)\/([a-zA-Z0-9\-]+)/g, array1, array2 = []
-				while ((array1 = reg.exec(str1)) !== null) array2.push(array1[1])
+				while ((array1 = reg.exec(str1))) array2.push(array1[1])
 				return array2
 			},
 			checkInv: async function (code) {
@@ -136,7 +136,7 @@ module.exports = class extends Discord.Client {
 					}
 					if (this.fields[x].value !== '') x++
 				}
-				if (this.fields[x] && this.fields[x].value == '') this.fields.pop()
+				if (this.fields[x] && this.fields[x].value === '') this.fields.pop()
 			}
 		}
 		this.cd = {

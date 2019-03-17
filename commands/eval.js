@@ -1,7 +1,6 @@
 module.exports = {
 	run: async function (msg, p) {
-		const resID = client.config.ownerID
-		let check = true, csl = '', buf = undefined
+		let check = true, csl = '', buf = Buffer.from('')
 		try {
 			csl = String(eval(p.join(' ')))
 			if (csl.length > 1800) buf = Buffer.from(csl)
