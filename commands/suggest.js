@@ -5,7 +5,8 @@ module.exports = {
 		return {content: 'Suggestion sent successfully.'}
 	},
 	cat: 'info',
-	cd: 5000,
+	cd: 3000,
 	args: ['suggestions'],
-	desc: 'Send suggestions to the bot developer using this command.'
+	desc: 'Send suggestions or report abnormal bot behaviour to the bot developer using this command.',
+	aliases: ['report']
 }
