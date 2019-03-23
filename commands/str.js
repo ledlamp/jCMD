@@ -73,7 +73,6 @@ module.exports = {
 		return {content: text}
 	},
 	cat: 'strp',
-	cd: 5000,
 	args: ['text | methods(number'],
 	desc: `Iterative string processing command. Separate text and methods using the pipe character | between spaces. Methods:
 *aest(number* : like the \`aest const\` command.
@@ -83,6 +82,7 @@ module.exports = {
 *ita* : Italic.
 *bold* : Bold.
 *code* : Wraps the string around a pair of backticks.
+*codeblock* : Puts the string in a code block.
 *drag(number* : Repeats each character for a number of times.
 *regind* : Turns any character belonging to the modern English alphabet into a regional indicator emoji containing the same letter.
 *circle* : Same as \`regind\` but converts letters to circled letters.
