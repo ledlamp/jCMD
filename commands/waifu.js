@@ -12,5 +12,6 @@ module.exports = {
 		})
 	},
 	cat: 'fun',
+	cd: 3000,
 	desc: 'Fetches a random waifu image from Reddit.'
 }

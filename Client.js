@@ -144,7 +144,7 @@ module.exports = class extends Discord.Client {
 		}
 		this.cd = {
 			users: new Set(),
-			addCooldown: function (id, interval = 2000) {
+			addCooldown: function (id, interval = 1000) {
 				this.users.add(id)
 				client.setTimeout(function () {
 					client.cd.users.delete(id)

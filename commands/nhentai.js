@@ -91,5 +91,5 @@ module.exports = {
 	cat: 'fun',
 	desc: 'Infinite doujinshi analysis fun! Batteries and FBI not included.\nThis command is somewhat the product of reverse engineering u/Loli-Tag-Bot.',
 	nsfw: true,
-	cd: 3000
+	cd: 2000
 }

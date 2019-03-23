@@ -6,7 +6,7 @@ module.exports = {
 		setTimeout(function() {msg.channel.send('I\'m a gnome, and you\'ve been GNOOOMED\'!! ' + client.emojis.get('528847384223023104').toString()).catch(()=>{})}, 5400)
 	},
 	cat: 'fun',
-	cd: 8000,
+	cd: 5000,
 	desc: 'Gnome your chums with this super awesome command!',
 	botPerm: 'USE_EXTERNAL_EMOJIS'
 }
