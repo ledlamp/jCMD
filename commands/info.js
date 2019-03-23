@@ -6,5 +6,6 @@ module.exports = {
 		}
 	},
 	cat: 'info',
-	desc: 'Shows information about the bot.'
+	desc: 'Shows information about the bot.',
+	aliases: ['about']
 }

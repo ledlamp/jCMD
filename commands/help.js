@@ -63,6 +63,6 @@ module.exports = {
 		}
 	},
 	cat: 'info',
-	cd: 3000,
-	desc: 'Shows available commands or information about mentioned command.\nSomehow, this is one of the most complex commands ever written for this bot. Part of it even lies in the bot\'s main code file.'
+	desc: 'Shows available commands or information about mentioned command.\nSomehow, this is one of the most complex commands ever written for this bot. Part of it even lies in the bot\'s main code file.',
+	aliases: ['h']
 }
