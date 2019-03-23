@@ -5,7 +5,7 @@ module.exports = {
 		else {
 			let user = member.user
 			return {
-				options: {embed: client.util.mkEmbed(user.tag, `Profile picture of **${user.tag}**`, undefined, user.displayAvatarURL)}
+				options: {embed: client.util.mkEmbed(undefined, `Profile picture of **${user.tag}**`, undefined, user.displayAvatarURL)}
 			}
 		}
 	},
@@ -17,7 +17,6 @@ module.exports = {
 	},
 	noParseDesc: 'Shows your own profile picture.' ,
 	cat: 'util',
-	cd: 3000,
 	args: ['user ID/mention/username/tag'],
 	desc: 'Gets the mentioned user\'s profile picture. You can only get profile pictures of people in this server, or the bot and yourself if this command is done in a DM channel.'
 }
