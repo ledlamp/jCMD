@@ -24,14 +24,7 @@ let client = new Client({disableEveryone: true})
 Object.assign(global, {client})
 
 // Eval through console
-process.openStdin().on('data', function (input) {
-	let msg = input.toString()
-	try {
-		console.log(util.inspect(eval(msg), {colors: true}))
-	} catch (err) {
-		if (err) console.log(err)
-	}
-})
+require('repl').start()
 
 // Login
 console.time('login')
