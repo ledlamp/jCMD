@@ -42,7 +42,7 @@ module.exports = {
 					if (y < image.bitmap.height) setImmediate(()=>dl(y))
 					else image.getBufferAsync(Jimp.MIME_PNG).then(function (buffer) {
 						msg.channel.stopTyping()
-						mdel.delete().catch(()=>undefined)
+						if (mdel) mdel.delete().catch(()=>undefined)
 						res({
 							content: 'Done. Here is what all of you sick people have been waiting for.',
 							options: new Discord.Attachment(buffer, 'demonisedOutput.png')

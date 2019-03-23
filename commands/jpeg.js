@@ -32,7 +32,7 @@ module.exports = {
 			.resize(Math.floor(image.bitmap.width / 2.5 + 256), Jimp.AUTO)
 			.quality(5)
 			msg.channel.stopTyping()
-			mdel.delete().catch(()=>undefined)
+			if (mdel) mdel.delete().catch(()=>undefined)
 			return {
 				content: 'Extra crunchy.',
 				options: new Discord.Attachment(await image.getBufferAsync(Jimp.MIME_JPEG), 'jpegifiedOutput.jpg')

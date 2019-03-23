@@ -52,7 +52,7 @@ module.exports = {
 					if (y < image.bitmap.height) setImmediate(()=>dl(y))
 					else image.getBufferAsync(Jimp.MIME_PNG).then(function (buffer) {
 						msg.channel.stopTyping()
-						mdel.delete().catch(()=>undefined)
+						if (mdel) mdel.delete().catch(()=>undefined)
 						res({
 							content: 'Edge\'d, just for you honey.',
 							options: new Discord.Attachment(buffer, 'edgedOutput.png')
