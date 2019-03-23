@@ -1,7 +1,7 @@
 module.exports = {
 	run: async function (msg) {
 		msg.channel.startTyping()
-		let image = msg.attachments.first()
+		let image = msg.attachments.first(), mdel
 		if (!image || !image.width) {
 			let lastMsgs = await msg.channel.fetchMessages({ limit: 10 }), found = false
 			lastMsgs.map(m => {
@@ -14,7 +14,7 @@ module.exports = {
 				if (attch && attch.width && (attch.url.endsWith('.png') || attch.url.endsWith('.jpg') || attch.url.endsWith('.jpeg'))) {
 					found = true
 					image = attch
-					if (m.author.id === client.user.id) m.delete().catch(()=>undefined)
+					if (m.author.id === client.user.id) mdel = m
 				}
 			})
 		}
@@ -32,8 +32,9 @@ module.exports = {
 			.resize(Math.floor(image.bitmap.width / 2.5 + 256), Jimp.AUTO)
 			.quality(5)
 			msg.channel.stopTyping()
+			mdel.delete().catch(()=>undefined)
 			return {
-				content: 'Crunchy.',
+				content: 'Extra crunchy.',
 				options: new Discord.Attachment(await image.getBufferAsync(Jimp.MIME_JPEG), 'jpegifiedOutput.jpg')
 			}
 		})

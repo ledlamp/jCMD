@@ -2,7 +2,7 @@ function scanAround(x,y,w,h,func){for(let offX=-1;offX<2;offX++)for(let offY=-1;
 module.exports = {
 	run: async function (msg) {
 		msg.channel.startTyping()
-		let image = msg.attachments.first()
+		let image = msg.attachments.first(), mdel
 		if (!image || !image.width) {
 			let lastMsgs = await msg.channel.fetchMessages({ limit: 10 }), found = false
 			lastMsgs.map(m => {
@@ -15,7 +15,7 @@ module.exports = {
 				if (attch && attch.width && (attch.url.endsWith('.png') || attch.url.endsWith('.jpg') || attch.url.endsWith('.jpeg'))) {
 					found = true
 					image = attch
-					if (m.author.id === client.user.id) m.delete().catch(()=>undefined)
+					if (m.author.id === client.user.id) mdel = m
 				}
 			})
 		}
@@ -30,28 +30,40 @@ module.exports = {
 		return Jimp.read(image.url)
 		.then(async function (image) {
 			let data2 = Buffer.from(image.bitmap.data)
-			for (let y = 0; y < image.bitmap.height; y++)
-				for (let x = 0; x < image.bitmap.width; x++) {
-					let arr = [[],[],[]], idx = (image.bitmap.width * y + x) << 2
-					scanAround(x, y, image.bitmap.width, image.bitmap.height, (fx, fy) => {
-						let idxf = (image.bitmap.width * fy + fx) << 2
-						for (let f = 0; f < 3; f++) arr[f].push(Math.abs(data2[idxf + f] - data2[idx + f]))
+			return new Promise(function (res) {
+				function dl (y) {
+					console.time('demon')
+					for (let x = 0; x < image.bitmap.width; x++) {
+						let arr = [[],[],[]], idx = (image.bitmap.width * y + x) << 2
+						scanAround(x, y, image.bitmap.width, image.bitmap.height, (fx, fy) => {
+							let idxf = (image.bitmap.width * fy + fx) << 2
+							for (let f = 0; f < 3; f++) arr[f].push(Math.abs(data2[idxf + f] - data2[idx + f]))
+						})
+						let mx = Math.max(Math.max(arr[0][0], arr[0][1], arr[0][2]), Math.max(arr[1][0], arr[1][1], arr[1][2]), Math.max(arr[2][0], arr[2][1], arr[2][2])) / 255 + 1, hsv = rgb2hsv(data2[idx] / 255, data2[idx + 1] / 255, data2[idx + 2] / 255)
+						hsv[1] *= Math.pow(mx, 20)
+						if (hsv[1] > 1) hsv[1] = 1
+						let rgb = hsv2rgb(hsv[0], hsv[1], hsv[2])
+						image.bitmap.data[idx] = rgb[0] * 255
+						image.bitmap.data[idx + 1] = rgb[1] * 255
+						image.bitmap.data[idx + 2] = rgb[2] * 255
+					}
+					console.timeEnd('demon')
+					y++
+					if (y < image.bitmap.height) setImmediate(()=>dl(y))
+					else image.getBufferAsync(Jimp.MIME_PNG).then(function (buffer) {
+						msg.channel.stopTyping()
+						mdel.delete().catch(()=>undefined)
+						res({
+							content: 'Edge\'d, just for you honey.',
+							options: new Discord.Attachment(buffer, 'edgedOutput.png')
+						})
 					})
-					let mx = Math.max(Math.max(arr[0][0], arr[0][1], arr[0][2]), Math.max(arr[1][0], arr[1][1], arr[1][2]), Math.max(arr[2][0], arr[2][1], arr[2][2])) / 255 + 1, hsv = rgb2hsv(data2[idx] / 255, data2[idx + 1] / 255, data2[idx + 2] / 255)
-					hsv[1] *= Math.pow(mx, 10)
-					if (hsv[1] > 1) hsv[1] = 1
-					let rgb = hsv2rgb(hsv[0], hsv[1], hsv[2])
-					image.bitmap.data[idx] = rgb[0] * 255
-					image.bitmap.data[idx + 1] = rgb[1] * 255
-					image.bitmap.data[idx + 2] = rgb[2] * 255
 				}
-			msg.channel.stopTyping()
-			return {
-				content: 'Edge\'d, just for you honey.',
-				options: new Discord.Attachment(await image.getBufferAsync(Jimp.MIME_PNG), 'edgedOutput.png')
-			}
+				return dl(0)
+			})
 		})
 	},
 	cat: 'img',
+	botPerm: "ATTACH_FILES",
 	desc: 'An image manipulation command which darkens pixels near edges. Works best with cartoon images, especially anime.\nThis command will whether take the attached image in the message containing the command or the last image sent in the 10 latest sent messages.'
 }
