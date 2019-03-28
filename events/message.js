@@ -29,8 +29,8 @@ module.exports = async function (msg) {
 		if (obj.own && (msg.author.id !== client.config.ownerID)) return client.util.throw(msg, client.lang.paste())
 		if (obj.reqGuild && isDM) return client.util.throw(msg, 'You can only do that command in a server text channel.')
 		if (obj.nsfw && !msg.channel.nsfw) return client.util.throw(msg, 'You can only do that command in a NSFW channel.')
-		if (msg.author.id !== client.config.ownerID && !noParse && obj.perm && !msg.channel.permissionsFor(msg.member).has(obj.perm)) return client.util.throw(msg, 'Insufficient permissions. You are missing at least one of: `' + client.util.permName(obj.perm) + '`.')
-		if (obj.botPerm && !myperms.has(obj.botPerm)) return client.util.throw(msg, 'Insufficient permissions for the bot. The bot is missing at least one of: `' + client.util.permName(obj.botPerm) + '`.')
+		if (!isDM && (msg.author.id !== client.config.ownerID) && !noParse && obj.perm && !msg.channel.permissionsFor(msg.member).has(obj.perm)) return client.util.throw(msg, 'Insufficient permissions. You are missing at least one of: `' + client.util.permName(obj.perm) + '`.')
+		if (!isDM && obj.botPerm && !myperms.has(obj.botPerm)) return client.util.throw(msg, 'Insufficient permissions for the bot. The bot is missing at least one of: `' + client.util.permName(obj.botPerm) + '`.')
 		if (obj.run) {
 			if (noParse) {
 				if (!obj.noParse) return client.util.throw(msg, 'Not enough arguments. Arguments needed: ' + client.util.argSq(obj.args))
