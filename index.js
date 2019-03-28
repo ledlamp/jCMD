@@ -2,7 +2,11 @@
 process.on('unhandledRejection', err => console.log(util.inspect(err)))
 
 // Custom error class for throwing and catching errors caused by user input and other expected errors
-const UserInputError = class extends Error {}; global.UserInputError = UserInputError
+const UserInputError = class extends Error {
+	toString() {
+		return this.message
+	}
+}
 
 // Core Node.js modules
 const fs = require('fs')
