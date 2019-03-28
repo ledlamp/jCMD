@@ -9,8 +9,8 @@ module.exports = class extends Discord.Client {
 		this.lang = {
 			perms: require('./language/perms.json').perms,
 			permnames: require('./language/perms.json').names,
-			presences: require('./language/plays.json').text,
-			pasta: require('./language/pasta.json').text,
+			presences: require('./language/plays.json'),
+			pasta: require('./language/pasta.json'),
 			presenceHtr: [],
 			play: function() {
 				let pick, yet = true
