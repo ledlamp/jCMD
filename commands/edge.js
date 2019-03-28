@@ -23,7 +23,7 @@ module.exports = {
 			msg.channel.stopTyping()
 			throw new UserInputError('No images found in the last 10 messages here.')
 		}
-		if (image.width * image.height > 3200000) {
+		if (image.width * image.height > client.config.maxImgSize) {
 			msg.channel.stopTyping()
 			throw new UserInputError(`Image too large. (${image.width} × ${image.height})`)
 		}

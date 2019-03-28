@@ -22,7 +22,7 @@ module.exports = {
 			msg.channel.stopTyping()
 			throw new UserInputError('No images found in the last 10 messages here.')
 		}
-		if (image.width * image.height > 3200000) {
+		if (image.width * image.height > client.config.maxImgSize) {
 			msg.channel.stopTyping()
 			throw new UserInputError(`Image too large. (${image.width} × ${image.height})`)
 		}
@@ -40,5 +40,6 @@ module.exports = {
 		})
 	},
 	cat: 'img',
+	botPerm: "ATTACH_FILES",
 	desc: 'An image-manipulation command which JPEG-ifies images.\nThis command will whether take the attached image in the message containing the command or the last image sent in the 10 latest sent messages.'
 }

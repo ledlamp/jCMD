@@ -22,7 +22,7 @@ module.exports = {
 			msg.channel.stopTyping()
 			throw new UserInputError('No images found in the last 10 messages here.')
 		}
-		if (image.width * image.height > 3200000) {
+		if (image.width * image.height > client.config.maxImgSize) {
 			msg.channel.stopTyping()
 			throw new UserInputError(`Image too large. (${image.width} × ${image.height})`)
 		}
@@ -30,14 +30,12 @@ module.exports = {
 		.then(function (image) {
 			return new Promise(function (res) {
 				function dl (y) {
-					console.time('demon')
 					for (let x = 0; x < image.bitmap.width; x++) {
 						let idx = (image.bitmap.width * y + x) << 2, foof = Math.round(Math.random()) ? 1.2 : 0.4
 						image.bitmap.data[idx] = Math.floor((image.bitmap.data[idx] + image.bitmap.data[idx + 1] + image.bitmap.data[idx + 2]) / 3 * foof)
 						image.bitmap.data[idx + 1] = Math.floor(Math.pow(image.bitmap.data[idx] / 255, 10) * 255)
 						image.bitmap.data[idx + 2] = Math.floor(image.bitmap.data[idx + 1] * 0.87)
 					}
-					console.timeEnd('demon')
 					y++
 					if (y < image.bitmap.height) setImmediate(()=>dl(y))
 					else image.getBufferAsync(Jimp.MIME_PNG).then(function (buffer) {
