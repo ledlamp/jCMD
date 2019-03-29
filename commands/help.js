@@ -17,7 +17,7 @@ function deepHelp(pre, object, p, his) {
 			}
 			if (obj.perm) fields[x++] = { name: 'User permissions', value: client.util.permName(obj.perm) }
 			if (obj.botPerm) fields[x] = { name: 'Bot permissions', value: client.util.permName(obj.botPerm) }
-			return client.util.mkEmbed(`❯ ${nsfw ? '[NSFW] ' : ''}Help on ` + pre + his, '❯ ' + obj.desc + ' ' + suf, fields)
+			return client.util.mkEmbed(`❯ ${nsfw ? '[NSFW] ' : ''}Help on ` + pre + his, '❯ ' + obj.desc + suf, fields)
 		}
 		else {
 			let retv
