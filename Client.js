@@ -69,9 +69,16 @@ module.exports = class extends Discord.Client {
 				let regexr = /^<@!?(\d{17,18})>$/.exec(thing) || /^(\d{17,18})$/.exec(thing)
 				if (regexr) return guild.members.get(regexr[1])
 				let h = thing.toLowerCase()
-				return guild.members.find(function (member) {
+				let mem = guild.members.find(function (member) {
+					return member.nickname && member.nickname.toLowerCase() === h || member.user.tag.toLowerCase() === h
+				})
+				if (!mem) mem = guild.members.find(function (member) {
 					return member.nickname && member.nickname.toLowerCase().startsWith(h) || member.user.tag.toLowerCase().startsWith(h)
 				})
+				if (!mem) mem = guild.members.find(function (member) {
+					return member.nickname && member.nickname.toLowerCase().includes(h) || member.user.tag.toLowerCase().includes(h)
+				})
+				return mem
 			},
 			getMemberStrict: function (msg, thing) {
 				let regexr = /^<@!?(\d{17,18})>$/.exec(thing) || /^(\d{17,18})$/.exec(thing)
