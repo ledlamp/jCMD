@@ -43,11 +43,26 @@ module.exports = class extends Discord.Client {
 			},
 			throw: function (msg, reply, opt) {
 				msg.react('❌').catch(()=>undefined)
-				return msg.channel.send(reply, opt).catch(()=>undefined)
+				return new Promise (function (res) {
+					msg.channel.send(reply, opt)
+					.then(function (out) {
+						res(out)
+					})
+					.catch(function () {
+						res(null)
+					})
+				})
 			},
 			done: function (msg, reply, opt) {
-				msg.react('✅').catch(()=>undefined)
-				return msg.channel.send(reply, opt).catch(()=>undefined)
+				return new Promise (function (res) {
+					msg.channel.send(reply, opt)
+					.then(function (out) {
+						res(out)
+					})
+					.catch(function () {
+						res(null)
+					})
+				})
 			},
 			mkEmbed: function (title, desc, fields, image) {
 				return { color: client.config.embedColor, title: title, description: desc, fields: fields, image: image ? { url: image } : undefined }
@@ -70,6 +85,8 @@ module.exports = class extends Discord.Client {
 				if (regexr) return guild.members.get(regexr[1])
 				let h = thing.toLowerCase()
 				return guild.members.find(function (member) {
+					return member.nickname && member.nickname.toLowerCase() === h || member.user.username.toLowerCase() === h || member.user.tag.toLowerCase() === h
+				}) || guild.members.find(function (member) {
 					return member.nickname && member.nickname.toLowerCase().startsWith(h) || member.user.tag.toLowerCase().startsWith(h)
 				})
 			},
