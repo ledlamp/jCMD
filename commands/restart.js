@@ -1,5 +1,5 @@
 module.exports = {
-	run: async function (msg, p) {
+	run: async function (msg) {
 		msg.channel.send('See you later. Hopefully. ;)').catch(()=>undefined)
 		client.destroy().then(()=>require('child_process').spawn('pm2', ['restart','index'])).catch(()=>undefined)
 	},
