@@ -1,10 +1,7 @@
 module.exports = async function (msg) {
-	let args, isDM = msg.channel.type === 'dm', ment = isDM ? undefined : msg.guild.me.toString() + ' ', myperms = isDM ? undefined : msg.channel.permissionsFor(msg.guild.me), cfg = isDM ? {prefix: ''} : client.data.guilds.get(msg.guild.id) || {}, prefix = cfg.prefix || client.config.prefix
+	let args, isDM = msg.channel.type === 'dm', ment = isDM ? undefined : msg.guild.me.toString() + ' ', myperms = isDM ? undefined : msg.channel.permissionsFor(msg.guild.me), cfg = isDM ? {prefix: ''} : client.data.guilds.get(msg.guild.id) || {}, prefix = isDM ? '' : (cfg.prefix || client.config.prefix)
 	if (msg.author.bot || msg.type !== 'DEFAULT' || (!isDM && !myperms.has('SEND_MESSAGES'))) return
-	if (isDM) {
-		isDM = true
-		args = msg.content.split(/ +/g)
-	}
+	if (isDM) args = msg.content.split(/ +/g)
 	else if (msg.content.startsWith(ment)) args = msg.content.slice(ment.length).trim().split(/ +/g)
 	else if (msg.content.startsWith(prefix)) args = msg.content.slice(prefix.length).trim().split(/ +/g)
 	else {
@@ -62,10 +59,14 @@ module.exports = async function (msg) {
 			if(msg.author.id !== client.config.ownerID) client.cd.addCooldown(msg.author.id, obj.cd)
 		}
 		else {
-			if (!p[0]) return client.commands.get('help').run(msg, his.split(' ')).then(({content, options}) => client.util.done(msg, content, options))
+			if (!p[0]) return client.commands.get('help').run(msg, his.split(' ')).then(function (rep) {
+				client.util.done(msg, rep.content, rep.options)
+			})
 			let subc = p.shift()
 			let clip = subc.length > 15 ? subc.slice(0, 15) + '...' : subc // Prevent user from entering long subcommands and making the bot spam
-			if (!Object.keys(obj.subCmd).includes(subc)) return client.util.throw(msg, `Invalid subcommand \`${clip}\`. Do \`${prefix}help ${his}\` for more information.`)
+			if (!Object.keys(obj.subCmd).includes(subc)) return client.commands.get('help').run(msg, his.split(' ')).then(function (rep) {
+				client.util.throw(msg, `The subcommand \`${clip}\` does not exist. Here's some more information on \`${prefix + his}\`.`, rep.options)
+			})
 			deepCmd(obj.subCmd[subc], p, his + ' ' + subc)
 		}
 	}

@@ -51,7 +51,7 @@ module.exports = {
 				break
 			case 'circle':
 				text = text.toLowerCase().replace(/[a-z]/g, function(char) {
-					return String.fromCharCode(char.charCodeAt(0) + 9327) + ' '
+					return String.fromCharCode(char.charCodeAt(0) + 9327)
 				})
 				break
 			case 'regind':
