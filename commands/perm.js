@@ -1,7 +1,7 @@
 module.exports = {
 	run: async function(msg, p) {
 		let user
-		if (p && (/true/i).test(p[0])) user = client.user
+		if (p && p[0].toLowerCase() === 'true') user = client.user
 		else user = msg.member.user
 		let permlist = `All permissions for **${user.tag}** and their states: \n\`\`\`md\n`
 		for (let i = 0; i < client.lang.perms.length; i++) {
