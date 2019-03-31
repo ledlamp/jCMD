@@ -27,5 +27,5 @@ module.exports = function () {
 		})
 	})
 	client.lang.play()
-	client.setInterval(function () {client.lang.play()}, 20000)
+	client.setInterval(function () {client.lang.play()}, 30000)
 }
