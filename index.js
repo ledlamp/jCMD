@@ -3,6 +3,9 @@ process.on('unhandledRejection', err => console.log(util.inspect(err)))
 
 // Custom error class for throwing and catching errors caused by user input and other expected errors
 const UserInputError = class extends Error {
+	constructor(message) {
+		super(message)
+	}
 	toString() {
 		return this.message
 	}
