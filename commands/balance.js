@@ -1,6 +1,7 @@
 module.exports = {
 	run: async function (msg) {
-		return {content: `You have ${client.data.users.get(msg.author.id).bal || 0} credits.`}
+		let d = (client.data.users.get(msg.author.id) || {}).bal
+		return {content: `You have ${d || 0} credit${d === 1 ? '' : 's'}.`}
 	},
 	cat: 'fun',
 	desc: 'Check how much ££££ ya got in yer pockets.',
