@@ -1,4 +1,4 @@
-module.exports = async function (msg) {
+function handler (msg, respr, thr) {
 	let args, isDM = msg.channel.type === 'dm', ment = isDM ? undefined : msg.guild.me.toString() + ' ', myperms = isDM ? undefined : msg.channel.permissionsFor(msg.guild.me), cfg = isDM ? {prefix: ''} : client.data.guilds.get(msg.guild.id) || {}, prefix = isDM ? '' : (cfg.prefix || client.config.prefix)
 	if (msg.author.bot || msg.type !== 'DEFAULT' || (!isDM && !myperms.has('SEND_MESSAGES'))) return
 	if (isDM) args = msg.content.split(/ +/g)
@@ -24,66 +24,131 @@ module.exports = async function (msg) {
 		client.setTimeout(function () {m.delete().catch(()=>undefined)}, 1500)
 	}).catch(()=>undefined)
 	function deepCmd(obj, p, his) {
-		function deller (m) {
-			if (!m) return
-			function f (del) {
-				if (del.id === msg.id) {
-					client.off('messageDelete', f)
-					client.clearTimeout(t)
-					m.delete().catch(()=>undefined)
-				}
-			}
-			let t = client.setTimeout(function () {
-				client.off('messageDelete', f)
-			}, 10000)
-			client.on('messageDelete', f)
-		}
 		let noParse = obj.args && (p.length < obj.args.length)
-		if (obj.own && (msg.author.id !== client.config.ownerID)) return client.util.throw(msg, client.lang.paste()).then(deller)
-		if (obj.reqGuild && isDM) return client.util.throw(msg, 'You can only do that command in a server text channel.').then(deller)
-		if (obj.nsfw && !msg.channel.nsfw) return client.util.throw(msg, 'You can only do that command in a NSFW channel.').then(deller)
-		if (!isDM && (msg.author.id !== client.config.ownerID) && !noParse && obj.perm && !msg.channel.permissionsFor(msg.member).has(obj.perm)) return client.util.throw(msg, 'Insufficient permissions. You are missing at least one of: `' + client.util.permName(obj.perm) + '`.').then(deller)
-		if (!isDM && obj.botPerm && !myperms.has(obj.botPerm)) return client.util.throw(msg, 'Insufficient permissions for the bot. The bot is missing at least one of: `' + client.util.permName(obj.botPerm) + '`.').then(deller)
+		if (obj.own && (msg.author.id !== client.config.ownerID)) return thr(client.lang.paste())
+		if (obj.reqGuild && isDM) return thr('You can only do that command in a server text channel.')
+		if (obj.nsfw && !msg.channel.nsfw) thr('You can only do that command in a NSFW channel.')
+		if (!isDM && (msg.author.id !== client.config.ownerID) && !noParse && obj.perm && !msg.channel.permissionsFor(msg.member).has(obj.perm)) return thr('Insufficient permissions. You are missing at least one of: `' + client.util.permName(obj.perm) + '`.')
+		if (!isDM && obj.botPerm && !myperms.has(obj.botPerm)) return thr('Insufficient permissions for the bot. The bot is missing at least one of: `' + client.util.permName(obj.botPerm) + '`.')
 		if (obj.run) {
 			if (noParse) {
-				if (!obj.noParse) return client.util.throw(msg, 'Not enough arguments. Arguments needed: ' + client.util.argSq(obj.args)).then(deller)
-				else return obj.noParse(msg)
-				.then (function (resp) {
-					if (resp && (resp.content || resp.options))
-						client.util.done(msg, resp.content, resp.options).then(deller)
-				})
-				.catch (function (err) {
-					if (err instanceof UserInputError) client.util.throw(msg, err.toString()).then(deller)
-					else {
-						client.users.get(client.config.ownerID).send(`UNEXPECTED ERROR OCCURED\nMESSAGE CONTENT:\n\`\`\`${msg.content}\`\`\`\nCOMMAND EXECUTED: \`${his}\`\nERROR:\n\`\`\`${util.inspect(err)}\`\`\``)
-						client.util.throw(msg, 'Ouch! jCMD has encountered an unexpected error, and it has been automatically reported to the bot developer. Thank you for your cooperation!').then(deller)
-					}
-				})
+				if (!obj.noParse) return thr('Not enough arguments. Arguments needed: ' + client.util.argSq(obj.args))
+				else {
+					if (msg.author.id !== client.config.ownerID) client.cd.add(msg.author.id)
+					obj.noParse(msg)
+					.then(function (resp) {
+						client.setTimeout(function () {
+							client.cd.delete(msg.author.id)
+						}, obj.cd || 1000)
+						if (resp && (resp.content || resp.options)) respr(resp.content, resp.options, resp.traces)
+					})
+					.catch(function (err) {
+						client.setTimeout(function () {
+							client.cd.delete(msg.author.id)
+						}, obj.cd || 1000)
+						if (err instanceof UserInputError) thr(err.toString())
+						else {
+							client.users.get(client.config.ownerID).send(`UNEXPECTED ERROR OCCURED\nMESSAGE CONTENT:\n\`\`\`${msg.content}\`\`\`\nCOMMAND EXECUTED: \`${his}\`\nERROR:\n\`\`\`${util.inspect(err)}\`\`\``)
+							thr('Ouch! jCMD has encountered an unexpected error, and it has been automatically reported to the bot developer. Thank you for your cooperation!')
+						}
+					})
+				}
 			}
+			if (msg.author.id !== client.config.ownerID) client.cd.add(msg.author.id)
 			obj.run(msg, args)
-			.then (function (resp) {
-				if (resp && (resp.content || resp.options)) client.util.done(msg, resp.content, resp.options).then(deller)
+			.then(function (resp) {
+				client.setTimeout(function () {
+					client.cd.delete(msg.author.id)
+				}, obj.cd || 1000)
+				if (resp && (resp.content || resp.options)) respr(resp.content, resp.options, resp.traces)
 			})
-			.catch (function (err) {
-				if (err instanceof UserInputError) client.util.throw(msg, err.toString()).then(deller)
+			.catch(function (err) {
+				client.setTimeout(function () {
+					client.cd.delete(msg.author.id)
+				}, obj.cd || 1000)
+				if (err instanceof UserInputError) thr(err.toString())
 				else {
 					client.users.get(client.config.ownerID).send(`UNEXPECTED ERROR OCCURED\nMESSAGE CONTENT: \`\`\`${msg.content}\`\`\`\nCOMMAND EXECUTED: \`${his}\`\nERROR:\n\`\`\`${util.inspect(err)}\`\`\``)
-					client.util.throw(msg, 'Ouch! jCMD has encountered an unexpected error, and it has been automatically reported to the bot developer. Thank you for your cooperation!').then(deller)
+					thr('Ouch! jCMD has encountered an unexpected error, and it has been automatically reported to the bot developer. Thank you for your cooperation!')
 				}
 			})
-			if (msg.author.id !== client.config.ownerID) client.cd.addCooldown(msg.author.id, obj.cd)
 		}
 		else {
 			if (!p[0]) return client.commands.get('help').run(msg, his.split(' ')).then(function (rep) {
-				client.util.done(msg, rep.content, rep.options).then(deller)
+				respr(rep.content, rep.options, rep.traces)
 			})
 			let subc = p.shift()
 			let clip = subc.length > 15 ? subc.slice(0, 15) + '...' : subc // Prevent user from entering long subcommands and making the bot spam
 			if (!Object.keys(obj.subCmd).includes(subc)) return client.commands.get('help').run(msg, his.split(' ')).then(function (rep) {
-				client.util.throw(msg, `The subcommand \`${clip}\` does not exist. Here's some more information on \`${prefix + his}\`.`, rep.options).then(deller)
+				thr(`The subcommand \`${clip}\` does not exist. Here's some more information on \`${prefix + his}\`.`, rep.options)
 			})
 			deepCmd(obj.subCmd[subc], p, his + ' ' + subc)
 		}
 	}
 	deepCmd(cmdst, args, command)
+}
+
+module.exports = async function (msg) {
+	function deller (m, x, tr) {
+		if (!m || x > 10) {
+			client.off('messageDelete', f)
+			client.off('messageUpdate', e)
+			client.clearTimeout(t)
+			return
+		}
+		function f (del) {
+			if (del.id === msg.id) {
+				client.off('messageDelete', f)
+				client.off('messageUpdate', e)
+				client.clearTimeout(t)
+				if (tr) tr.map(function (d) {
+					if (d.deletable) d.delete().catch(()=>undefined)
+				})
+				m.delete().catch(()=>undefined)
+			}
+		}
+		function e (o, n) {
+			if (o.id === msg.id) {
+				client.off('messageDelete', f)
+				client.off('messageUpdate', e)
+				client.clearTimeout(t)
+				if (tr) tr.map(function (d) {
+					if (d.deletable) d.delete().catch(()=>undefined)
+				})
+				let rs = n.reactions.filter(function (r) {
+					return r.me
+				})
+				Promise.all(rs.map(function (r) {
+					return r.remove().then(function() {return Promise.resolve()}).catch(function() {return Promise.resolve()})
+				}))
+				.then(function () {
+					handler(n, function(c, o) {
+						m.edit(c, o).then(function () {
+							deller(m, ++x)
+						})
+					}, function (c, o) {
+						n.react('❌').catch(console.log)
+						m.edit(c, o).then(function () {
+							deller(m, ++x)
+						})
+					})
+				})
+			}
+		}
+		let t = client.setTimeout(function () {
+			client.off('messageDelete', f)
+			client.off('messageUpdate', e)
+		}, 20000)
+		client.on('messageDelete', f)
+		client.on('messageUpdate', e)
+	}
+	handler(msg, function(c, o, tr) {
+		client.util.done(msg, c, o).then(function (m) {
+			deller(m, 0, tr)
+		})
+	}, function (c, o) {
+		client.util.throw(msg, c, o).then(function (m) {
+			deller(m, 0)
+		})
+	})
 }
