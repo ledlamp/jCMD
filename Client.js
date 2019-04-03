@@ -159,18 +159,7 @@ module.exports = class extends Discord.Client {
 				if (this.fields[x] && this.fields[x].value === '') this.fields.pop()
 			}
 		}
-		this.cd = {
-			users: new Set(),
-			addCooldown: function (id, interval = 1000) {
-				this.users.add(id)
-				client.setTimeout(function () {
-					client.cd.users.delete(id)
-				}, interval)
-			},
-			has: function (thing) {
-				return this.users.has(thing)
-			}
-		}
+		this.cd = new Set()
 		this.commands = new Enmap()
 		fs.readdir('./commands/', function (err, files) {
 			if (err) return console.error(err)
