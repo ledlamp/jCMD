@@ -17,6 +17,7 @@ module.exports = function () {
 		client.data.guilds.map(function (v, k) {
 			if (!client.guilds.has(k)) return client.data.guilds.delete(k)
 			let guild = client.guilds.get(k)
+			if (!guild.available) return
 			if (v.autoDel) v.autoDel.map(function (ch) {
 				if (!guild.channels.has(ch)) v.autoDel.splice(v.autoDel.indexOf(ch), 1)
 			})
