@@ -32,7 +32,6 @@ module.exports = {
 			let data2 = Buffer.from(image.bitmap.data)
 			return new Promise(function (res) {
 				function dl (y) {
-					console.time('demon')
 					for (let x = 0; x < image.bitmap.width; x++) {
 						let arr = [[],[],[]], idx = (image.bitmap.width * y + x) << 2
 						scanAround(x, y, image.bitmap.width, image.bitmap.height, (fx, fy) => {
@@ -47,7 +46,6 @@ module.exports = {
 						image.bitmap.data[idx + 1] = rgb[1] * 255
 						image.bitmap.data[idx + 2] = rgb[2] * 255
 					}
-					console.timeEnd('demon')
 					y++
 					if (y < image.bitmap.height) setImmediate(()=>dl(y))
 					else image.getBufferAsync(Jimp.MIME_PNG).then(function (buffer) {
