@@ -1,8 +1,15 @@
 module.exports = {
 	run: async function (msg, args) {
 		let ch = client.channels.get(client.config.suggestChID)
-		if (ch) ch.send(`\`\`\`${args.join(' ')}\`\`\`\nSuggested by **${msg.author.tag}**${msg.channel.type === 'text' ? ' in **' + msg.guild.name + '**' : ''}.`)
-		return {content: 'Suggestion sent successfully.'}
+		return Promise(function (res, rej) {
+			if (ch) ch.send(`\`\`\`${args.join(' ')}\`\`\`\nSuggested by **${msg.author.tag}**${msg.channel.type === 'text' ? ' in **' + msg.guild.name + '**' : ''}.`)
+			.then(function () {
+				res({content: 'Suggestion sent successfully.'})
+			})
+			.catch(function (e) {
+				rej(e)
+			})
+		})
 	},
 	cat: 'info',
 	cd: 3000,
