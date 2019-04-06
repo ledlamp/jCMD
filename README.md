@@ -8,7 +8,7 @@ The codebase has gone through its third rewrite, which improves a lot from the p
 jCMD can now look for messages containing invalid invites and delete them if configured to do so. It can also delete ones from people who left the guild.
 
 # How to set up this bot
-*I will assume that you are familiar with Node, the Linux command line, and how to edit a JSON file.*
+*I will assume that you are familiar with Node and how to edit a JSON file.*
 
 Do `npm install`. Rename the `config_template.json` to `config.json`, then modify the file's contents to the info you have. Add a folder named `data` and then make folders named `guilds` and `users` inside `data`.
 
