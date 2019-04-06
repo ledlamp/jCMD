@@ -14,5 +14,6 @@ module.exports = {
 	},
 	args: ['search query'], argCount: 1,
 	cat: 'fun',
-	desc: 'Find emojis across all servers the bot is in!'
+	desc: 'Find emojis across all servers the bot is in!',
+	aliases: ['emoji']
 }

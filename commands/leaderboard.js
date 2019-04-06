@@ -11,8 +11,10 @@ module.exports = {
 			if (x++ == 10) break
 			a.push(e)
 		}
-		return {content: 'Rich peeps who don\'t deserve no attention:\n' + c.map(function (v, k) {return `**${client.users.get(k).tag}**: ${v.bal} credits`}).join('\n')}
+		x = 0
+		return {content: 'Rich peeps who don\'t deserve no attention:\n```js\n' + c.map(function (v, k) {return `#${++x} - ${client.users.get(k).tag}:\n\t\t${v.bal} credits`}).join('\n\n') + '```'}
 	},
 	cat: 'fun',
-	desc: 'Shows the top 10 people with the most credits.'
+	desc: 'Shows the top 10 people with the most credits.',
+	aliases: ['top']
 }
