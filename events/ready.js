@@ -17,6 +17,9 @@ module.exports = function () {
 			})
 			client.data.writeGuild(k, v)
 		})
+		client.data.users.map(function (v, k) {
+			if (!client.users.has(k)) client.fetchUser(k)
+		})
 		// Load events
 		fs.readdir('./events/', function (err, files) {
 			if (err) return console.error(err)
