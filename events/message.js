@@ -24,7 +24,13 @@ function handler (msg, respr, thr) {
 			if (c > cfg.emjLim) msg.delete().then(function () {
 				d = true
 				return msg.channel.send(`${msg.author}, your message has been deleted for that it contains more emojis than allowed. (**${c}** > **${cfg.emjLim}**)`)
-			}).catch(()=>undefined)
+			})
+			.then(function (m) {
+				setTimeout(function () {
+					m.delete().catch(()=>undefined)
+				}, 5000)
+			})
+			.catch(()=>undefined)
 		}
 		return
 	}
