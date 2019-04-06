@@ -5,16 +5,27 @@ function handler (msg, respr, thr) {
 	else if (msg.content.startsWith(ment)) args = msg.content.slice(ment.length).trim().split(/ +/g)
 	else if (msg.content.toLowerCase().startsWith(prefix)) args = msg.content.slice(prefix.length).trim().split(/ +/g)
 	else {
+		let d = false
 		if (cfg.invScan && cfg.invScan.includes(msg.channel.id)) client.util.getInv(msg.content).map(function (code) {
 			client.util.checkInv(code).then(function (bool) {
-				if (!bool && msg.deletable) msg.delete().then(function () {
-					if (cfg.invNoti) {
-						let ch = cfg.invNoti === 'h' ? msg.channel : msg.guild.channels.get(cfg.invNoti)
-						if (ch) ch.send(`${msg.author}, your message has been deleted for that it contains an invalid invite.`).catch(()=>undefined)
-					}
-				}).catch(()=>undefined)
+				if (!bool && msg.deletable) {
+					d = true
+					msg.delete().then(function () {
+						if (cfg.invNoti) {
+							let ch = cfg.invNoti === 'h' ? msg.channel : msg.guild.channels.get(cfg.invNoti)
+							if (ch) ch.send(`${msg.author}, your message has been deleted for that it contains an invalid invite.`).catch(()=>undefined)
+						}
+					}).catch(()=>undefined)
+				}
 			})
 		})
+		if (!d && cfg.emjLim && cfg.emjChs && cfg.emjChs.includes(msg.channel.id) && msg.deletable) {
+			let c = client.util.countEmojis(msg.content)
+			if (c > cfg.emjLim) msg.delete().then(function () {
+				d = true
+				return msg.channel.send(`${msg.author}, your message has been deleted for that it contains more emojis than allowed. (**${c}** > **${cfg.emjLim}**)`)
+			}).catch(()=>undefined)
+		}
 		return
 	}
 	let command = args.shift().toLowerCase()
@@ -33,26 +44,25 @@ function handler (msg, respr, thr) {
 		if (obj.run) {
 			if (noParse) {
 				if (!obj.noParse) return thr('Not enough arguments. Arguments needed: ' + client.util.argSq(obj.args))
-				else {
-					if (msg.author.id !== client.config.ownerID) client.cd.add(msg.author.id)
-					obj.noParse(msg)
-					.then(function (resp) {
-						client.setTimeout(function () {
-							client.cd.delete(msg.author.id)
-						}, obj.cd || 1000)
-						if (resp && (resp.content || resp.options)) respr(resp.content, resp.options, resp.traces)
-					})
-					.catch(function (err) {
-						client.setTimeout(function () {
-							client.cd.delete(msg.author.id)
-						}, obj.cd || 1000)
-						if (err instanceof UserInputError) thr(err.toString())
-						else {
-							client.users.get(client.config.ownerID).send(`UNEXPECTED ERROR OCCURED\nMESSAGE CONTENT:\n\`\`\`${msg.content}\`\`\`\nCOMMAND EXECUTED: \`${his}\`\nERROR:\n\`\`\`${util.inspect(err)}\`\`\``)
-							thr('Ouch! jCMD has encountered an unexpected error, and it has been automatically reported to the bot developer. Thank you for your cooperation!')
-						}
-					})
-				}
+				if (msg.author.id !== client.config.ownerID) client.cd.add(msg.author.id)
+				obj.noParse(msg)
+				.then(function (resp) {
+					client.setTimeout(function () {
+						client.cd.delete(msg.author.id)
+					}, obj.cd || 1000)
+					if (resp && (resp.content || resp.options)) respr(resp.content, resp.options, resp.traces)
+				})
+				.catch(function (err) {
+					client.setTimeout(function () {
+						client.cd.delete(msg.author.id)
+					}, obj.cd || 1000)
+					if (err instanceof UserInputError) thr(err.toString())
+					else {
+						client.users.get(client.config.ownerID).send(`UNEXPECTED ERROR OCCURED\nMESSAGE CONTENT:\n\`\`\`${msg.content}\`\`\`\nCOMMAND EXECUTED: \`${his}\`\nERROR:\n\`\`\`${util.inspect(err)}\`\`\``)
+						thr('Ouch! jCMD has encountered an unexpected error, and it has been automatically reported to the bot developer. Thank you for your cooperation!')
+					}
+				})
+				return
 			}
 			if (msg.author.id !== client.config.ownerID) client.cd.add(msg.author.id)
 			obj.run(msg, args)
