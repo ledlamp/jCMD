@@ -9,6 +9,7 @@ module.exports = function (chn) {
 		if (cf.invScan) {
 			let ind = cf.invScan.indexOf(chn.id)
 			if (ind !== -1) cf.invScan.splice(ind, 1)
+			if (cf.invScan.length === 0) delete v.invNoti
 		}
 	}
 	client.data.writeGuild(chn.guild.id, cf)
