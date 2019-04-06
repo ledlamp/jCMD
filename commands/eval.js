@@ -15,7 +15,7 @@ module.exports = {
 	},
 	cat: 'maint',
 	own: true,
-	args: ['JavaScript code'],
+	args: ['JavaScript code'], argCount: 1,
 	desc: 'Runs specified code.',
 	aliases: ['e']
 }

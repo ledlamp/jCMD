@@ -87,7 +87,7 @@ module.exports = {
 		if (response === '') response += '\nOh. Oh wow. Something actually normal this time. I am proud that you have such a fine taste in this wild realm of art. Or maybe you are just a normie, I don\'t know. ¯\\_(ツ)_/¯'
 		return {content: `\n*\`\`\`${code}\`\`\`*` + response}
 	},
-	args: ['doujinshi id'],
+	args: ['doujinshi id'], argCount: 1,
 	cat: 'fun',
 	desc: 'Infinite doujinshi analysis fun! Batteries and FBI not included.\nThis command is somewhat the product of reverse engineering u/Loli-Tag-Bot.',
 	nsfw: true,

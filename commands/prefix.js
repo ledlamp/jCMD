@@ -19,13 +19,13 @@ module.exports = {
 			content: `Prefix set to \`${args[0]}\`.`
 		}
 	},
-	noParse: async function(msg) {
+	noArgs: async function(msg) {
 		return {content: `The prefix for this server is \`${client.util.getPre(msg)}\`.`}
 	},
 	cat: 'mod',
 	desc: 'Sets the prefix for this server.',
-	noParseDesc: 'Shows the current prefix for this server.',
+	noArgsDesc: 'Shows the current prefix for this server.',
 	reqGuild: true,
 	perm: 'MANAGE_GUILD',
-	args: ['prefix']
+	args: ['prefix'], argCount: 1
 }

@@ -9,6 +9,6 @@ module.exports = {
 	},
 	cat: 'maint',
 	own: true,
-	args: ['command name'],
+	args: ['command name'], argCount: 1,
 	desc: 'Unloads the specified command.'
 }

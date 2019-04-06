@@ -16,6 +16,6 @@ module.exports = {
 	reqGuild: true,
 	perm: 'BAN_MEMBERS',
 	botPerm: 'BAN_MEMBERS',
-	args: ['mention/user ID'],
+	args: ['mention/user ID'], argCount: 1,
 	desc: 'Bans the mentioned user/ID from this server then unbans them, just for the sake of flushing away all their messages.'
 }

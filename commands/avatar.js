@@ -9,14 +9,14 @@ module.exports = {
 			}
 		}
 	},
-	noParse: async function (msg) {
+	noArgs: async function (msg) {
 		let user = msg.author
 		return {
 			options: {embed: client.util.mkEmbed(user.tag, `Profile picture of **${user.tag}**`, undefined, user.displayAvatarURL)}
 		}
 	},
-	noParseDesc: 'Shows your own profile picture.' ,
+	noArgsDesc: 'Shows your own profile picture.' ,
 	cat: 'util',
-	args: ['user ID/mention/username/tag'],
+	args: ['user ID/mention/username/tag'], argCount: 1,
 	desc: 'Gets the mentioned user\'s profile picture. You can only get profile pictures of people in this server, or the bot and yourself if this command is done in a DM channel.'
 }

@@ -13,7 +13,7 @@ module.exports = {
 	},
 	cat: 'info',
 	cd: 3000,
-	args: ['suggestions'],
+	args: ['suggestions'], argCount: 1,
 	desc: 'Send suggestions or report abnormal bot behaviour to the bot developer using this command.',
 	aliases: ['report']
 }

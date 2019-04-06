@@ -7,7 +7,7 @@ function deepHelp(pre, object, p, his) {
 		if (obj.run) {
 			let x = 0, suf = '', fields = []
 			if (obj.args) fields[x++] = { name: 'Usage', value: `${pre}${his} ${client.util.argSq(obj.args)}` }
-			if (obj.noParse) fields[x++] = { name: 'If no arguments are given...', value: obj.noParseDesc }
+			if (obj.noArgs) fields[x++] = { name: 'If no arguments are given...', value: obj.noArgsDesc }
 			if (reqGuild) suf += ' This is a server-only command.'
 			if (own) suf += ' ***Can only be executed by the bot owner.***'
 			if (obj.aliases) fields[x++] = { name: 'Aliases', value: obj.aliases.map(c => `\`${c}\``).join(', ') }

@@ -9,7 +9,7 @@ module.exports = {
 				return {content: `Set the emoji count limit to **${count}**.`}
 			},
 			desc: 'Set the number of maximum emojis allowed in a message.',
-			perm: 'MANAGE_GUILD', args: ['emoji count limit']
+			perm: 'MANAGE_GUILD', args: ['emoji count limit'], argCount: 1
 		},
 		add: {
 			run: async function (msg, args) {
@@ -38,7 +38,7 @@ module.exports = {
 				} else return {content: 'No valid channels added.'}
 			},
 			desc: 'Add channels to monitoring list. Provide a category channel ID to add all its child channels.',
-			perm: 'MANAGE_GUILD', args: ['channels / channel IDs']
+			perm: 'MANAGE_GUILD', args: ['channels / channel IDs'], argCount: 1
 		},
 		remove: {
 			run: async function (msg, args) {
@@ -72,7 +72,7 @@ module.exports = {
 				} else return {content: `No valid channels removed.`}
 			},
 			desc: 'Remove channels from monitoring list. Provide a category channel ID to remove all its child channels.',
-			perm: 'MANAGE_GUILD', args: ['channels / channel IDs']
+			perm: 'MANAGE_GUILD', args: ['channels / channel IDs'], argCount: 1
 		},
 		list: {
 			run: async function (msg) {

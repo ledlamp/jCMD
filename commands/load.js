@@ -15,6 +15,6 @@ module.exports = {
 	},
 	cat: 'maint',
 	own: true,
-	args: ['command name'],
+	args: ['command name'], argCount: 1,
 	desc: '(Re)loads the specified command.'
 }

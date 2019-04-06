@@ -85,7 +85,7 @@ module.exports = {
 		})
 	},
 	cat: 'strp',
-	args: ['text'],
+	args: ['text'], argCount: 1,
 	desc: `Iterative string processing command. Separate text and methods using the pipe character | between spaces. Methods:
 *aest-number* : Puts the text italic and inside backticks.
 *clap* : Adds a clap between each word.

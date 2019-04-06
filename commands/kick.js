@@ -13,6 +13,6 @@ module.exports = {
 	reqGuild: true,
 	perm: 'KICK_MEMBERS',
 	botPerm: 'KICK_MEMBERS',
-	args: ['mention/user ID'],
+	args: ['mention/user ID'], argCount: 1,
 	desc: 'Kicks the mentioned user/ID from this server.'
 }

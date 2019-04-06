@@ -18,7 +18,7 @@ module.exports = {
 	},
 	cat: 'mod',
 	desc: 'Dehoists members.',
-	args: ['new nickname for dehoisted members'],
+	args: ['new nickname for dehoisted members'], argCount: 1,
 	reqGuild: true,
 	perm: 'MANAGE_NICKNAMES',
 	botPerm: 'MANAGE_NICKNAMES',

@@ -3,7 +3,7 @@ function handler (msg, respr, thr) {
 	if (msg.author.bot || msg.type !== 'DEFAULT' || (!isDM && !myperms.has('SEND_MESSAGES'))) return
 	if (isDM) args = msg.content.split(/ +/g)
 	else if (msg.content.startsWith(ment)) args = msg.content.slice(ment.length).trim().split(/ +/g)
-	else if (msg.content.toLowerCase().startsWith(prefix)) args = msg.content.slice(prefix.length).trim().split(/ +/g)
+	else if (msg.content.startsWith(prefix)) args = msg.content.slice(prefix.length).trim().split(/ +/g)
 	else {
 		let d = false
 		if (cfg.invScan && cfg.invScan.includes(msg.channel.id)) client.util.getInv(msg.content).map(function (code) {
@@ -35,17 +35,17 @@ function handler (msg, respr, thr) {
 		client.setTimeout(function () {m.delete().catch(()=>undefined)}, 1500)
 	}).catch(()=>undefined)
 	function deepCmd(obj, p, his) {
-		let noParse = obj.args && (p.length < obj.args.length)
+		let noArgs = obj.argCount && obj.noArgs && (p.length === 0)
 		if (obj.own && (msg.author.id !== client.config.ownerID)) return thr(client.lang.paste())
 		if (obj.reqGuild && isDM) return thr('You can only do that command in a server text channel.')
 		if (obj.nsfw && !msg.channel.nsfw) thr('You can only do that command in a NSFW channel.')
-		if (!isDM && (msg.author.id !== client.config.ownerID) && !noParse && obj.perm && !msg.channel.permissionsFor(msg.member).has(obj.perm)) return thr('Insufficient permissions. You are missing at least one of: `' + client.util.permName(obj.perm) + '`.')
+		if (!isDM && (msg.author.id !== client.config.ownerID) && !noArgs && obj.perm && !msg.channel.permissionsFor(msg.member).has(obj.perm)) return thr('Insufficient permissions. You are missing at least one of: `' + client.util.permName(obj.perm) + '`.')
 		if (!isDM && obj.botPerm && !myperms.has(obj.botPerm)) return thr('Insufficient permissions for the bot. The bot is missing at least one of: `' + client.util.permName(obj.botPerm) + '`.')
+		if (!noArgs && (p.length < obj.argCount)) return thr('Not enough arguments. Arguments needed: ' + client.util.argSq(obj.args))
 		if (obj.run) {
-			if (noParse) {
-				if (!obj.noParse) return thr('Not enough arguments. Arguments needed: ' + client.util.argSq(obj.args))
+			if (noArgs) {
 				if (msg.author.id !== client.config.ownerID) client.cd.add(msg.author.id)
-				obj.noParse(msg)
+				obj.noArgs(msg)
 				.then(function (resp) {
 					client.setTimeout(function () {
 						client.cd.delete(msg.author.id)
@@ -87,7 +87,7 @@ function handler (msg, respr, thr) {
 			if (!p[0]) return client.commands.get('help').run(msg, his.split(' ')).then(function (rep) {
 				respr(rep.content, rep.options, rep.traces)
 			})
-			let subc = p.shift()
+			let subc = p.shift().toLowerCase()
 			let clip = subc.length > 15 ? subc.slice(0, 15) + '...' : subc // Prevent user from entering long subcommands and making the bot spam
 			if (!Object.keys(obj.subCmd).includes(subc)) return client.commands.get('help').run(msg, his.split(' ')).then(function (rep) {
 				thr(`The subcommand \`${clip}\` does not exist. Here's some more information on \`${prefix + his}\`.`, rep.options)

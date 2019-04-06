@@ -26,7 +26,7 @@ module.exports = {
 				} else return {content: 'No valid channels added.'}
 			},
 			desc: 'Add channels to monitoring list. Provide a category channel ID to add all its child channels.',
-			perm: 'MANAGE_GUILD', args: ['channels / channel IDs']
+			perm: 'MANAGE_GUILD', args: ['channels / channel IDs'], argCount: 1
 		},
 		remove: {
 			run: async function (msg, args) {
@@ -59,7 +59,7 @@ module.exports = {
 				} else return {content: `No valid channels removed.`}
 			},
 			desc: 'Remove channels from monitoring list. Provide a category channel ID to remove all its child channels.',
-			perm: 'MANAGE_GUILD', args: ['channels / channel IDs']
+			perm: 'MANAGE_GUILD', args: ['channels / channel IDs'], argCount: 1
 		},
 		list: {
 			run: async function(msg) {
@@ -90,7 +90,7 @@ module.exports = {
 						client.data.writeGuild(msg.guild.id, cf)
 						return {content: `Set the notifying channel to \`#${ch.name}\`.`}
 					},
-					args: ['channel / channel ID / \'here\''],
+					args: ['channel / channel ID / \'here\''], argCount: 1,
 					desc: 'Set the channel for the bot to send a notification for when it deletes a message that contains an expired invite. Use \'here\' instead of a channel to make it dynamically the same as the channel of the deleted message.'
 				},
 				reset: {

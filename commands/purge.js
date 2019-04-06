@@ -8,6 +8,6 @@ module.exports = {
 	reqGuild: true,
 	perm: 'MANAGE_MESSAGES',
 	botPerm: 'MANAGE_MESSAGES',
-	args: ['number, 1 -> 99'],
+	args: ['number, 1 -> 99', 'options'], argCount: 1,
 	desc: 'Deletes the most recent (number) messages, plus the message containing the command.'
 }
