@@ -12,6 +12,9 @@ module.exports = class extends Discord.Client {
 			presences: require('./language/plays.json'),
 			pasta: require('./language/pasta.json'),
 			presenceHtr: [],
+			/**
+			 * Sets the bot's presence to a random string.
+			 */
 			play: function() {
 				let pick, yet = true
 				while (yet) {
@@ -23,6 +26,9 @@ module.exports = class extends Discord.Client {
 				client.user.setActivity(this.presences[pick]).catch(()=>undefined)
 			},
 			pastaHtr: [],
+			/**
+			 * @returns {String} Random copypasta
+			 */
 			paste: function() {
 				let pick, yet = true
 				while (yet) {
@@ -35,12 +41,24 @@ module.exports = class extends Discord.Client {
 			}
 		}
 		this.util = {
+			/**
+			 * Gets the supposed prefix of a message if it were to contain a command
+			 * @param {Message} msg The message
+			 * @returns {String} Prefix
+			 */
 			getPre: function (msg) {
 				if (msg.channel.type === 'dm') return ''
 				let gcf = client.data.guilds.get(msg.guild.id)
 				if (gcf && gcf.prefix) return gcf.prefix
 				return client.config.prefix
 			},
+			/**
+			 * Acts like Text/DMChannel#send, but also reacts to the message with a cross.
+			 * @param {Message} msg The message to react and reply to
+			 * @param {String} [reply] The content of the reply
+			 * @param {MessageOptions|Discord.Attachment|Discord.RichEmbed|object} [opt] The content of the reply
+			 * @returns {Promise<Discord.Message|null>} Resulting message sent
+			 */
 			throw: function (msg, reply, opt) {
 				msg.react('❌').catch(()=>undefined)
 				return new Promise (function (res) {
@@ -53,6 +71,13 @@ module.exports = class extends Discord.Client {
 					})
 				})
 			},
+			/**
+			 * Acts like Text/DMChannel#send. Catches errors.
+			 * @param {Message} msg The message to reply to
+			 * @param {String} [reply] The content of the reply
+			 * @param {MessageOptions|Discord.Attachment|Discord.RichEmbed|object} [opt] The content of the reply
+			 * @returns {Promise<Discord.Message|null>} Resulting message sent
+			 */
 			done: function (msg, reply, opt) {
 				return new Promise (function (res) {
 					msg.channel.send(reply, opt)
@@ -64,9 +89,22 @@ module.exports = class extends Discord.Client {
 					})
 				})
 			},
+			/**
+			 * Embed object construction.
+			 * @param {String} title Embed title
+			 * @param {String} desc Embed description
+			 * @param {Array<Object>} [fields] Embed fields
+			 * @param {String} [image] Embed image
+			 * @returns {Object} Embed object
+			 */
 			mkEmbed: function (title, desc, fields, image) {
 				return { color: client.config.embedColor, title: title, description: desc, fields: fields, image: image ? { url: image } : undefined }
 			},
+			/**
+			 * Takes a permission string/array and returns the corresponding human-readable permission name(s).
+			 * @param {String|Array<String>} perm Permission string/array
+			 * @returns {String} Permission name(s)
+			 */
 			permName: function (perm) {
 				if (Array.isArray(perm)) {
 					return perm.map(function (perm) {
@@ -74,6 +112,12 @@ module.exports = class extends Discord.Client {
 					}).join(', ')
 				} else return client.lang.permnames[client.lang.perms.indexOf(perm)]
 			},
+			/**
+			 * Member targeting with string.
+			 * @param {Message} msg Message invoking the targeting
+			 * @param {String} thing Query
+			 * @returns {GuildMember|null} Result
+			 */
 			getMember: function (msg, thing) {
 				let guild = msg.guild
 				if (!guild) {
@@ -90,14 +134,31 @@ module.exports = class extends Discord.Client {
 					return member.nickname && member.nickname.toLowerCase().startsWith(h) || member.user.tag.toLowerCase().startsWith(h)
 				})
 			},
+			/**
+			 * Like getMember, but only accepts mentions and IDs.
+			 * @param {Message} msg Message invoking the targeting
+			 * @param {String} thing Query
+			 * @returns {GuildMember|null} Result
+			 */
 			getMemberStrict: function (msg, thing) {
 				let regexr = /^<@!?(\d{17,18})>$/.exec(thing) || /^(\d{17,18})$/.exec(thing)
 				if (regexr) return msg.guild.members.get(regexr[1])
 			},
+			/**
+			 * Channel targeting with string.
+			 * @param {Message} msg Message invoking the targeting
+			 * @param {String} thing Query
+			 * @returns {TextChannel|null} Result
+			 */
 			getChannel: function (msg, thing) {
 				let regexr = /^<#(\d{17,18})>$/.exec(thing) || /^(\d{17,18})$/.exec(thing)
 				return regexr ? msg.guild.channels.get(regexr[1]) : null
 			},
+			/**
+			 * Encapsulates strings in square brackets.
+			 * @param {Array<String>} argStr Array of strings
+			 * @returns {String} Result
+			 */
 			argSq: function (argStr) {
 				let str = ''
 				for (let aPos of argStr) {
@@ -105,15 +166,30 @@ module.exports = class extends Discord.Client {
 				}
 				return str
 			},
+			/**
+			 * Method for sanitising user input to prevent mentions.
+			 * @param {String} text Input
+			 * @returns {String} Sanitised output
+			 */
 			clean: function (text) {
 				if (typeof (text) === 'string') return text.replace(/@/g, '@' + String.fromCharCode(8203))
 				else return text
 			},
+			/**
+			 * Gets invite codes from a string.
+			 * @param {String} str1 Input
+			 * @returns {Array<String>} Codes
+			 */
 			getInv: function (str1) {
 				let reg = /(?:discordapp\.com\/invite|discord.gg)\/([a-zA-Z0-9\-]+)/g, array1, array2 = []
 				while ((array1 = reg.exec(str1))) array2.push(array1[1])
 				return array2
 			},
+			/**
+			 * Check whether an invite code or URL is valid
+			 * @param {string} code Code or URL of invite
+			 * @returns {Boolean} Whether the invite is valid or not
+			 */
 			checkInv: async function (code) {
 				return client.fetchInvite(code).then(()=>true).catch(()=>false)
 			}
@@ -131,6 +207,9 @@ module.exports = class extends Discord.Client {
 			},
 			fields: [],
 			aliases: new Enmap(),
+			/**
+			 * Rebuild the main help command reply embed, normally invoked after updating something in the commands map
+			 */
 			build: function () {
 				this.fields = []
 				this.aliases = new Enmap()
@@ -161,12 +240,21 @@ module.exports = class extends Discord.Client {
 		}
 		this.cd = {
 			users: new Set(),
+			/**
+			 * Put a user in cooldown.
+			 * @param {String} id ID of the user to be put in cooldown
+			 * @param {Number} interval Amount of time in milliseconds to keep the user in cooldown
+			 */
 			addCooldown: function (id, interval = 1000) {
 				this.users.add(id)
 				client.setTimeout(function () {
 					client.cd.users.delete(id)
 				}, interval)
 			},
+			/**
+			 * @param {String} thing User ID to be checked
+			 * @returns {Boolean} Whether the user is in cooldown
+			 */
 			has: function (thing) {
 				return this.users.has(thing)
 			}
@@ -183,11 +271,21 @@ module.exports = class extends Discord.Client {
 			client.help.build()
 		})
 		this.data = {
+			/**
+			 * Stores per-guild data after cleaning it.
+			 * @param {String} key Guild ID
+			 * @param {Object} data Data object to be stored
+			 */
 			writeGuild: function (key, data) {
 				for (let prop of Object.keys(data)) if ((data[prop] !== 0 || data[prop] !== false) && !data[prop] || (Array.isArray(data[prop]) && data[prop].length === 0)) delete data[prop]
 				if (Object.keys(data).length === 0) this.guilds.delete(key)
 				else this.guilds.set(key, data)
 			},
+			/**
+			 * Stores per-user data after cleaning it.
+			 * @param {String} key User ID
+			 * @param {Object} data Data object to be stored
+			 */
 			writeUser: function (key, data) {
 				for (let prop of Object.keys(data)) if ((data[prop] !== 0 || data[prop] !== false) && !data[prop] || (Array.isArray(data[prop]) && data[prop].length === 0)) delete data[prop]
 				if (Object.keys(data).length === 0) this.users.delete(key)
