@@ -1,7 +1,7 @@
 module.exports = {
 	run: async function (msg, args) {
 		let ch = client.channels.get(client.config.suggestChID)
-		return Promise(function (res, rej) {
+		return new Promise(function (res, rej) {
 			if (ch) ch.send(`\`\`\`${args.join(' ')}\`\`\`\nSuggested by **${msg.author.tag}**${msg.channel.type === 'text' ? ' in **' + msg.guild.name + '**' : ''}.`)
 			.then(function () {
 				res({content: 'Suggestion sent successfully.'})
