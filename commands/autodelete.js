@@ -25,7 +25,7 @@ module.exports = {
 					return {content: `Added channels:\n${addedChs.join(',\n')}`}
 				} else return {content: 'No valid channels added.'}
 			},
-			desc: 'Add channels to monitoring list. Provide a category channel ID to add all its children channels.',
+			desc: 'Add channels to monitoring list. Provide a category channel ID to add all its child channels.',
 			perm: 'MANAGE_GUILD', args: ['channels / channel IDs']
 		},
 		remove: {
@@ -58,7 +58,7 @@ module.exports = {
 					return {content: `Removed channels:\n${addedChs.join(',\n')}`}
 				} else return {content: `No valid channels removed.`}
 			},
-			desc: 'Remove channels from monitoring list. Provide a category channel ID to remove all its children channels.',
+			desc: 'Remove channels from monitoring list. Provide a category channel ID to remove all its child channels.',
 			perm: 'MANAGE_GUILD', args: ['channels / channel IDs']
 		},
 		list: {
@@ -88,5 +88,5 @@ module.exports = {
 	},
 	cat: 'mod',
 	reqGuild: true,
-	desc: 'Moderation tool for deleting messages of people who left the server. Useful for advertisement-focused servers.\nIf the bot doesn\'t seem to work, check whether it can delete messages in monitored channels.'
+	desc: 'Moderation tool for deleting messages of people who left the server. Useful for advertisement-focused servers.\nIf the bot doesn\'t seem to work, check whether it can send and manage messages in monitored channels.'
 }
