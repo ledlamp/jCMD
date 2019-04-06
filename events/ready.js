@@ -4,6 +4,19 @@ module.exports = function () {
 	Promise.all([client.data.users.defer, client.data.guilds.defer])
 	.then(function () {
 		console.log(`Data: loaded ${client.data.users.size} user entries, ${client.data.guilds.size} guild entries.`)
+		client.data.guilds.map(function (v, k) {
+			if (!client.guilds.has(k)) return client.data.guilds.delete(k)
+			let guild = client.guilds.get(k)
+			if (!guild.available) return
+			if (v.autoDel) v.autoDel.map(function (ch) {
+				if (!guild.channels.has(ch)) v.autoDel.splice(v.autoDel.indexOf(ch), 1)
+			})
+			if (v.invScan) v.invScan.map(function (ch) {
+				if (!guild.channels.has(ch)) v.invScan.splice(v.invScan.indexOf(ch), 1)
+				if (v.invScan.length === 0) delete v.invNoti
+			})
+			client.data.writeGuild(k, v)
+		})
 		// Load events
 		fs.readdir('./events/', function (err, files) {
 			if (err) return console.error(err)
@@ -12,17 +25,6 @@ module.exports = function () {
 				const event = require(`./${file}`)
 				let eventName = file.split('.')[0]
 				client.on(eventName, event)
-			})
-		})
-		client.data.guilds.map(function (v, k) {
-			if (!client.guilds.has(k)) return client.data.guilds.delete(k)
-			let guild = client.guilds.get(k)
-			if (v.autoDel) v.autoDel.map(function (ch) {
-				if (!guild.channels.has(ch)) v.autoDel.splice(v.autoDel.indexOf(ch), 1)
-			})
-			if (v.invScan) v.invScan.map(function (ch) {
-				if (!guild.channels.has(ch)) v.invScan.splice(v.invScan.indexOf(ch), 1)
-				if (v.invScan.length === 0) delete v.invNoti
 			})
 		})
 	})
