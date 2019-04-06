@@ -21,10 +21,11 @@ function deepHelp(pre, object, p, his) {
 		}
 		else {
 			let retv
-			if (Object.keys(obj.subCmd).indexOf(p[0]) === -1) {
+			if (obj.subCmd.hasOwnProperty(p[0])) {
 				let fields = []
-				for (let key = 0; key <= Object.keys(obj.subCmd).length - 1; key++) {
-					let prop = Object.keys(obj.subCmd)[key]
+				let k = Object.keys(obj.subCmd)
+				for (let key = 0; key <= k.length - 1; key++) {
+					let prop = k[key]
 					fields[key] = { name: prop, value: '' }
 					if (obj.subCmd[prop].args) fields[key].value += client.util.argSq(obj.subCmd[prop].args)
 					fields[key].value += obj.subCmd[prop].desc
