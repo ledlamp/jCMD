@@ -89,7 +89,7 @@ function handler (msg, respr, thr) {
 			})
 			let subc = p.shift().toLowerCase()
 			let clip = subc.length > 15 ? subc.slice(0, 15) + '...' : subc // Prevent user from entering long subcommands and making the bot spam
-			if (!Object.keys(obj.subCmd).includes(subc)) return client.commands.get('help').run(msg, his.split(' ')).then(function (rep) {
+			if (!obj.subCmd.hasOwnProperty(subc)) return client.commands.get('help').run(msg, his.split(' ')).then(function (rep) {
 				thr(`The subcommand \`${clip}\` does not exist. Here's some more information on \`${prefix + his}\`.`, rep.options)
 			})
 			deepCmd(obj.subCmd[subc], p, his + ' ' + subc)
