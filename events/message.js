@@ -48,7 +48,7 @@ function handler (msg, respr, thr) {
 		let noArgs = obj.argCount && obj.noArgs && (p.length === 0)
 		if (obj.own && (msg.author.id !== client.config.ownerID)) return thr(client.lang.paste())
 		if (obj.reqGuild && isDM) return thr('You can only do that command in a server text channel.')
-		if (obj.nsfw && !msg.channel.nsfw) thr('You can only do that command in a NSFW channel.')
+		if (obj.nsfw && !msg.channel.nsfw) return thr('You can only do that command in a NSFW channel.')
 		if (!isDM && (msg.author.id !== client.config.ownerID) && !noArgs && obj.perm && !msg.channel.permissionsFor(msg.member).has(obj.perm)) return thr('Insufficient permissions. You are missing at least one of: `' + client.util.permName(obj.perm) + '`.')
 		if (!isDM && obj.botPerm && !myperms.has(obj.botPerm)) return thr('Insufficient permissions for the bot. The bot is missing at least one of: `' + client.util.permName(obj.botPerm) + '`.')
 		if (!noArgs && (p.length < obj.argCount)) return thr('Not enough arguments. Arguments needed: ' + client.util.argSq(obj.args))
