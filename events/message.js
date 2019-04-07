@@ -1,8 +1,12 @@
+// Hotfix for a bug in Discord Android (https://trello.com/c/lkRVWaAw)
+const ment = `<@${client.user.id}>`
+const mentn = `<!@${client.user.id}>`
 function handler (msg, respr, thr) {
-	let args, isDM = msg.channel.type === 'dm', ment = isDM ? undefined : msg.guild.me.toString() + ' ', myperms = isDM ? undefined : msg.channel.permissionsFor(msg.guild.me), cfg = isDM ? {prefix: ''} : client.data.guilds.get(msg.guild.id) || {}, prefix = isDM ? '' : (cfg.prefix || client.config.prefix)
+	let args, isDM = msg.channel.type === 'dm', myperms = isDM ? undefined : msg.channel.permissionsFor(msg.guild.me), cfg = isDM ? {prefix: ''} : client.data.guilds.get(msg.guild.id) || {}, prefix = isDM ? '' : (cfg.prefix || client.config.prefix)
 	if (msg.author.bot || msg.type !== 'DEFAULT' || (!isDM && !myperms.has('SEND_MESSAGES'))) return
 	if (isDM) args = msg.content.split(/ +/g)
 	else if (msg.content.startsWith(ment)) args = msg.content.slice(ment.length).trim().split(/ +/g)
+	else if (msg.content.startsWith(mentn)) args = msg.content.slice(mentn.length).trim().split(/ +/g)
 	else if (msg.content.startsWith(prefix)) args = msg.content.slice(prefix.length).trim().split(/ +/g)
 	else {
 		let d = false
