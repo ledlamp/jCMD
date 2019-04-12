@@ -20,10 +20,9 @@ function deepHelp(pre, object, p, his) {
 			return client.util.mkEmbed(`❯ ${nsfw ? '[NSFW] ' : ''}Help on ` + pre + his, '❯ ' + obj.desc + suf, fields)
 		}
 		else {
-			let retv
-			if (obj.subCmd.hasOwnProperty(p[0])) {
+			let retv, k = Object.keys(obj.subCmd), subc = p.shift()
+			if (!k.includes(subc)) {
 				let fields = []
-				let k = Object.keys(obj.subCmd)
 				for (let key = 0; key <= k.length - 1; key++) {
 					let prop = k[key]
 					fields[key] = { name: prop, value: '' }
@@ -32,7 +31,6 @@ function deepHelp(pre, object, p, his) {
 				}
 				retv = client.util.mkEmbed('❯ Help on ' + pre + his, '❯ ' + obj.desc + ' Subcommands:', fields)
 			} else {
-				let subc = p.shift()
 				retv = recHelp(obj.subCmd[subc], p, his + ' ' + subc)
 			}
 			return retv
