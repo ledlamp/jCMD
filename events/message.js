@@ -158,7 +158,7 @@ module.exports = async function (msg) {
 		let t = client.setTimeout(function () {
 			client.off('messageDelete', f)
 			client.off('messageUpdate', e)
-		}, 20000)
+		}, 60000)
 		client.on('messageDelete', f)
 		client.on('messageUpdate', e)
 	}
