@@ -10,6 +10,6 @@ jCMD can now look for messages containing invalid invites and delete them if con
 # How to set up this bot
 *I will assume that you are familiar with Node and how to edit a JSON file.*
 
-Do `npm install`. Rename the `config_template.json` to `config.json`, then modify the file's contents to the info you have. Add a folder named `data` and then make folders named `guilds` and `users` inside `data`.
+Do `npm install`. Rename the `config_template.json` to `config.json`, then modify the file's contents to the info you have. Add a folder named `data`.
 
 To run the bot, simply do `node index`.

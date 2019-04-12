@@ -280,12 +280,12 @@ module.exports = class extends Discord.Client {
 				else this.users.set(key, data)
 			},
 			guilds: new Enmap({
-				name: 'guilddata',
-				dataDir: './data/guilds'
+				name: 'guilds',
+				dataDir: './data'
 			}),
 			users: new Enmap({
-				name: 'userdata',
-				dataDir: './data/users'
+				name: 'users',
+				dataDir: './data'
 			})
 		}
 		this.on('ready', require('./events/ready.js'))
