@@ -7,7 +7,7 @@ module.exports = {
 		if (r.size === 0) return {content: 'No emojis found.'}
 		let a = [], x = 0
 		for (let e of r) {
-			if (x++ == 5) break
+			if (x++ == 15) break
 			a.push(e)
 		}
 		return {content: `Search results for **\`${client.util.clean(q)}\`**:\n` + a.map(function (n) {let e = n[1]; return e.toString() + ' *`' + e.name + '`*'}).join('\n')}
