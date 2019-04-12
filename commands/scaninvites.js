@@ -6,7 +6,7 @@ module.exports = {
 				if (!cf.invScan) cf.invScan = []
 				for (let ch of args) {
 					let chn = client.util.getChannel(msg, ch)
-					if (chn) {
+					if (chn && chn.permissionsFor(chn.guild.me).has('MANAGE_MESSAGES')) {
 						if (chn.type === 'text' && !cf.invScan.includes(chn.id)) {
 								cf.invScan.push(chn.id)
 								addedChs.push('`#' + chn.name + '`')
@@ -23,7 +23,7 @@ module.exports = {
 				if (addedChs.length > 0) {
 					client.data.writeGuild(msg.guild.id, cf)
 					return {content: `Added channels:\n${addedChs.join(',\n')}`}
-				} else return {content: 'No valid channels added.'}
+				} else return {content: 'No valid channels added. Check your spelling and whether the channels allow the bot to manage messages.'}
 			},
 			desc: 'Add channels to monitoring list. Provide a category channel ID to add all its child channels.',
 			perm: 'MANAGE_GUILD', args: ['channels / channel IDs'], argCount: 1
