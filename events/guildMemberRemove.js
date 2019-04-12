@@ -7,7 +7,8 @@ module.exports = function (member) {
 			function fetcher () {
 				ch.fetchMessages({before: id || undefined})
 				.then(function (msgs) {
-					if (x > 5) {
+					let ls = msgs.last()
+					if (!ls || x > 5) {
 						return fetched.map(function (coll) {
 							ch.bulkDelete(coll, true).catch(()=>undefined)
 						})
@@ -15,7 +16,7 @@ module.exports = function (member) {
 					else {
 						x++
 						fetched.push(msgs.filter(function (message) {return message.author.id === member.user.id}))
-						id = msgs.last().id
+						id = ls.id
 						fetcher()
 					}
 				})
