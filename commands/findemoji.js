@@ -1,13 +1,13 @@
 module.exports = {
 	run: async function (msg, p) {
-		let q = p[0]
+		let q = p[0].toLowerCase()
 		if (q.length < 3) throw new UserInputError('Your search query is too short! Make sure it is longer than 2 characters.')
 		if (q.length > 32) throw new UserInputError('Your search query is too long! Make sure it is shorter than 32 characters.')
-		let r = client.emojis.filter(function (e) {return e.name.includes(q)}).sort(function (a,b) {return a.name.indexOf(q) - b.name.indexOf(q)})
+		let r = client.emojis.filter(function (e) {return e.name.toLowerCase().includes(q)}).sort(function (a,b) {return a.name.toLowerCase().indexOf(q) - b.name.toLowerCase().indexOf(q)})
 		if (r.size === 0) return {content: 'No emojis found.'}
 		let a = [], x = 0
 		for (let e of r) {
-			if (x++ == 15) break
+			if (x++ === 15) break
 			a.push(e)
 		}
 		return {content: `Search results for **\`${client.util.clean(q)}\`**:\n` + a.map(function (n) {let e = n[1]; return e.toString() + ' *`' + e.name + '`*'}).join('\n')}
