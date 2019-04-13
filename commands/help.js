@@ -17,7 +17,7 @@ function deepHelp(pre, object, p, his) {
 			}
 			if (obj.perm) fields[x++] = { name: 'User permissions', value: client.util.permName(obj.perm) }
 			if (obj.botPerm) fields[x] = { name: 'Bot permissions', value: client.util.permName(obj.botPerm) }
-			return client.util.mkEmbed(`❯ ${nsfw ? '[NSFW] ' : ''}Help on ` + pre + his, '❯ ' + obj.desc + suf, fields)
+			return client.util.mkEmbed(`❯ ${nsfw ? '[NSFW] ' : ''}Help on ` + pre + his, obj.desc + suf, fields)
 		}
 		else {
 			let retv, k = Object.keys(obj.subCmd), subc = p.shift()
@@ -29,7 +29,7 @@ function deepHelp(pre, object, p, his) {
 					if (obj.subCmd[prop].args) fields[key].value += client.util.argSq(obj.subCmd[prop].args)
 					fields[key].value += obj.subCmd[prop].desc
 				}
-				retv = client.util.mkEmbed('❯ Help on ' + pre + his, '❯ ' + obj.desc + ' Subcommands:', fields)
+				retv = client.util.mkEmbed('❯ Help on ' + pre + his, obj.desc + ' Subcommands:', fields)
 			} else {
 				retv = recHelp(obj.subCmd[subc], p, his + ' ' + subc)
 			}
@@ -58,5 +58,6 @@ module.exports = {
 	},
 	cat: 'info',
 	desc: 'Shows available commands or information about mentioned command.\nSomehow, this is one of the most complex commands ever written for this bot. Part of it even lies in the bot\'s main code file.',
+	args: ['command name', '?...subcommands'], argCount: 0,
 	aliases: ['h']
 }
