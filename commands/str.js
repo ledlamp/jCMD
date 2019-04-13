@@ -86,20 +86,20 @@ module.exports = {
 	},
 	cat: 'strp',
 	args: ['text'], argCount: 1,
-	desc: `Iterative string processing command. Separate text and methods using the pipe character | between spaces. Methods:
+	desc: `Iterative text processing command. Methods:
 *aest-number* : Puts the text italic and inside backticks.
 *clap* : Adds a clap between each word.
-*rev* : Reverse string.
-*upper*,*lower* : Cases.
+*rev* : Reverses text.
+*upper*, *lower* : Cases.
 *ita* : Italic.
 *bold* : Bold.
-*code* : Wraps the string around a pair of backticks.
-*codeblock* : Puts the string in a code block.
+*code* : Wraps text around a pair of backticks.
+*codeblock* : Puts text in a code block.
 *drag-number* : Repeats each character for a number of times.
-*regind* : Turns any character belonging to the modern English alphabet into a regional indicator emoji containing the same letter.
+*regind* : Turns any letter into a regional indicator emoji containing the same letter.
 *circle* : Same as \`regind\` but converts letters to circled letters.
-*mock* : Random capitalisation engine.
+*mock* : Random capitalisation.
 
-An example: Doing \`str bottom text\` then \`aest-2 upper code ita bold\` yields:
-***\`B O T T O M T E X T\`***`
+An example: Doing \`str bottom text\` then sending \`upper code ita bold\` yields:
+***\`BOTTOM TEXT\`***`
 }
