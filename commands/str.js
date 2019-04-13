@@ -10,7 +10,7 @@ module.exports = {
 						client.clearTimeout(t)
 						let meth = message.content.split(' ')
 						if (meth.length > 10) rej(new UserInputError('Too many methods were given! (> 10)'))
-						while(meth[0]) {
+						while (meth[0]) {
 							let s = meth.shift(), c = s.split('-')
 							let pn = parseInt(c[1])
 							if (isNaN(pn)) pn = 1
