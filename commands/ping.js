@@ -7,5 +7,5 @@ module.exports = {
 		.catch(()=>undefined)
 	},
 	cat: 'util',
-	desc: 'Measures then shows the bot\'s Internet connection\'s latency..'
+	desc: 'Measures then shows the bot\'s Internet connection\'s latency.'
 }
