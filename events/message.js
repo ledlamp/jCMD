@@ -110,16 +110,25 @@ function handler (msg, respr, thr) {
 
 module.exports = async function (msg) {
 	function deller (m, x, tr) {
-		if (!m || x > 10) {
+		let t = client.setTimeout(function () {
 			client.off('messageDelete', f)
 			client.off('messageUpdate', e)
+			client.off('message', s)
+		}, 30000)
+
+		if (!m || x > 5) {
+			client.off('messageDelete', f)
+			client.off('messageUpdate', e)
+			client.off('message', s)
 			client.clearTimeout(t)
 			return
 		}
+
 		function f (del) {
 			if (del.id === msg.id) {
 				client.off('messageDelete', f)
 				client.off('messageUpdate', e)
+				client.off('message', s)
 				client.clearTimeout(t)
 				if (tr) tr.map(function (d) {
 					if (d.deletable) d.delete().catch(()=>undefined)
@@ -127,10 +136,12 @@ module.exports = async function (msg) {
 				m.delete().catch(()=>undefined)
 			}
 		}
+
 		function e (o, n) {
 			if (o.id === msg.id) {
 				client.off('messageDelete', f)
 				client.off('messageUpdate', e)
+				client.off('message', s)
 				client.clearTimeout(t)
 				if (tr) tr.map(function (d) {
 					if (d.deletable) d.delete().catch(()=>undefined)
@@ -155,12 +166,19 @@ module.exports = async function (msg) {
 				})
 			}
 		}
-		let t = client.setTimeout(function () {
-			client.off('messageDelete', f)
-			client.off('messageUpdate', e)
-		}, 60000)
+
+		function s (m) {
+			if (m.author.id === msg.author.id) {
+				client.off('messageDelete', f)
+				client.off('messageUpdate', e)
+				client.off('message', s)
+				client.clearTimeout(t)
+			}
+		}
+		
 		client.on('messageDelete', f)
 		client.on('messageUpdate', e)
+		client.on('message', s)
 	}
 	handler(msg, function(c, o, tr) {
 		client.util.done(msg, c, o).then(function (m) {
