@@ -57,7 +57,7 @@ module.exports = {
 		}
 	},
 	cat: 'info',
-	desc: 'Shows available commands or information about mentioned command.\nSomehow, this is one of the most complex commands ever written for this bot. Part of it even lies in the bot\'s main code file.',
+	desc: 'Shows available commands or information about mentioned command.\nSomehow, this is one of the weirdest commands ever written for this bot. Part of it even lies in the bot\'s main code file.',
 	args: ['command name', '?...subcommands'], argCount: 0,
 	aliases: ['h']
 }
