@@ -5,6 +5,7 @@ module.exports = class extends Discord.Client {
 	constructor(ClientOptions) {
 		super(ClientOptions)
 		let client = this
+		this.setMaxListeners(150)
 		this.config = require('./config.json')
 		this.lang = {
 			perms: require('./language/perms.json').perms,
