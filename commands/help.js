@@ -44,7 +44,7 @@ module.exports = {
 		let pr = client.util.getPre(msg), obj = client.commands.get(cmd[0]) || client.commands.get(client.help.aliases.get(cmd[0]))
 		if (!cmd[0] || !obj) return {
 			options: {
-				embed: client.util.mkEmbed(`❯ Prefix: ${pr === '' ? '(none in DMs)' : pr} - Help`, '❯ Available commands, by category:', client.help.fields)
+				embed: client.util.mkEmbed(`❯ Prefix: ${pr === '' ? '(none in DMs)' : pr} - Help`, 'Available commands, by category:', client.help.fields)
 			}
 		}
 		else {
