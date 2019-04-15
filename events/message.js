@@ -15,7 +15,7 @@ module.exports = async function (msg) {
 			}
 		})
 	}, function (content, options, traces) {
-		client.util.throw(content, options)
+		client.util.throw(msg, content, options)
 		.then(function (m) {
 			if (m) {
 				client.binds.set(msg.author.id, {
