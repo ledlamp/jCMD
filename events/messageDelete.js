@@ -1,7 +1,7 @@
 module.exports = function (msg) {
 	let bind = client.binds.get(msg.author.id)
 	// Check if the deleted message is recorded in the binds map
-	if (bind) {
+	if (bind && bind.input === msg.id) {
 		// Delete the bind from the map and clear its timeout
 		client.binds.delete(msg.author.id)
 		clearTimeout(bind.timer)

@@ -1,7 +1,7 @@
 module.exports = function (old, msg) {
 	let bind = client.binds.get(msg.author.id)
 	// Check if the edited message is recorded in the binds map
-	if (bind) {
+	if (bind && bind.input === msg.id) {
 		client.binds.delete(msg.author.id)
 		clearTimeout(bind.timer)
 		// We use Promise.all to wait until the client is done removing all its reactions from the message
@@ -23,20 +23,22 @@ module.exports = function (old, msg) {
 				client.handler(msg, function (content, options, traces) {
 					bind.output.edit(content, options).then(function (m) {
 						client.binds.set(msg.author.id, {
+							input: msg.id,
 							output: m,
 							traces,
 							times: bind.times + 1,
-							timer: setTimeout(function () {client.binds.delete(msg.author.id)}, client.config.maxEditTime)
+							timer: client.setTimeout(function () {client.binds.delete(msg.author.id)}, client.config.maxEditTime)
 						})
 					})
 				}, function (content, options, traces) {
 					msg.react('❌').catch(()=>undefined)
 					bind.output.edit(content, options).then(function (m) {
 						client.binds.set(msg.author.id, {
+							input: msg.id,
 							output: m,
 							traces,
 							times: bind.times + 1,
-							timer: setTimeout(function () {client.binds.delete(msg.author.id)}, client.config.maxEditTime)
+							timer: client.setTimeout(function () {client.binds.delete(msg.author.id)}, client.config.maxEditTime)
 						})
 					})
 				})
