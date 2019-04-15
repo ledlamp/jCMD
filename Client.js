@@ -319,7 +319,7 @@ module.exports = class extends Discord.Client {
 					})
 					.then(function (m) {
 						// Self cleanup after notifying the user
-						setTimeout(function () {
+						client.setTimeout(function () {
 							m.delete().catch(()=>undefined)
 						}, 5000)
 					})
