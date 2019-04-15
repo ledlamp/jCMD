@@ -5,6 +5,7 @@
 	"prefix": "!",
 	"embedColor": 41193,
 	"maxImgSize": "6400000",
+	"maxEditTime": 30000,
 	"about": "**jCMD** - a Discord bot specialising in string and image manipulation, written by **reVerb#0001**.",
 	"invite": "https://discordbots.org/bot/524087405800718353",
 	"support": "Support server: https://discord.gg/ckGRhP7"
