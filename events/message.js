@@ -2,19 +2,43 @@
 const ment = `<@${client.user.id}>`
 const mentn = `<!@${client.user.id}>`
 function handler (msg, respr, thr) {
-	let args, isDM = msg.channel.type === 'dm', myperms = isDM ? undefined : msg.channel.permissionsFor(msg.guild.me), cfg = isDM ? {prefix: ''} : client.data.guilds.get(msg.guild.id) || {}, prefix = isDM ? '' : (cfg.prefix || client.config.prefix)
+	let
+	args, // Argument array, this will be defined later when the message is processed
+	isDM = msg.channel.type === 'dm', // Whether the message is a DM message
+	myperms = isDM ? undefined : msg.channel.permissionsFor(msg.guild.me), // Permissions for the client in the message's channel
+	cfg = isDM ? {prefix: ''} : client.data.guilds.get(msg.guild.id) || {}, // The config entry for the message's guild (only outside of DMs)
+	prefix = cfg.prefix || client.config.prefix // Supposed prefix for the message if it contains a command
+
+	// Ignore all bots, all non-normal messages, and all channels where the client user cannot send messages
 	if (msg.author.bot || msg.type !== 'DEFAULT' || (!isDM && !myperms.has('SEND_MESSAGES'))) return
+
+	// In this part, we will split the message by space characters and assign the array to binding `args`
+
+	// If the message is a DM message, treat it as if it has no prefix
 	if (isDM) args = msg.content.split(/ +/g)
+
+	// Else, see if it starts by mentioning the client user
+	// Note that there are two lines for this because of a bug in Discord Android. See top of this file.
 	else if (msg.content.startsWith(ment)) args = msg.content.slice(ment.length).trim().split(/ +/g)
 	else if (msg.content.startsWith(mentn)) args = msg.content.slice(mentn.length).trim().split(/ +/g)
+
+	// Else, see if it starts with the supposed prefix
 	else if (msg.content.startsWith(prefix)) args = msg.content.slice(prefix.length).trim().split(/ +/g)
+
+	// Else, commence automatic moderation.
 	else {
-		let d = false
+		let d = false // This boolean expresses whether a message is deleted yet
+
+		// If the guild & channel is configured to be scanned for invalid invites, get all invites within the message and check all of them
 		if (cfg.invScan && cfg.invScan.includes(msg.channel.id)) client.util.getInv(msg.content).map(function (code) {
+			if (d) return
+			// See if this invite is valid
 			client.util.checkInv(code).then(function (bool) {
+				// If it's not and that the message can be deleted, delete it
 				if (!bool && msg.deletable) {
 					d = true
 					msg.delete().then(function () {
+						// Notify the user if is configured to do so
 						if (cfg.invNoti) {
 							let ch = cfg.invNoti === 'h' ? msg.channel : msg.guild.channels.get(cfg.invNoti)
 							if (ch) ch.send(`${msg.author}, your message has been deleted for that it contains an invalid invite.`).catch(()=>undefined)
@@ -23,13 +47,17 @@ function handler (msg, respr, thr) {
 				}
 			})
 		})
+
+		// If the guild & channel is configured to be scanned for emojis, count all emojis in this message and compare it against the limit
 		if (!d && cfg.emjLim && cfg.emjChs && cfg.emjChs.includes(msg.channel.id) && msg.deletable) {
 			let c = client.util.countEmojis(msg.content)
 			if (c > cfg.emjLim) msg.delete().then(function () {
+				// Delete the message and notify the user
 				d = true
 				return msg.channel.send(`${msg.author}, your message has been deleted for that it contains more emojis than allowed. (**${c}** > **${cfg.emjLim}**)`)
 			})
 			.then(function (m) {
+				// Self cleanup after notifying the user
 				setTimeout(function () {
 					m.delete().catch(()=>undefined)
 				}, 5000)
@@ -93,18 +121,23 @@ function handler (msg, respr, thr) {
 				}
 			})
 		}
+		// Else, take the next word of the message and see if a subcommand with the same name exists
 		else {
+			// Show help for the subcommand if no more subcommands are specified
 			if (!p[0]) return client.commands.get('help').run(msg, his.split(' ')).then(function (rep) {
 				respr(rep.content, rep.options, rep.traces)
 			})
 			let subc = p.shift().toLowerCase()
 			let clip = subc.length > 15 ? subc.slice(0, 15) + '...' : subc // Prevent user from entering long subcommands and making the bot spam
+			// Give user the furthest info down the command tree possible if a specified subcommand does not exist
 			if (!obj.subCmd.hasOwnProperty(subc)) return client.commands.get('help').run(msg, his.split(' ')).then(function (rep) {
 				thr(`The subcommand \`${clip}\` does not exist. Here's some more information on \`${prefix + his}\`.`, rep.options)
 			})
+			// Call self to keep going down the command tree
 			deepCmd(obj.subCmd[subc], p, his + ' ' + subc)
 		}
 	}
+	// Start
 	deepCmd(cmdst, args, command)
 }
 
