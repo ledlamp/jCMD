@@ -62,7 +62,7 @@ module.exports = {
 		msg.channel.stopTyping()
 		if (res.status !== 200) throw new UserInputError('Doujinshi not found. Check whether you have given the correct name.')
 		let
-		body = await res.text().replace(/(\n+([ \t])*)/g, ''),
+		body = (await res.text()).replace(/(\n+([ \t])*)/g, ''),
 		title = extractTitle(body),
 		tags = extractTags(body), saidTags = false
 		langs = extractLangs(body),
