@@ -1,4 +1,5 @@
 function scanAround(x,y,w,h,func){for(let offX=-1;offX<2;offX++)for(let offY=-1;offY<2;offY++){let finX=x+offX,finY=y+offY;if(finX!==-1&&finY!==-1&&finX!==w&&finY!==h)func(finX,finY)}}function rgb2hsv(r,g,b){let v=Math.max(r,g,b),n=v-Math.min(r,g,b),h=n&&((v===r)?(g-b)/n:((v===g)?2+(b-r)/n:4+(r-g)/n));return[60*(h<0?h+6:h),v&&n/v,v]}function hsv2rgb(h,s,v){let f=(n,k=(n+h/60)%6)=>v-v*s*Math.max(Math.min(k,4-k,1),0);return[f(5),f(3),f(1)]}
+const extensions = ['png', 'jpg', 'jpeg']
 module.exports = {
 	run: async function (msg) {
 		msg.channel.startTyping()
@@ -12,7 +13,7 @@ module.exports = {
 					attch = m.embeds[0].image
 					attch.url = attch.url.split('?size=')[0]
 				}
-				if (attch && attch.width && (attch.url.endsWith('.png') || attch.url.endsWith('.jpg') || attch.url.endsWith('.jpeg'))) {
+				if (attch && attch.width && extensions.includes(attch.url.split('.').pop().toLowerCase())) {
 					found = true
 					image = attch
 					if (m.author.id === client.user.id) mdel = m

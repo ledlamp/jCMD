@@ -1,3 +1,4 @@
+const extensions = ['png', 'jpg', 'jpeg']
 module.exports = {
 	run: async function (msg) {
 		msg.channel.startTyping()
@@ -11,7 +12,7 @@ module.exports = {
 					attch = m.embeds[0].image
 					attch.url = attch.url.split('?size=')[0]
 				}
-				if (attch && attch.width && (attch.url.endsWith('.png') || attch.url.endsWith('.jpg') || attch.url.endsWith('.jpeg'))) {
+				if (attch && attch.width && extensions.includes(attch.url.split('.').pop().toLowerCase())) {
 					found = true
 					image = attch
 					if (m.author.id === client.user.id) mdel = m
