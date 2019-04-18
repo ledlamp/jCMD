@@ -20,7 +20,8 @@ module.exports = function (old, msg) {
 				})
 			).then(function () {
 				// After all of that, we handle the new command, edit our previous response to the new response and react to the response if needed
-				client.handler(msg, function (content, options, traces) {
+				client.handler(msg, function (content, options = {}, traces) {
+					if (!options.embed) options.embed = null
 					bind.output.edit(content, options).then(function (m) {
 						client.binds.set(msg.author.id, {
 							input: msg.id,
@@ -30,8 +31,9 @@ module.exports = function (old, msg) {
 							timer: client.setTimeout(function () {client.binds.delete(msg.author.id)}, client.config.maxEditTime)
 						})
 					})
-				}, function (content, options, traces) {
+				}, function (content, options = {}, traces) {
 					msg.react('❌').catch(()=>undefined)
+					if (!options.embed) options.embed = null
 					bind.output.edit(content, options).then(function (m) {
 						client.binds.set(msg.author.id, {
 							input: msg.id,
