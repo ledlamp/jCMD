@@ -90,7 +90,7 @@ module.exports = {
 		reset: {
 			run: async function (msg) {
 				let cf = client.data.guilds.get(msg.guild.id)
-				if (cf && cf.emjChs) {
+				if (cf) {
 					delete cf.emjChs
 					delete cf.emjLim
 					client.data.writeGuild(msg.guild.id, cf)
