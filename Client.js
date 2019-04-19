@@ -181,10 +181,12 @@ module.exports = class extends Discord.Client {
 			 * @param {String} str1 Input
 			 * @returns {Array<String>} Codes
 			 */
-			getInv: function (str1) {
-				let array1, array2 = []
-				while ((array1 = /(?:discordapp\.com\/invite|discord.gg)\/([a-zA-Z0-9\-]+)/g.exec(str1))) array2.push(array1[1])
-				return array2
+			getInv: function (str) {
+				let match, matches = [], regex = /(?:discordapp\.com\/invite|discord\.gg)\/([a-zA-Z0-9\-]+)/g
+				while (match = regex.exec(str)) {
+					matches.push(match[1])
+				}
+				return matches
 			},
 			/**
 			 * Gets the number of emojis a string.
