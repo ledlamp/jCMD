@@ -5,7 +5,7 @@ module.exports = {
 		let renick = p.join(' '), su = 0, fa = 0
 		if (renick.length > 32) throw new UserInputError('Specified nickname is too long. The maximum length for a Discord nickname is 32 characters.')
 		return Promise.all(msg.guild.members.map(function (member) {
-			let l = (member.nickname || member.user.username).substring(0, 1)
+			let l = (member.nickname || member.user.username)[0]
 			if (msg.guild.me.highestRole.comparePositionTo(member.highestRole) > 0 && hoistChars.includes(l)) return member.setNickname(renick, `Dehoist - Requested by ${msg.author.tag}`)
 			.then(()=>{su++; return Promise.resolve()})
 			.catch(()=>{fa++; return Promise.resolve()})
