@@ -18,13 +18,12 @@ module.exports = {
 				if (!cf.emjChs) cf.emjChs = []
 				for (let ch of args) {
 					let chn = client.util.getChannel(msg, ch)
-					if (chn && chn.permissionsFor(chn.guild.me).has('MANAGE_MESSAGES')) {
+					if (chn && !cf.autoDel.includes(chn.id) && chn.permissionsFor(chn.guild.me).has('MANAGE_MESSAGES')) {
 						if (chn.type === 'text' && cf.emjChs.indexOf(chn.id) === -1) {
 								cf.emjChs.push(chn.id)
 								addedChs.push('`#' + chn.name + '`')
-						}
-						if (chn.type === 'category') chn.children.map(chan => {
-							if (chan.type === 'text' && cf.emjChs.indexOf(chn.id) === -1) {
+						} else if (chn.type === 'category') chn.children.map(chan => {
+							if (chan.type === 'text' && cf.emjChs.includes(chan.id)) {
 								cf.emjChs.push(chan.id)
 								addedChs.push('`#' + chan.name + '`')
 							}
@@ -35,7 +34,7 @@ module.exports = {
 				if (addedChs.length > 0) {
 					client.data.writeGuild(msg.guild.id, cf)
 					return {content: `Added channels:\n${addedChs.join(',\n')}`}
-				} else return {content: 'No valid channels added. Check your spelling and whether the channels allow the bot to manage messages.'}
+				} else return {content: 'No valid channels added. Check your spelling, whether the channels are already added and whether they allow the bot to manage messages.'}
 			},
 			desc: 'Add channels to monitoring list. Provide a category channel ID to add all its child channels.',
 			perm: 'MANAGE_GUILD', args: ['channels / channel IDs'], argCount: 1
@@ -69,7 +68,7 @@ module.exports = {
 				if (addedChs.length > 0) {
 					client.data.writeGuild(msg.guild.id, cf)
 					return {content: `Removed channels:\n${addedChs.join(',\n')}`}
-				} else return {content: `No valid channels removed.`}
+				} else return {content: 'No valid channels removed. Check your spelling and whether the channels are already removed.'}
 			},
 			desc: 'Remove channels from monitoring list. Provide a category channel ID to remove all its child channels.',
 			perm: 'MANAGE_GUILD', args: ['channels / channel IDs'], argCount: 1
@@ -95,7 +94,7 @@ module.exports = {
 					delete cf.emjLim
 					client.data.writeGuild(msg.guild.id, cf)
 				}
-				return {content: `Emoji limiting functionality reset.`}
+				return {content: 'Emoji limiting functionality reset.'}
 			},
 			perm: 'MANAGE_GUILD',
 			desc: 'Clear the entirety of the monitoring list and all options.'
