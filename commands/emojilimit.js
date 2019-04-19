@@ -18,8 +18,8 @@ module.exports = {
 				if (!cf.emjChs) cf.emjChs = []
 				for (let ch of args) {
 					let chn = client.util.getChannel(msg, ch)
-					if (chn && !cf.autoDel.includes(chn.id) && chn.permissionsFor(chn.guild.me).has('MANAGE_MESSAGES')) {
-						if (chn.type === 'text' && cf.emjChs.indexOf(chn.id) === -1) {
+					if (chn && chn.permissionsFor(chn.guild.me).has('MANAGE_MESSAGES')) {
+						if (chn.type === 'text' && !cf.emjChs.includes(chn.id)) {
 								cf.emjChs.push(chn.id)
 								addedChs.push('`#' + chn.name + '`')
 						} else if (chn.type === 'category') chn.children.map(chan => {

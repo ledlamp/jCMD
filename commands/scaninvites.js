@@ -6,7 +6,7 @@ module.exports = {
 				if (!cf.invScan) cf.invScan = []
 				for (let ch of args) {
 					let chn = client.util.getChannel(msg, ch)
-					if (chn && !cf.autoDel.includes(chn.id) && chn.permissionsFor(chn.guild.me).has('MANAGE_MESSAGES')) {
+					if (chn && chn.permissionsFor(chn.guild.me).has('MANAGE_MESSAGES')) {
 						if (chn.type === 'text' && !cf.invScan.includes(chn.id)) {
 								cf.invScan.push(chn.id)
 								addedChs.push('`#' + chn.name + '`')
