@@ -4,37 +4,7 @@ function extractTags(body) { return body.match(/<div class="tag-container field-
 function extractLangs(body) { return body.match(/<div class="tag-container field-name ">Languages:(.*?)<\/div>/)[1].replace(/\((\d|,)*?\)/g, '').replace(/<.*?>/g, ';').split(/ *;+/).slice(1, -1) }
 function extractArtists(body) { return body.match(/<div class="tag-container field-name ">Artists:(.*?)<\/div>/)[1].replace(/\((\d|,)*?\)/g, '').replace(/<.*?>/g, ';').split(/ *;+/).slice(1, -1) }
 function extractTitle(body) { return body.match(/<meta itemprop="name" content="(.+)" \/>/)[1] }
-function similarity(s1, s2) {
-	let longer = s1
-	let shorter = s2
-	if (s1.length < s2.length) {
-		longer = s2
-		shorter = s1
-	}
-	if (longer.length === 0) {
-		return 1.0
-	}
-	return (longer.length - editDistance(longer, shorter)) / parseFloat(longer.length)
-}
-function editDistance(s1, s2) {
-	s1 = s1.toLowerCase()
-	s2 = s2.toLowerCase()
-	let costs = []
-	for (let i = 0; i <= s1.length; i++) {
-		let lastValue = i
-		for (let j = 0; j <= s2.length; j++) {
-			if (i === 0) costs[j] = j
-			else if (j > 0) {
-				let newValue = costs[j - 1]
-				if (s1.charAt(i - 1) !== s2.charAt(j - 1)) newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1
-				costs[j - 1] = lastValue
-				lastValue = newValue
-			}
-		}
-		if (i > 0) costs[s2.length] = lastValue
-	}
-	return costs[s2.length]
-}
+function similarity(s1, s2) { let longer = s1; let shorter = s2; if (s1.length < s2.length) { longer = s2; shorter = s1 } if (longer.length === 0) { return 1.0 } return (longer.length - editDistance(longer, shorter)) / parseFloat(longer.length) } function editDistance(s1, s2) { s1 = s1.toLowerCase(); s2 = s2.toLowerCase(); let costs = []; for (let i = 0; i <= s1.length; i += 1) { let lastValue = i; for (let j = 0; j <= s2.length; j += 1) { if (i === 0) { costs[j] = j } else if (j > 0) { let newValue = costs[j - 1]; if (s1.charAt(i - 1) !== s2.charAt(j - 1)) { newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1 } costs[j - 1] = lastValue; lastValue = newValue } } if (i > 0) { costs[s2.length] = lastValue } } return costs[s2.length] }
 
 const forbiddenTitles = [
 	'EMERGENCE',
@@ -61,13 +31,14 @@ module.exports = {
 		let res = await fetch('https://nhentai.net/g/' + code)
 		msg.channel.stopTyping()
 		if (res.status !== 200) throw new UserInputError('Doujinshi not found. Check whether you have given the correct name.')
+
 		let
-		body = (await res.text()).replace(/(\n+([ \t])*)/g, ''),
-		title = extractTitle(body),
-		tags = extractTags(body), saidTags = false
-		langs = extractLangs(body),
-		artists = extractArtists(body)
-		response = ''
+			body = (await res.text()).replace(/(\n+([ \t])*)/g, ''),
+			title = extractTitle(body),
+			tags = extractTags(body), saidTags = false,
+			langs = extractLangs(body),
+			artists = extractArtists(body),
+			response = ''
 
 		let abandon = false
 		for (let i of forbiddenTitles) if (title === i || title.startsWith(i)) {
@@ -101,7 +72,7 @@ module.exports = {
 		}
 		if (!langs.includes('english') && isLoli) response += '\n**Languages: *Not English***\n	Does it look like that I can read moon runes? No matter where the hell you live, here in \'murica we protect the lolis. Take them away boys!'
 		if (response === '') response += '\nOh. Oh wow. Something actually normal this time. I am proud that you have such a fine taste in this wild realm of art. Or maybe you are just a normie, I don\'t know. ¯\\_(ツ)_/¯'
-		return {content: `\n*\`\`\`${code}\`\`\`*` + response}
+		return { content: `\n*\`\`\`${code}\`\`\`*` + response }
 	},
 	args: ['doujinshi id'], argCount: 1,
 	cat: 'fun',
