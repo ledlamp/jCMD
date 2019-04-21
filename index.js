@@ -31,7 +31,13 @@ Object.assign(global, {
 })
 
 const Client = require('./Client.js')
-let client = new Client({disableEveryone: true})
+let client = new Client({
+	messageCacheMaxSize: 20,
+	messageCacheLifetime: 200,
+	messageSweepInterval: 300,
+	disabledEvents: ['TYPING_START'],
+	disableEveryone: true
+})
 Object.assign(global, {client})
 
 // Eval through console
