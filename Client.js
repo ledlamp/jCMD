@@ -5,9 +5,10 @@ Object.assign(global, {Discord, Enmap})
 module.exports = class extends Discord.Client {
 	constructor(ClientOptions) {
 		super(ClientOptions)
-		let client = this
-		this.config = require('./config.json')
-		this.lang = {
+		const client = this
+
+		client.config = require('./config.json')
+		client.lang = {
 			perms: require('./language/perms.json').perms,
 			permnames: require('./language/perms.json').names,
 			presences: require('./language/plays.json'),
@@ -41,7 +42,7 @@ module.exports = class extends Discord.Client {
 				return this.pasta[pick]
 			}
 		}
-		this.util = {
+		client.util = {
 			/**
 			 * Gets the supposed prefix of a message if it were to contain a command
 			 * @param {Message} msg The message
@@ -205,7 +206,7 @@ module.exports = class extends Discord.Client {
 				return client.fetchInvite(code).then(()=>true).catch(()=>false)
 			}
 		}
-		this.help = {
+		client.help = {
 			cats: {
 				info: 'Help & Information',
 				util: 'Utility',
@@ -249,9 +250,9 @@ module.exports = class extends Discord.Client {
 				if (this.fields[x] && this.fields[x].value === '') this.fields.pop()
 			}
 		}
-		this.cd = new Set()
-		this.binds = new Map()
-		this.commands = new Enmap()
+		client.cd = new Set()
+		client.binds = new Map()
+		client.commands = new Enmap()
 		fs.readdir('./commands/', function (err, files) {
 			if (err) return console.error(err)
 			files.map(function (file) {
@@ -262,7 +263,7 @@ module.exports = class extends Discord.Client {
 			})
 			client.help.build()
 		})
-		this.handler = function (msg, respr, thr) {
+		client.handler = function (msg, respr, thr) {
 			let
 			args, // Argument array, this will be defined later when the message is processed
 			isDM = msg.channel.type === 'dm', // Whether the message is a DM message
@@ -421,7 +422,7 @@ module.exports = class extends Discord.Client {
 			// Start
 			deepCmd(cmdst, args, command)
 		}
-		this.data = {
+		client.data = {
 			/**
 			 * Stores per-guild data after cleaning it.
 			 * @param {String} key Guild ID
@@ -451,8 +452,13 @@ module.exports = class extends Discord.Client {
 				dataDir: './data'
 			})
 		}
-		this.on('ready', require('./events/ready.js'))
-		this.on('error', function (err) {console.error(err)})
-		this.on('warn', function (str) {console.warn(str)})
+		client.on('ready', require('./events/ready.js'))
+		client.on('error', function (err) {console.error(err)})
+		client.on('warn', function (str) {console.warn(str)})
+		client.setInterval(() => {
+			for (const guild of client.guilds.values()) {
+				guild.presences.clear()
+			}
+		}, 900)
 	}
 }
