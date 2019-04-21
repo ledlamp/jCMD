@@ -7,7 +7,6 @@ module.exports = {
 				deleteCount -= 100
 				return msg.channel.fetchMessages({limit: 100})
 				.then(function (msgs) {
-					console.log(msgs.size)
 					return msg.channel.bulkDelete(msgs, true)
 					.then(deleter)
 					.catch(function (e) {
@@ -22,7 +21,6 @@ module.exports = {
 			} else {
 				return msg.channel.fetchMessages({limit: deleteCount})
 				.then(function (msgs) {
-					console.log(msgs.size)
 					return msg.channel.bulkDelete(msgs, true)
 					.then(function () {
 						return undefined

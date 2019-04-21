@@ -10,8 +10,7 @@ module.exports = {
 						if (chn.type === 'text' && !cf.invScan.includes(chn.id)) {
 								cf.invScan.push(chn.id)
 								addedChs.push('`#' + chn.name + '`')
-						}
-						if (chn.type === 'category') chn.children.map(chan => {
+						} else if (chn.type === 'category') chn.children.map(chan => {
 							if (chan.type === 'text' && !cf.invScan.includes(chan.id)) {
 								cf.invScan.push(chan.id)
 								addedChs.push('`#' + chan.name + '`')
@@ -23,7 +22,7 @@ module.exports = {
 				if (addedChs.length > 0) {
 					client.data.writeGuild(msg.guild.id, cf)
 					return {content: `Added channels:\n${addedChs.join(',\n')}`}
-				} else return {content: 'No valid channels added. Check your spelling and whether the channels allow the bot to manage messages.'}
+				} else return {content: 'No valid channels added. Check your spelling, whether the channels are already added and whether they allow the bot to manage messages.'}
 			},
 			desc: 'Add channels to monitoring list. Provide a category channel ID to add all its child channels.',
 			perm: 'MANAGE_GUILD', args: ['channels / channel IDs'], argCount: 1
@@ -56,7 +55,7 @@ module.exports = {
 				if (addedChs.length > 0) {
 					client.data.writeGuild(msg.guild.id, cf)
 					return {content: `Removed channels:\n${addedChs.join(',\n')}`}
-				} else return {content: `No valid channels removed.`}
+				} else return {content: 'No valid channels removed. Check your spelling and whether the channels are already removed.'}
 			},
 			desc: 'Remove channels from monitoring list. Provide a category channel ID to remove all its child channels.',
 			perm: 'MANAGE_GUILD', args: ['channels / channel IDs'], argCount: 1
@@ -114,7 +113,7 @@ module.exports = {
 					delete cf.invNoti
 					client.data.writeGuild(msg.guild.id, cf)
 				}
-				return {content: `Invite scanning functionality reset.`}
+				return {content: 'Invite scanning functionality reset.'}
 			},
 			perm: 'MANAGE_GUILD',
 			desc: 'Clear the entirety of the monitoring list and all options.'

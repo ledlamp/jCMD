@@ -8,6 +8,7 @@ module.exports = {
 			check = false
 			csl = err
 		}
+		if (csl.length > 16580000) throw new UserInputError('The output is too long to be sent in a message or through a file. RIP.')
 		return {
 			content: (check ? '**Returned:**' : '**That didn\'t go well.**') + (buf ? '' : '\n```js\n' + csl + '```'),
 			options: buf ? new Discord.Attachment(buf, 'output.txt') : undefined
